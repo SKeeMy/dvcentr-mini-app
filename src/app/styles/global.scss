@@ -1,0 +1,33 @@
+:root {
+  //colors
+
+  --primary-white: #ffffff;
+
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-steppe), sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  color: #232528;
+}
+
+a {
+  color: var(--primary-white);
+  text-decoration: none;
+}
+
+img {
+  user-select: none;
+}
+
+button {
+  cursor: pointer;
+}
