@@ -56,7 +56,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [openPopup, setOpenPopup] = useState<boolean>(false)
+  const [openPopup, setOpenPopup] = useState<boolean>(true)
 
   const [popupPosition, setPopupPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
