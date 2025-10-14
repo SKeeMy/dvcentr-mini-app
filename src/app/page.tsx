@@ -25,6 +25,49 @@ export default function Home() {
 
     initializeWebApp()
   }, [])
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const sendPhoneRequest = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const proxyUrl = 'https://dvcentr.ru/api/tg-react-app/';
+        
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          // mode: "no-cors",
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Forwarded-Proto': 'https',
+            'X-Forwarded-Ssl': 'on',
+            'HTTPS': 'YES',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({
+            phone: '79241228364'
+          })
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const result = await response.json();
+        setData(result);
+        console.log('test',data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    sendPhoneRequest();
+  }, []);
 
   if (userData) {
     return (
