@@ -84,8 +84,7 @@ a.primary {
   background: var(--foreground);
   color: var(--background);
   gap: 8px;
-  display: block;
-  margin-bottom: 10px;
+
 }
 
 a.secondary {
