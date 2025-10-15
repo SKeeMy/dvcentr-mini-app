@@ -1,9 +1,10 @@
 import React from 'react'
 import { FC, PropsWithChildren } from 'react'
+import { Header } from '../header/header'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
-      <header></header>
+      <Header />
         <main>{children}</main>
       <footer></footer>
     </>

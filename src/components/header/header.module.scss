@@ -1,0 +1,10 @@
+.header {
+  padding: 13px 0;
+  background: white;
+  border-radius: 0 0 16px 16px;
+  &_items {
+    display: grid;
+    grid-template-columns: 1fr 42px 42px;
+    gap: 10px;
+  }
+}

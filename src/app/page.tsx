@@ -3,6 +3,7 @@ import './styles/global.scss'
 import { useEffect, useRef, useState } from 'react'
 import { Container } from '@/components/container/container'
 import clsx from 'clsx'
+import Link from 'next/link'
 interface UserData {
   id: number
   first_name: string
@@ -56,7 +57,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [openPopup, setOpenPopup] = useState<boolean>(true)
+  const [openPopup, setOpenPopup] = useState<boolean>(false)
 
   const [popupPosition, setPopupPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -311,6 +312,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <Link href={'/catalog'} className="action-button primary">
+          Каталог
+        </Link>
 
         {/* User Stats */}
 

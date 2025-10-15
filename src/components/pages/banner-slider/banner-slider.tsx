@@ -1,0 +1,62 @@
+'use client'
+import { Container } from '@/components/container/container';
+import React from 'react'
+import { BannerSlide } from './banner-slide/banner-slide';
+import { IBannerSlideProps } from './banner-slide/banner-slide.interface';
+import s from './banner-slider.module.scss';
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules';
+import 'swiper/css/pagination';
+export const BannerSlider = () => {
+
+  const slides: IBannerSlideProps[] = [
+    {
+      id: 1,
+      text: 'Запустили мини-приложение!',
+      background_image: '/images/i.webp',
+      sticker_image: 'images/ecs.png',
+      stricker_pos: 'right'
+    },
+    {
+      id: 2,
+      text: 'Фирменный мерч в наличии!',
+      background_image: '/images/banner.jpg',
+      sticker_image: '/images/toy-sticker.png',
+      stricker_pos: 'center'
+    },
+  ]
+
+
+  return (
+    <Container>
+      <div className={s.slider_wrapper}>
+        <Swiper
+          className={s.swiper}
+          spaceBetween={10}
+          slidesPerView={1.1}
+          centeredSlides={true}
+          pagination={{
+            dynamicBullets: true,
+            horizontalClass: s.swiper_pagination,
+            bulletActiveClass: s.swiper_pagination_active,
+            bulletClass: s.swiper_pagination_bullet
+          }}
+
+          modules={[Pagination]}
+        >
+          {slides.map(slide => (
+            <SwiperSlide>
+              <BannerSlide key={slide.id}
+                text={slide.text}
+                sticker_image={slide.sticker_image}
+                background_image={slide.background_image}
+                id={slide.id}
+                stricker_pos={slide.stricker_pos}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </Container>
+  )
+}

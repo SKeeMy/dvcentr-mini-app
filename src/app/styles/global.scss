@@ -13,6 +13,9 @@
   --primary-gradient: linear-gradient(135deg, #f89633 0%, #e67e22 100%);
   --primary-gradient-light: linear-gradient(135deg, #f9ac5d 0%, #f89633 100%);
   --background-gradient: linear-gradient(135deg, #f89633 0%, #e74c3c 100%);
+
+// ui палитра
+  --grey-900: #363636;
 }
 
 body {
@@ -59,6 +62,12 @@ body {
       transform: translateY(-1px);
     }
   }
+}
+
+.container {
+  padding: 0 10px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 // Loading Styles
@@ -427,7 +436,9 @@ body {
     background: var(--primary-gradient);
     color: white;
     box-shadow: 0 4px 16px rgba(248, 150, 51, 0.4);
-
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(248, 150, 51, 0.6);

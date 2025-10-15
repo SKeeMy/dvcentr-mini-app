@@ -1,0 +1,29 @@
+.search { 
+  &_wrapper {
+    position: relative;
+    background: #ededed;
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 0px;
+    border-radius: 10px;
+    align-items: center;
+    padding: 0 20px;
+    input {
+      width: 100%;
+      padding: 12px 6px;
+      background-color: transparent;
+      outline: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgb(114, 114, 114);
+    }
+    svg {
+        width: 18px;
+        height: 18px;
+        path {
+          fill: rgb(164, 164, 164);
+        }
+    }
+  }
+}

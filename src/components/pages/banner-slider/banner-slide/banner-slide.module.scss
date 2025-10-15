@@ -1,0 +1,55 @@
+.slide {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  height: 150px;
+  padding: 14px 20px;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+
+  &_bg {
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  &_image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    position: absolute;
+    top: -50px;
+
+
+
+    &.right {
+      right: 30px;
+      transform: rotate(25deg);
+    }
+
+    &.left {
+      left: 30px;
+      transform: rotate(-25deg);
+    }
+    &.center {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  h3 {
+    /* From https://css.glass */
+    background: rgb(33 33 33 / 66%);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20.6px);
+    -webkit-backdrop-filter: blur(24.6px);
+    border: 1px solid rgba(255, 253, 250, 0.3);
+    padding: 5px 12px;
+    z-index: 2;
+    font-size: 15px;
+  }
+}

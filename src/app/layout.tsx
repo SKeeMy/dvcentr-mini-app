@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import "./styles/global.scss";
 import clsx from "clsx";
 import { golosTextFont, steppeFont } from "@/fonts/steppe/index";
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 export const metadata: Metadata = {
   title: "DVCentr Mini APP",
