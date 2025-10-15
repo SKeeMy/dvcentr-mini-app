@@ -1,3 +1,4 @@
+'use client'
 import { Container } from "@/components/container/container";
 import { BannerSlide } from "@/components/pages/banner-slider/banner-slide/banner-slide";
 import { BannerSlider } from "@/components/pages/banner-slider/banner-slider";
@@ -9,7 +10,7 @@ export default function Catalog() {
   return (
     <div>
       <BannerSlider />
-      <Section name="Категории">
+      <Section name="Каталог">
         <div></div>
       </Section>
     </div>
