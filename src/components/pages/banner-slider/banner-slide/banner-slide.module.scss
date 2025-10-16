@@ -10,25 +10,26 @@
   align-items: flex-end;
   justify-content: center;
   position: relative;
+  transform: translate3d(0, 0, 0); // Аппаратное ускорение
+  backface-visibility: hidden;
 
-  &_bg {
+  // Стили для Next.js Image фона
+  .slide_bg {
     object-fit: cover;
     border-radius: 16px;
-    position: absolute;
+    position: absolute !important; // Важно для Next.js Image с fill
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
   }
 
-  &_image {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
+  // Контейнер для стикера
+  .slide_image_container {
     position: absolute;
     top: -50px;
-
-
+    width: 100px;
+    height: 100px;
 
     &.right {
       right: 30px;
@@ -39,14 +40,22 @@
       left: 30px;
       transform: rotate(-25deg);
     }
+    
     &.center {
       left: 50%;
       transform: translateX(-50%);
     }
   }
 
+  // Стили для самого изображения стикера
+  .slide_image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    position: relative !important;
+  }
+
   h3 {
-    /* From https://css.glass */
     background: rgb(33 33 33 / 66%);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -56,5 +65,6 @@
     padding: 5px 12px;
     z-index: 2;
     font-size: 15px;
+    position: relative; // Убедитесь, что z-index работает
   }
 }

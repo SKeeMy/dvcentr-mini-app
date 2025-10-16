@@ -35,6 +35,8 @@ export const BannerSlider = () => {
           spaceBetween={10}
           slidesPerView={1.1}
           centeredSlides={true}
+          resistance={true}
+          speed={400}
           pagination={{
             dynamicBullets: true,
             horizontalClass: s.swiper_pagination,
@@ -42,6 +44,25 @@ export const BannerSlider = () => {
             bulletClass: s.swiper_pagination_bullet
           }}
 
+          observer={true}
+          observeParents={true}
+          observeSlideChildren={true}
+          touchStartPreventDefault={false}
+          touchMoveStopPropagation={true}
+          shortSwipes={true}
+          longSwipes={false}
+          followFinger={true}
+          threshold={10}
+          lazy={{
+            enabled: true,
+            loadPrevNext: true,
+            loadPrevNextAmount: 1,
+          }}
+          onInit={(swiper) => {
+            setTimeout(() => {
+              swiper.update();
+            }, 100);
+          }}
           modules={[Pagination]}
         >
           {slides.map(slide => (
