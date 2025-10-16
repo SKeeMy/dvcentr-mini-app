@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import { Container } from '@/components/container/container'
 import clsx from 'clsx'
 import Link from 'next/link'
+import { Orders } from '@/components/pages/home/orders/orders'
+import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.interface'
+import { ButtonClose } from '@/components/shared/buttons/button-close'
+import { Close } from '@/components/shared/icons/close'
 interface UserData {
   id: number
   first_name: string
@@ -11,6 +15,7 @@ interface UserData {
   username?: string
   language_code: string
   is_premium?: boolean
+  phone?: string
 }
 
 
@@ -54,94 +59,11 @@ export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [currentMockIndex, setCurrentMockIndex] = useState(0)
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<IApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
 
-  const [popupPosition, setPopupPosition] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const startYRef = useRef(0);
-  const currentYRef = useRef(0);
-
-  // Обработчики жестов
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    startYRef.current = touch.clientY;
-    currentYRef.current = touch.clientY;
-    setIsDragging(true);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !popupRef.current) return;
-
-    const touch = e.touches[0];
-    currentYRef.current = touch.clientY;
-
-    const deltaY = currentYRef.current - startYRef.current;
-
-    // Уменьшаем чувствительность - делим на 2
-    if (deltaY > 0) {
-      const popupHeight = popupRef.current.offsetHeight;
-      const position = Math.min(deltaY / popupHeight, 1);
-      setPopupPosition(position * 0.5); // Уменьшаем коэффициент для меньшей чувствительности
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-
-    const deltaY = currentYRef.current - startYRef.current;
-    const popupHeight = popupRef.current?.offsetHeight || 0;
-
-    // Увеличиваем порог закрытия до 40% высоты попапа
-    if (deltaY > popupHeight * 0.4) {
-      setOpenPopup(false);
-    }
-
-    // Сбрасываем позицию с анимацией
-    setTimeout(() => setPopupPosition(0), 50);
-  };
-  const sendPhoneRequest = async () => {
-    setLoading(true);
-    setError(null);
-    if (data === null) {
-      try {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/https://dvcentr.ru/api/tg-react-app/';
-
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Forwarded-Proto': 'https',
-            'X-Forwarded-Ssl': 'on',
-            'HTTPS': 'YES',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          body: JSON.stringify({
-            phone: '79147275655'
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        setData(result);
-        setOpenPopup(true)
-        console.log('test', data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setOpenPopup(true)
-    }
-
-  };
 
   useEffect(() => {
     const initializeWebApp = async () => {
@@ -150,6 +72,7 @@ export default function Home() {
 
         if (WebApp.initDataUnsafe.user) {
           setUserData(WebApp.initDataUnsafe.user as UserData)
+          console.log(userData?.phone);
           console.log('Using real Telegram user data')
         } else {
           const mockUser = mockUsers[currentMockIndex]
@@ -170,16 +93,51 @@ export default function Home() {
     initializeWebApp()
   }, [currentMockIndex])
 
-  // Функция для переключения между mock пользователями
-  const switchMockUser = () => {
-    setIsLoading(true)
-    setTimeout(() => {
-      const nextIndex = (currentMockIndex + 1) % mockUsers.length
-      setCurrentMockIndex(nextIndex)
-      setUserData(mockUsers[nextIndex])
-      setIsLoading(false)
-    }, 500)
-  }
+
+  const sendPhoneRequest = async () => {
+    setOpenPopup(true)
+    setError(null);
+    if (data === null) {
+      setLoading(true);
+
+      try {
+
+
+        const response = await fetch('/api/tg-react-app', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Forwarded-Proto': 'https',
+            'X-Forwarded-Ssl': 'on',
+            'HTTPS': 'YES',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({
+            phone: '79147275655'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setData(result);
+        console.log('test', data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setOpenPopup(true)
+    }
+
+  };
+
+ 
+
+
 
   if (isLoading) {
     return (
@@ -203,14 +161,11 @@ export default function Home() {
           <p className="error-description">
             Пожалуйста, откройте это приложение через Telegram бота
           </p>
-          <button className="demo-button" onClick={switchMockUser}>
-            Попробовать демо режим
-          </button>
+
         </div>
       </Container>
     )
   }
-
   return (
     <Container>
       <div className="app-container">
@@ -218,27 +173,19 @@ export default function Home() {
           className={clsx('popup-overlay', openPopup && 'visible')}
           onClick={() => setOpenPopup(false)}
         >
+
           <div
-            ref={popupRef}
-            className={clsx('popup', openPopup && 'visible', isDragging && 'dragging')}
-            style={{
-              transform: `translateY(calc(${popupPosition * 100}% + ${popupPosition * 20}px))`
-            }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onClick={(e) => e.stopPropagation()}
+            className={clsx('popup', openPopup && 'visible')}
+
           >
+
             <div className='popup_inner'>
+              <ButtonClose aria-label='Close dialog' className='popup__close-btn' onClose={() => setOpenPopup(false)}>
+                <Close />
+              </ButtonClose>
               <span
                 className='popup__line'
-                onMouseDown={(e) => {
-                  // Для десктопа - начинаем драг
-                  e.preventDefault();
-                  startYRef.current = e.clientY;
-                  currentYRef.current = e.clientY;
-                  setIsDragging(true);
-                }}
+
               ></span>
               <div className='popup_content_wrapper'>
                 <div className="popup__data">
@@ -246,12 +193,27 @@ export default function Home() {
                     <span className="popup__desc">79147275655</span>
                     <p className='popup__title'>Телефон</p>
                   </div>
-                  <div>
-                    <span className="popup__desc">3</span>
-                    <p className='popup__title'>Заказов кол-во</p>
-                  </div>
+                  {data && <div>
+                    <span className="popup__desc">{data.DATA.Data.length}</span>
+                    <p className='popup__title'>Доступно</p>
+                  </div>}
                 </div>
               </div>
+              {data && data.DATA.Data.map((order, index) => (
+                <Orders
+                  key={`${order.SalesId}-${index}`}
+                  orderData={order}
+                  loading={loading}
+                />
+              ))}
+
+              {data === null && loading &&
+                <Orders
+                  orderData={null}
+                  loading={loading}
+                />
+              }
+
             </div>
           </div>
         </div>
@@ -337,7 +299,7 @@ export default function Home() {
         {/* Action Buttons */}
         <div className="actions-container">
           <button onClick={sendPhoneRequest} className="action-button primary">
-            Получить данные по заказу
+            Доступно по доверенности
           </button>
 
         </div>

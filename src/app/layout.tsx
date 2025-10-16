@@ -1,3 +1,4 @@
+
 import { RootLayout } from "@/components/layouts/rootLayout";
 import type { Metadata } from "next";
 import "./styles/global.scss";

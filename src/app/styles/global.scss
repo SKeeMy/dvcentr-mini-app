@@ -14,7 +14,7 @@
   --primary-gradient-light: linear-gradient(135deg, #f9ac5d 0%, #f89633 100%);
   --background-gradient: linear-gradient(135deg, #f89633 0%, #e74c3c 100%);
 
-// ui палитра
+  // ui палитра
   --grey-900: #363636;
 }
 
@@ -439,6 +439,7 @@ body {
     display: block;
     margin-bottom: 10px;
     text-align: center;
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(248, 150, 51, 0.6);
@@ -526,7 +527,7 @@ body {
 
 .popup {
   position: fixed;
-  height: 50%;
+  height: 90%;
   width: 100%;
   background-color: white;
   left: 0;
@@ -613,18 +614,16 @@ body {
   width: 100%;
   padding: 20px;
   padding-top: 32px;
+  overflow: auto;
 }
 
 .popup_content_wrapper {
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
 }
 
 // Адаптив для попапа
 @media (max-width: 480px) {
   .popup {
-    height: 60%;
     border-radius: 24px 24px 0 0;
 
     &__data {
@@ -645,5 +644,26 @@ body {
   .popup_inner {
     padding: 16px;
     padding-top: 28px;
+  }
+}
+
+.popup__close-btn {
+  position: absolute;
+  outline: none;
+  border-radius: 50%;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 10px;
+  top: 10px;
+  background: white;
+
+  svg {
+    width: 20px;
+    height: 20px;
+
   }
 }
