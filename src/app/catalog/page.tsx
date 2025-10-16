@@ -9,7 +9,7 @@ import { SearchInput } from "@/components/ui/search-input/search-input";
 export default function Catalog() {
   return (
     <div>
-      <BannerSlider />
+      {/* <BannerSlider /> */}
       <Section name="Каталог">
         <div></div>
       </Section>
