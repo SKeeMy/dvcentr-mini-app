@@ -107,17 +107,20 @@ export default function Home() {
   useEffect(() => {
     const initializeWebApp = async () => {
       try {
-        // initData - это объект, а не функция в новой библиотеке
-        console.log('initData', initData);
+        // initData - это объект с функциями, нужно их вызывать
+        console.log('initData object:', initData);
         
-        if (initData && initData.user) {
-          // Преобразуем Telegram User в наш UserData
-          const telegramUser = initData.user as unknown as TelegramUser;
-          const userData = mapTelegramUserToUserData(telegramUser);
+        // Получаем пользователя через функцию user()
+        const telegramUser = initData.user();
+        console.log('telegramUser from initData.user():', telegramUser);
+        
+        if (telegramUser) {
+          const userData = mapTelegramUserToUserData(telegramUser as TelegramUser);
           setUserData(userData)
-          console.log('userData', userData)
+          console.log('Mapped userData:', userData)
           console.log('Using real Telegram user data')
         } else {
+          // Если нет реальных данных, используем мок
           const mockUser = mockUsers[currentMockIndex]
           setUserData(mockUser)
           console.log('Using mock user data:', mockUser)
