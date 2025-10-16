@@ -42,6 +42,12 @@ const mockUsers: UserData[] = [
   }
 ]
 
+// Ключи для localStorage
+const STORAGE_KEYS = {
+  USER_PHONE: 'tg_user_phone',
+  USER_DATA: 'tg_user_data'
+};
+
 export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -51,16 +57,61 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
   const [isTelegramEnv, setIsTelegramEnv] = useState(false)
+  const [hasRequestedPhone, setHasRequestedPhone] = useState(false)
 
-  // Функция для запроса номера телефона с использованием @telegram-apps/sdk
-  const requestPhoneNumber = async () => {
+  // Функция для сохранения номера телефона в localStorage
+  const savePhoneToStorage = (phone: string, userData: UserData) => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USER_PHONE, phone);
+      localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+      console.log('✅ Номер телефона сохранен в localStorage:', phone);
+    } catch (error) {
+      console.error('❌ Ошибка сохранения в localStorage:', error);
+    }
+  };
+
+  // Функция для получения номера телефона из localStorage
+  const getPhoneFromStorage = (): { phone: string | null; userData: UserData | null } => {
+    try {
+      const phone = localStorage.getItem(STORAGE_KEYS.USER_PHONE);
+      const userDataStr = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+      const userData = userDataStr ? JSON.parse(userDataStr) : null;
+      
+      console.log('📱 Получен номер из localStorage:', phone);
+      return { phone, userData };
+    } catch (error) {
+      console.error('❌ Ошибка чтения из localStorage:', error);
+      return { phone: null, userData: null };
+    }
+  };
+
+  // Функция для запроса номера телефона
+  const requestPhoneNumber = async (forceRequest: boolean = false) => {
     console.log('=== НАЧАЛО ФУНКЦИИ requestPhoneNumber ===');
     
+    // Проверяем, есть ли уже сохраненный номер
+    const storedData = getPhoneFromStorage();
+    
+    if (!forceRequest && storedData.phone && storedData.userData) {
+      console.log('✅ Используем сохраненный номер телефона:', storedData.phone);
+      setUserData(storedData.userData);
+      setHasRequestedPhone(true);
+      return {
+        contact: {
+          user_id: storedData.userData.id,
+          phone_number: storedData.phone,
+          first_name: storedData.userData.first_name,
+          last_name: storedData.userData.last_name
+        },
+        auth_date: new Date(),
+        hash: 'stored_' + Date.now()
+      };
+    }
+
     // Логируем проверку доступности
     console.log('1. Проверяем доступность requestContact.isAvailable()...');
     const isAvailable = requestContact.isAvailable();
     console.log('   requestContact.isAvailable() =', isAvailable);
-    console.log('   Тип результата:', typeof isAvailable);
     
     try {
       if (isAvailable) {
@@ -69,61 +120,39 @@ export default function Home() {
         console.log('3. Вызываем requestContact()...');
         const contactData = await requestContact();
         console.log('4. requestContact() завершился успешно');
-        console.log('   Тип contactData:', typeof contactData);
-        console.log('   contactData:', contactData);
         
         // Логируем структуру объекта
-        if (contactData) {
-          console.log('5. Анализируем структуру contactData:');
-          console.log('   - contactData.contact:', contactData.contact);
-          console.log('   - contactData.auth_date:', contactData.auth_date);
-          console.log('   - contactData.hash:', contactData.hash);
-          
+        if (contactData && contactData.contact) {
+          console.log('5. Контакт получен:', contactData.contact.phone_number);
+
+          // Сохраняем номер телефона и обновляем данные пользователя
           if (contactData.contact) {
-            console.log('6. Детали contactData.contact:');
-            console.log('   - user_id:', contactData.contact.user_id);
-            console.log('   - phone_number:', contactData.contact.phone_number);
-            console.log('   - first_name:', contactData.contact.first_name);
-            console.log('   - last_name:', contactData.contact.last_name);
-          } else {
-            console.log('6. contactData.contact отсутствует');
-          }
-        } else {
-          console.log('5. contactData пустой или undefined');
-        }
-
-        // Форматируем объект для красивого вывода в alert
-        console.log('7. Форматируем объект для alert...');
-        const formattedContact = JSON.stringify(contactData, null, 2);
-        console.log('   formattedContact:', formattedContact);
-
-        // Выводим объект в alert
-        console.log('8. Показываем alert с данными контакта...');
-        alert(`Полученные данные контакта:\n${formattedContact}`);
-
-        console.log('9. Обновляем данные пользователя...');
-        // Обновляем данные пользователя если нужно
-        if (contactData.contact) {
-          console.log('   - contactData.contact существует, обновляем userData');
-          setUserData(prev => {
-            const newUserData = prev ? {
-              ...prev,
+            const updatedUserData = userData ? {
+              ...userData,
               phone: contactData.contact.phone_number,
-              first_name: contactData.contact.first_name || prev.first_name,
-              last_name: contactData.contact.last_name || prev.last_name
-            } : null;
-            console.log('   - Новый userData:', newUserData);
-            return newUserData;
-          });
-        } else {
-          console.log('   - contactData.contact отсутствует, пропускаем обновление');
+              first_name: contactData.contact.first_name || userData.first_name,
+              last_name: contactData.contact.last_name || userData.last_name
+            } : {
+              id: contactData.contact.user_id,
+              first_name: contactData.contact.first_name || 'User',
+              last_name: contactData.contact.last_name,
+              username: userData?.username,
+              language_code: userData?.language_code || 'ru',
+              is_premium: userData?.is_premium,
+              phone: contactData.contact.phone_number
+            };
+
+            setUserData(updatedUserData);
+            savePhoneToStorage(contactData.contact.phone_number, updatedUserData);
+            setHasRequestedPhone(true);
+            
+            console.log('✅ Данные пользователя обновлены и сохранены');
+          }
         }
 
-        console.log('10. Завершаем функцию, возвращаем contactData');
         return contactData;
       } else {
         console.log('2. requestContact не доступен в текущем окружении');
-        console.log('3. Создаем моковые данные для демонстрации...');
         
         // Используем моковые данные для демонстрации
         const mockContact = {
@@ -137,32 +166,31 @@ export default function Home() {
           hash: 'mock_hash_' + Date.now()
         };
         
-        console.log('4. Моковые данные созданы:', mockContact);
-        
-        console.log('5. Форматируем моковые данные для alert...');
-        const formattedMockContact = JSON.stringify(mockContact, null, 2);
-        console.log('   formattedMockContact:', formattedMockContact);
-        
-        console.log('6. Показываем информационный alert...');
-        alert('Функция запроса контакта не доступна в текущем окружении');
-
-        console.log('7. Показываем alert с моковыми данными...');
-        alert(`Моковые данные (requestContact не доступен):\n${formattedMockContact}`);
-
-        console.log('8. Завершаем функцию, возвращаем mockContact');
+        console.log('3. Используем моковые данные:', mockContact.contact.phone_number);
         return mockContact;
       }
     } catch (error) {
       console.error('=== ОШИБКА В ФУНКЦИИ requestPhoneNumber ===');
-      console.error('Тип ошибки:', typeof error);
-      console.error('Сообщение ошибки:', error.message);
-      console.error('Стек ошибки:', error.stack);
-      console.error('Полный объект ошибки:', error);
+      console.error('Ошибка:', error);
       
-      console.log('Показываем alert с ошибкой...');
-      alert(`Ошибка при получении номера телефона: ${error.message}`);
+      // В случае ошибки пробуем использовать сохраненный номер
+      if (storedData.phone && storedData.userData) {
+        console.log('🔄 Используем сохраненный номер из-за ошибки');
+        setUserData(storedData.userData);
+        setHasRequestedPhone(true);
+        
+        return {
+          contact: {
+            user_id: storedData.userData.id,
+            phone_number: storedData.phone,
+            first_name: storedData.userData.first_name,
+            last_name: storedData.userData.last_name
+          },
+          auth_date: new Date(),
+          hash: 'fallback_' + Date.now()
+        };
+      }
       
-      console.log('Завершаем функцию с ошибкой, возвращаем null');
       return null;
     } finally {
       console.log('=== ЗАВЕРШЕНИЕ ФУНКЦИИ requestPhoneNumber ===');
@@ -180,10 +208,9 @@ export default function Home() {
 
         // Получаем данные инициализации
         console.log('2. Получаем initData...');
+
         //@ts-ignore
         const initDataValue = initData();
-        console.log('   initData:', initDataValue);
-        console.log('   initData.state:', initDataValue?.state);
         console.log('   initData.user:', initDataValue?.user);
 
         // Проверяем, находимся ли мы в Telegram
@@ -191,26 +218,63 @@ export default function Home() {
         console.log('🔍 Проверка окружения Telegram:', isInTelegram);
         setIsTelegramEnv(isInTelegram);
 
+        // Проверяем сохраненный номер телефона
+        const storedData = getPhoneFromStorage();
+        
         if (initDataValue?.user) {
           console.log('✅ Используем реальные данные Telegram пользователя');
-          const user = initDataValue.user as UserData;
-          setUserData(user);
-          console.log('   User data:', user);
+          const telegramUser = initDataValue.user as UserData;
+          
+          // Если есть сохраненный номер, используем его вместе с данными Telegram
+          if (storedData.phone && storedData.userData) {
+            console.log('📱 Используем сохраненный номер телефона:', storedData.phone);
+            const userWithPhone = {
+              ...telegramUser,
+              phone: storedData.phone,
+              first_name: storedData.userData.first_name || telegramUser.first_name,
+              last_name: storedData.userData.last_name || telegramUser.last_name
+            };
+            setUserData(userWithPhone);
+            setHasRequestedPhone(true);
+          } else {
+            console.log('📱 Сохраненного номера нет, используем данные Telegram');
+            setUserData(telegramUser);
+          }
         } else {
           console.log('🔄 Используем моковые данные пользователя');
           const mockUser = mockUsers[currentMockIndex];
-          setUserData(mockUser);
-          console.log('   Mock user:', mockUser);
+          
+          // Если есть сохраненный номер, используем его
+          if (storedData.phone && storedData.userData) {
+            console.log('📱 Используем сохраненный номер с моковыми данными:', storedData.phone);
+            setUserData({
+              ...mockUser,
+              phone: storedData.phone,
+              first_name: storedData.userData.first_name || mockUser.first_name,
+              last_name: storedData.userData.last_name || mockUser.last_name
+            });
+            setHasRequestedPhone(true);
+          } else {
+            setUserData(mockUser);
+          }
         }
       } catch (error) {
         console.log('❌ Ошибка инициализации Telegram SDK:', error);
         const mockUser = mockUsers[currentMockIndex];
-        setUserData(mockUser);
+        
+        // Пробуем использовать сохраненные данные даже при ошибке
+        const storedData = getPhoneFromStorage();
+        if (storedData.phone && storedData.userData) {
+          setUserData(storedData.userData);
+          setHasRequestedPhone(true);
+        } else {
+          setUserData(mockUser);
+        }
         setIsTelegramEnv(false);
       } finally {
-        console.log('⏳ Устанавливаем таймер завершения загрузки...');
+        console.log('⏳ Завершение загрузки...');
         setTimeout(() => {
-          console.log('✅ Загрузка завершена, isLoading = false');
+          console.log('✅ Загрузка завершена');
           setIsLoading(false);
         }, 1000);
       }
@@ -221,40 +285,19 @@ export default function Home() {
 
   // useEffect для автоматического запроса номера телефона при загрузке
   useEffect(() => {
-    if (!isLoading && userData) {
-      console.log('🏗️ useEffect: приложение загружено, начинаем автоматический запрос...');
-      console.log('isTelegramEnv:', isTelegramEnv);
-      console.log('userData:', userData);
+    if (!isLoading && userData && isTelegramEnv && !hasRequestedPhone) {
+      console.log('🏗️ Автоматический запрос номера телефона...');
       
-      // Запрашиваем номер только если мы в Telegram окружении
-      if (isTelegramEnv) {
-        const timer = setTimeout(() => {
-          console.log('⏰ Таймер сработал, вызываем requestPhoneNumber...');
-          requestPhoneNumber();
-        }, 1500);
-        
-        return () => {
-          console.log('🧹 Очистка таймера...');
-          clearTimeout(timer);
-        };
-      } else {
-        // Если не в Telegram, показываем информационное сообщение
-        const timer = setTimeout(() => {
-          console.log('🌐 Показываем сообщение о запуске вне Telegram...');
-          alert(
-            'Приложение запущено вне Telegram.\n\n' +
-            'Для полноценной работы с функцией запроса номера телефона ' +
-            'необходимо открыть это приложение через Telegram бота.'
-          );
-        }, 1000);
-        
-        return () => {
-          console.log('🧹 Очистка таймера...');
-          clearTimeout(timer);
-        };
-      }
+      const timer = setTimeout(() => {
+        console.log('⏰ Запрашиваем номер телефона...');
+        requestPhoneNumber();
+      }, 1000);
+      
+      return () => {
+        clearTimeout(timer);
+      };
     }
-  }, [isLoading, userData, isTelegramEnv]);
+  }, [isLoading, userData, isTelegramEnv, hasRequestedPhone]);
 
   const sendPhoneRequest = async () => {
     console.log('📞 Вызов sendPhoneRequest...');
@@ -265,13 +308,22 @@ export default function Home() {
       setLoading(true);
 
       try {
-        // Сначала получаем номер телефона
-        console.log('1. Запрашиваем номер телефона...');
-        const contactData = await requestPhoneNumber();
-        const phoneToSend = contactData?.contact?.phone_number || userData?.phone || '79147275655';
-        console.log('   Используемый номер:', phoneToSend);
+        // Получаем номер телефона (если еще не получен)
+        let phoneToSend = userData?.phone;
+        
+        if (!phoneToSend) {
+          console.log('1. Номер телефона отсутствует, запрашиваем...');
+          const contactData = await requestPhoneNumber(true); // forceRequest = true
+          phoneToSend = contactData?.contact?.phone_number;
+        } else {
+          console.log('1. Используем существующий номер:', phoneToSend);
+        }
 
-        console.log('2. Отправляем запрос к API...');
+        if (!phoneToSend) {
+          throw new Error('Не удалось получить номер телефона');
+        }
+
+        console.log('2. Отправляем запрос к API с номером:', phoneToSend);
         const response = await fetch('/api/tg-react-app', {
           method: 'POST',
           headers: {
@@ -291,7 +343,7 @@ export default function Home() {
         }
 
         const result = await response.json();
-        console.log('3. API ответ получен:', result);
+        console.log('3. API ответ получен');
         setData(result);
       } catch (err) {
         console.error('❌ Ошибка в sendPhoneRequest:', err);
@@ -305,6 +357,15 @@ export default function Home() {
       setOpenPopup(true);
     }
   };
+
+  // Функция для принудительного запроса номера (если пользователь хочет обновить)
+  const forceRequestPhone = async () => {
+    console.log('🔄 Принудительный запрос номера телефона...');
+    await requestPhoneNumber(true);
+  };
+
+  // Остальной код компонента остается без изменений...
+  // [здесь остается весь ваш JSX код]
 
   if (isLoading) {
     return (
@@ -465,6 +526,7 @@ export default function Home() {
           </button>
 
           {/* Кнопка для повторного запроса номера телефона */}
+          {/* @ts-ignore */}
           <button onClick={requestPhoneNumber} className="action-button secondary">
             Получить номер телефона
           </button>
