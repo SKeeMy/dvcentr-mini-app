@@ -8,7 +8,34 @@ import { Orders } from '@/components/pages/home/orders/orders'
 import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.interface'
 import { ButtonClose } from '@/components/shared/buttons/button-close'
 import { Close } from '@/components/shared/icons/close'
-import { requestContact } from '@telegram-apps/sdk'
+import { requestContact, initData } from '@telegram-apps/sdk'
+
+// Тип для контакта из Telegram
+interface TelegramContact {
+  user_id: number
+  phone_number: string
+  first_name: string
+  last_name?: string
+}
+
+interface RequestContactResponse {
+  contact: TelegramContact
+  auth_date: Date
+  hash: string
+}
+
+// Интерфейс для пользователя из Telegram
+interface TelegramUser {
+  id: number
+  first_name: string
+  last_name?: string
+  username?: string
+  language_code: string
+  is_premium?: boolean
+  allows_write_to_pm?: boolean
+  photo_url?: string
+}
+
 interface UserData {
   id: number
   first_name: string
@@ -18,8 +45,6 @@ interface UserData {
   is_premium?: boolean
   phone?: string
 }
-
-
 
 // Mock данные для тестирования
 const mockUsers: UserData[] = [
@@ -56,6 +81,18 @@ const mockUsers: UserData[] = [
   }
 ]
 
+// Функция для преобразования Telegram User в наш UserData
+const mapTelegramUserToUserData = (telegramUser: TelegramUser): UserData => {
+  return {
+    id: telegramUser.id,
+    first_name: telegramUser.first_name,
+    last_name: telegramUser.last_name,
+    username: telegramUser.username,
+    language_code: telegramUser.language_code,
+    is_premium: telegramUser.is_premium
+  }
+}
+
 export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -64,17 +101,21 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
-  const [phoneNumber, setPhoneNumber] = useState<any>(null)
-
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null)
+  const [contactData, setContactData] = useState<RequestContactResponse | null>(null)
 
   useEffect(() => {
     const initializeWebApp = async () => {
       try {
-        const WebApp = (await import('@twa-dev/sdk')).default
-
-        if (WebApp.initDataUnsafe.user) {
-          setUserData(WebApp.initDataUnsafe.user as UserData)
-          console.log('userData', userData);
+        // initData - это объект, а не функция в новой библиотеке
+        console.log('initData', initData);
+        
+        if (initData && initData.user) {
+          // Преобразуем Telegram User в наш UserData
+          const telegramUser = initData.user as unknown as TelegramUser;
+          const userData = mapTelegramUserToUserData(telegramUser);
+          setUserData(userData)
+          console.log('userData', userData)
           console.log('Using real Telegram user data')
         } else {
           const mockUser = mockUsers[currentMockIndex]
@@ -82,7 +123,7 @@ export default function Home() {
           console.log('Using mock user data:', mockUser)
         }
       } catch (error) {
-        console.log('Error loading Telegram SDK, using mock data')
+        console.log('Error initializing Telegram SDK, using mock data', error)
         const mockUser = mockUsers[currentMockIndex]
         setUserData(mockUser)
       } finally {
@@ -95,21 +136,31 @@ export default function Home() {
     initializeWebApp()
   }, [currentMockIndex])
 
-
   const sendPhoneRequest = async () => {
-    if (requestContact.isAvailable() && data === null) {
-      const contact = await requestContact()
-      console.log('contact', contact)
-      setPhoneNumber(contact)
-    }
     setOpenPopup(true)
     setError(null);
+    
+    // Если данных еще нет, запрашиваем контакт и делаем API запрос
     if (data === null) {
       setLoading(true);
 
       try {
+        let phoneToSend = '79147275655' // fallback номер
 
+        // Запрашиваем контакт, если доступно
+        if (requestContact.isAvailable()) {
+          const contact = await requestContact()
+          console.log('contact', contact)
+          setContactData(contact as unknown as RequestContactResponse)
+          
+          // Используем телефон из контакта
+          if (contact.contact.phone_number) {
+            setPhoneNumber(contact.contact.phone_number)
+            phoneToSend = contact.contact.phone_number
+          }
+        }
 
+        // Делаем API запрос
         const response = await fetch('/api/tg-react-app', {
           method: 'POST',
           headers: {
@@ -120,7 +171,7 @@ export default function Home() {
             'X-Requested-With': 'XMLHttpRequest',
           },
           body: JSON.stringify({
-            phone: '79147275655'
+            phone: phoneToSend
           })
         });
 
@@ -130,21 +181,18 @@ export default function Home() {
 
         const result = await response.json();
         setData(result);
-        console.log('test', data);
-      } catch (err) {
-        setError(err.message);
+        console.log('API response data:', result);
+      } catch (err: any) {
+        setError(err.message || 'An error occurred');
+        console.error('Error in sendPhoneRequest:', err);
       } finally {
         setLoading(false);
       }
     } else {
+      // Если данные уже есть, просто открываем попап
       setOpenPopup(true)
     }
-
   };
-
- 
-
-
 
   if (isLoading) {
     return (
@@ -168,44 +216,50 @@ export default function Home() {
           <p className="error-description">
             Пожалуйста, откройте это приложение через Telegram бота
           </p>
-
         </div>
       </Container>
     )
   }
+
   return (
     <Container>
       <div className="app-container">
+        {/* Popup */}
         <div
           className={clsx('popup-overlay', openPopup && 'visible')}
           onClick={() => setOpenPopup(false)}
         >
-
           <div
             className={clsx('popup', openPopup && 'visible')}
-
+            onClick={(e) => e.stopPropagation()}
           >
-
             <div className='popup_inner'>
-              <ButtonClose aria-label='Close dialog' className='popup__close-btn' onClose={() => setOpenPopup(false)}>
+              <ButtonClose 
+                aria-label='Close dialog' 
+                className='popup__close-btn' 
+                onClose={() => setOpenPopup(false)}
+              >
                 <Close />
               </ButtonClose>
-              <span
-                className='popup__line'
-
-              ></span>
+              <span className='popup__line'></span>
+              
               <div className='popup_content_wrapper'>
                 <div className="popup__data">
                   <div>
-                    <span className="popup__desc">{phoneNumber}</span>
+                    <span className="popup__desc">
+                      {phoneNumber || contactData?.contact.phone_number || 'Не указан'}
+                    </span>
                     <p className='popup__title'>Телефон</p>
                   </div>
-                  {data && <div>
-                    <span className="popup__desc">{data.DATA.Data.length}</span>
-                    <p className='popup__title'>Доступно</p>
-                  </div>}
+                  {data && (
+                    <div>
+                      <span className="popup__desc">{data.DATA.Data.length}</span>
+                      <p className='popup__title'>Доступно</p>
+                    </div>
+                  )}
                 </div>
               </div>
+
               {data && data.DATA.Data.map((order, index) => (
                 <Orders
                   key={`${order.SalesId}-${index}`}
@@ -214,13 +268,18 @@ export default function Home() {
                 />
               ))}
 
-              {data === null && loading &&
+              {data === null && loading && (
                 <Orders
                   orderData={null}
                   loading={loading}
                 />
-              }
+              )}
 
+              {error && (
+                <div className="error-message">
+                  Ошибка: {error}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -281,12 +340,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+
         <Link href={'/catalog'} className="action-button primary">
           Каталог
         </Link>
-
-        {/* User Stats */}
-
 
         {/* Features Grid */}
         <div className="features-grid">
@@ -300,7 +357,6 @@ export default function Home() {
             <h3 className="feature-title">Безопасно</h3>
             <p className="feature-description">Ваши данные защищены</p>
           </div>
-
         </div>
 
         {/* Action Buttons */}
@@ -308,7 +364,6 @@ export default function Home() {
           <button onClick={sendPhoneRequest} className="action-button primary">
             Доступно по доверенности
           </button>
-
         </div>
       </div>
     </Container>
