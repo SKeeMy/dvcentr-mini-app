@@ -53,11 +53,6 @@ export const BannerSlider = () => {
           longSwipes={false}
           followFinger={true}
           threshold={10}
-          lazy={{
-            enabled: true,
-            loadPrevNext: true,
-            loadPrevNextAmount: 1,
-          }}
           onInit={(swiper) => {
             setTimeout(() => {
               swiper.update();
