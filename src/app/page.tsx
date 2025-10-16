@@ -73,7 +73,7 @@ export default function Home() {
 
         if (WebApp.initDataUnsafe.user) {
           setUserData(WebApp.initDataUnsafe.user as UserData)
-          console.log(userData?.phone);
+          console.log('userData', userData);
           console.log('Using real Telegram user data')
         } else {
           const mockUser = mockUsers[currentMockIndex]
