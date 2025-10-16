@@ -42,12 +42,6 @@ const mockUsers: UserData[] = [
   }
 ]
 
-// Ключи для localStorage
-const STORAGE_KEYS = {
-  USER_PHONE: 'tg_user_phone',
-  USER_DATA: 'tg_user_data'
-};
-
 export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -57,63 +51,17 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
   const [isTelegramEnv, setIsTelegramEnv] = useState(false)
-  const [hasRequestedPhone, setHasRequestedPhone] = useState(false)
-
-  // Функция для сохранения номера телефона в localStorage
-  const savePhoneToStorage = (phone: string, userData: UserData) => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.USER_PHONE, phone);
-      localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
-      console.log('✅ Номер телефона сохранен в localStorage:', phone);
-    } catch (error) {
-      console.error('❌ Ошибка сохранения в localStorage:', error);
-    }
-  };
-
-  // Функция для получения номера телефона из localStorage
-  const getPhoneFromStorage = (): { phone: string | null; userData: UserData | null } => {
-    try {
-      const phone = localStorage.getItem(STORAGE_KEYS.USER_PHONE);
-      const userDataStr = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-      const userData = userDataStr ? JSON.parse(userDataStr) : null;
-      
-      console.log('📱 Получен номер из localStorage:', phone);
-      return { phone, userData };
-    } catch (error) {
-      console.error('❌ Ошибка чтения из localStorage:', error);
-      return { phone: null, userData: null };
-    }
-  };
+  const [accessGranted, setAccessGranted] = useState(false)
 
   // Функция для запроса номера телефона
-  const requestPhoneNumber = async (forceRequest: boolean = false) => {
+  const requestPhoneNumber = async () => {
     console.log('=== НАЧАЛО ФУНКЦИИ requestPhoneNumber ===');
     
-    // Проверяем, есть ли уже сохраненный номер
-    const storedData = getPhoneFromStorage();
-    
-    if (!forceRequest && storedData.phone && storedData.userData) {
-      console.log('✅ Используем сохраненный номер телефона:', storedData.phone);
-      setUserData(storedData.userData);
-      setHasRequestedPhone(true);
-      return {
-        contact: {
-          user_id: storedData.userData.id,
-          phone_number: storedData.phone,
-          first_name: storedData.userData.first_name,
-          last_name: storedData.userData.last_name
-        },
-        auth_date: new Date(),
-        hash: 'stored_' + Date.now()
-      };
-    }
-
-    // Логируем проверку доступности
-    console.log('1. Проверяем доступность requestContact.isAvailable()...');
-    const isAvailable = requestContact.isAvailable();
-    console.log('   requestContact.isAvailable() =', isAvailable);
-    
     try {
+      console.log('1. Проверяем доступность requestContact.isAvailable()...');
+      const isAvailable = requestContact.isAvailable();
+      console.log('   requestContact.isAvailable() =', isAvailable);
+      
       if (isAvailable) {
         console.log('2. requestContact доступен, начинаем запрос контакта...');
         
@@ -121,76 +69,38 @@ export default function Home() {
         const contactData = await requestContact();
         console.log('4. requestContact() завершился успешно');
         
-        // Логируем структуру объекта
         if (contactData && contactData.contact) {
           console.log('5. Контакт получен:', contactData.contact.phone_number);
 
-          // Сохраняем номер телефона и обновляем данные пользователя
-          if (contactData.contact) {
-            const updatedUserData = userData ? {
-              ...userData,
-              phone: contactData.contact.phone_number,
-              first_name: contactData.contact.first_name || userData.first_name,
-              last_name: contactData.contact.last_name || userData.last_name
-            } : {
-              id: contactData.contact.user_id,
-              first_name: contactData.contact.first_name || 'User',
-              last_name: contactData.contact.last_name,
-              username: userData?.username,
-              language_code: userData?.language_code || 'ru',
-              is_premium: userData?.is_premium,
-              phone: contactData.contact.phone_number
-            };
+          // Обновляем данные пользователя
+          const updatedUserData = userData ? {
+            ...userData,
+            phone: contactData.contact.phone_number,
+            first_name: contactData.contact.first_name || userData.first_name,
+            last_name: contactData.contact.last_name || userData.last_name
+          } : {
+            id: contactData.contact.user_id,
+            first_name: contactData.contact.first_name || 'User',
+            last_name: contactData.contact.last_name,
+            username: userData?.username,
+            language_code: userData?.language_code || 'ru',
+            is_premium: userData?.is_premium,
+            phone: contactData.contact.phone_number
+          };
 
-            setUserData(updatedUserData);
-            savePhoneToStorage(contactData.contact.phone_number, updatedUserData);
-            setHasRequestedPhone(true);
-            
-            console.log('✅ Данные пользователя обновлены и сохранены');
-          }
+          setUserData(updatedUserData);
+          setAccessGranted(true);
+          console.log('✅ Доступ предоставлен с номером:', contactData.contact.phone_number);
         }
 
         return contactData;
       } else {
         console.log('2. requestContact не доступен в текущем окружении');
-        
-        // Используем моковые данные для демонстрации
-        const mockContact = {
-          contact: {
-            user_id: mockUsers[currentMockIndex]?.id || 123456789,
-            phone_number: mockUsers[currentMockIndex]?.phone || '+79147275655',
-            first_name: mockUsers[currentMockIndex]?.first_name || 'Mock',
-            last_name: mockUsers[currentMockIndex]?.last_name || 'User'
-          },
-          auth_date: new Date(),
-          hash: 'mock_hash_' + Date.now()
-        };
-        
-        console.log('3. Используем моковые данные:', mockContact.contact.phone_number);
-        return mockContact;
+        return null;
       }
     } catch (error) {
       console.error('=== ОШИБКА В ФУНКЦИИ requestPhoneNumber ===');
       console.error('Ошибка:', error);
-      
-      // В случае ошибки пробуем использовать сохраненный номер
-      if (storedData.phone && storedData.userData) {
-        console.log('🔄 Используем сохраненный номер из-за ошибки');
-        setUserData(storedData.userData);
-        setHasRequestedPhone(true);
-        
-        return {
-          contact: {
-            user_id: storedData.userData.id,
-            phone_number: storedData.phone,
-            first_name: storedData.userData.first_name,
-            last_name: storedData.userData.last_name
-          },
-          auth_date: new Date(),
-          hash: 'fallback_' + Date.now()
-        };
-      }
-      
       return null;
     } finally {
       console.log('=== ЗАВЕРШЕНИЕ ФУНКЦИИ requestPhoneNumber ===');
@@ -218,63 +128,53 @@ export default function Home() {
         console.log('🔍 Проверка окружения Telegram:', isInTelegram);
         setIsTelegramEnv(isInTelegram);
 
-        // Проверяем сохраненный номер телефона
-        const storedData = getPhoneFromStorage();
-        
+        // ГЛАВНАЯ ПРОВЕРКА: проверяем доступность requestContact
+        console.log('3. Проверяем доступность requestContact.isAvailable()...');
+        const isContactAvailable = requestContact.isAvailable();
+        console.log('   requestContact.isAvailable() =', isContactAvailable);
+
         if (initDataValue?.user) {
           console.log('✅ Используем реальные данные Telegram пользователя');
           const telegramUser = initDataValue.user as UserData;
-          
-          // Если есть сохраненный номер, используем его вместе с данными Telegram
-          if (storedData.phone && storedData.userData) {
-            console.log('📱 Используем сохраненный номер телефона:', storedData.phone);
-            const userWithPhone = {
-              ...telegramUser,
-              phone: storedData.phone,
-              first_name: storedData.userData.first_name || telegramUser.first_name,
-              last_name: storedData.userData.last_name || telegramUser.last_name
-            };
-            setUserData(userWithPhone);
-            setHasRequestedPhone(true);
+          setUserData(telegramUser);
+
+          // Если requestContact доступен, сразу даем доступ
+          if (isContactAvailable) {
+            console.log('🎉 requestContact доступен - предоставляем полный доступ');
+            setAccessGranted(true);
           } else {
-            console.log('📱 Сохраненного номера нет, используем данные Telegram');
-            setUserData(telegramUser);
+            console.log('⚠️ requestContact недоступен - требуется ручной запрос');
+            setAccessGranted(false);
           }
         } else {
           console.log('🔄 Используем моковые данные пользователя');
           const mockUser = mockUsers[currentMockIndex];
+          setUserData(mockUser);
           
-          // Если есть сохраненный номер, используем его
-          if (storedData.phone && storedData.userData) {
-            console.log('📱 Используем сохраненный номер с моковыми данными:', storedData.phone);
-            setUserData({
-              ...mockUser,
-              phone: storedData.phone,
-              first_name: storedData.userData.first_name || mockUser.first_name,
-              last_name: storedData.userData.last_name || mockUser.last_name
-            });
-            setHasRequestedPhone(true);
+          // Вне Telegram тоже проверяем доступность
+          if (isContactAvailable) {
+            console.log('🎉 requestContact доступен - предоставляем полный доступ');
+            setAccessGranted(true);
           } else {
-            setUserData(mockUser);
+            console.log('⚠️ requestContact недоступен - требуется ручной запрос');
+            setAccessGranted(false);
           }
         }
       } catch (error) {
         console.log('❌ Ошибка инициализации Telegram SDK:', error);
         const mockUser = mockUsers[currentMockIndex];
-        
-        // Пробуем использовать сохраненные данные даже при ошибке
-        const storedData = getPhoneFromStorage();
-        if (storedData.phone && storedData.userData) {
-          setUserData(storedData.userData);
-          setHasRequestedPhone(true);
-        } else {
-          setUserData(mockUser);
-        }
+        setUserData(mockUser);
         setIsTelegramEnv(false);
+        setAccessGranted(false);
       } finally {
         console.log('⏳ Завершение загрузки...');
         setTimeout(() => {
           console.log('✅ Загрузка завершена');
+          console.log('📊 Итоговый статус:', {
+            accessGranted,
+            isTelegramEnv,
+            userData: userData?.first_name
+          });
           setIsLoading(false);
         }, 1000);
       }
@@ -282,22 +182,6 @@ export default function Home() {
 
     initializeWebApp();
   }, [currentMockIndex]);
-
-  // useEffect для автоматического запроса номера телефона при загрузке
-  useEffect(() => {
-    if (!isLoading && userData && isTelegramEnv && !hasRequestedPhone) {
-      console.log('🏗️ Автоматический запрос номера телефона...');
-      
-      const timer = setTimeout(() => {
-        console.log('⏰ Запрашиваем номер телефона...');
-        requestPhoneNumber();
-      }, 1000);
-      
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [isLoading, userData, isTelegramEnv, hasRequestedPhone]);
 
   const sendPhoneRequest = async () => {
     console.log('📞 Вызов sendPhoneRequest...');
@@ -308,19 +192,17 @@ export default function Home() {
       setLoading(true);
 
       try {
-        // Получаем номер телефона (если еще не получен)
+        // Для запроса к API используем текущий номер или запрашиваем новый
         let phoneToSend = userData?.phone;
-        
-        if (!phoneToSend) {
-          console.log('1. Номер телефона отсутствует, запрашиваем...');
-          const contactData = await requestPhoneNumber(true); // forceRequest = true
-          phoneToSend = contactData?.contact?.phone_number;
-        } else {
-          console.log('1. Используем существующий номер:', phoneToSend);
-        }
 
-        if (!phoneToSend) {
-          throw new Error('Не удалось получить номер телефона');
+        // Если доступ не предоставлен, но есть номер - используем его
+        if (!accessGranted && phoneToSend) {
+          console.log('1. Используем существующий номер:', phoneToSend);
+        } else if (!accessGranted && !phoneToSend) {
+          console.log('1. Номер отсутствует, но доступ не предоставлен - используем моковый');
+          phoneToSend = mockUsers[currentMockIndex]?.phone || '+79147275655';
+        } else {
+          console.log('1. Доступ предоставлен, используем номер:', phoneToSend);
         }
 
         console.log('2. Отправляем запрос к API с номером:', phoneToSend);
@@ -357,15 +239,6 @@ export default function Home() {
       setOpenPopup(true);
     }
   };
-
-  // Функция для принудительного запроса номера (если пользователь хочет обновить)
-  const forceRequestPhone = async () => {
-    console.log('🔄 Принудительный запрос номера телефона...');
-    await requestPhoneNumber(true);
-  };
-
-  // Остальной код компонента остается без изменений...
-  // [здесь остается весь ваш JSX код]
 
   if (isLoading) {
     return (
@@ -446,6 +319,11 @@ export default function Home() {
           <div className="header-content">
             <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
             <p className="app-subtitle">Наше мини приложение</p>
+            {accessGranted ? (
+              <div className="access-badge granted">✅ Полный доступ предоставлен</div>
+            ) : (
+              <div className="access-badge restricted">⚠️ Требуется подтверждение номера</div>
+            )}
           </div>
           <div className="header-decoration">
             <div className="decoration-circle circle-1"></div>
@@ -479,6 +357,9 @@ export default function Home() {
               <div className="user-id">ID: {userData.id}</div>
               {userData.phone && (
                 <div className="user-phone">📱 {userData.phone}</div>
+              )}
+              {!isTelegramEnv && (
+                <div className="env-badge">🌐 Вне Telegram</div>
               )}
             </div>
           </div>
@@ -517,20 +398,46 @@ export default function Home() {
             <h3 className="feature-title">Безопасно</h3>
             <p className="feature-description">Ваши данные защищены</p>
           </div>
+          {accessGranted ? (
+            <div className="feature-card">
+              <div className="feature-icon">✅</div>
+              <h3 className="feature-title">Доступ открыт</h3>
+              <p className="feature-description">Все функции доступны</p>
+            </div>
+          ) : (
+            <div className="feature-card disabled">
+              <div className="feature-icon">📱</div>
+              <h3 className="feature-title">Подтверждение</h3>
+              <p className="feature-description">Требуется номер телефона</p>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="actions-container">
-          <button onClick={sendPhoneRequest} className="action-button primary">
-            Доступно по доверенности
+          <button 
+            onClick={sendPhoneRequest} 
+            className={clsx('action-button', accessGranted ? 'primary' : 'disabled')}
+            disabled={!accessGranted}
+          >
+            {accessGranted ? 'Доступно по доверенности' : 'Требуется подтверждение номера'}
           </button>
-
-          {/* Кнопка для повторного запроса номера телефона */}
-          {/* @ts-ignore */}
-          <button onClick={requestPhoneNumber} className="action-button secondary">
-            Получить номер телефона
-          </button>
+          
+          {/* Кнопка для запроса номера телефона показывается только если доступ не предоставлен */}
+          {!accessGranted && (
+            <button onClick={requestPhoneNumber} className="action-button secondary">
+              Получить номер телефона
+            </button>
+          )}
         </div>
+
+        {/* Информация о доступе */}
+        {!accessGranted && (
+          <div className="info-box">
+            <h3>Для доступа к функциям приложения</h3>
+            <p>Нажмите кнопку "Получить номер телефона" и разрешите доступ к вашему контакту</p>
+          </div>
+        )}
       </div>
     </Container>
   )
