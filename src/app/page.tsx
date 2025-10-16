@@ -64,7 +64,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
-  const [phoneNumber, setPhoneNumber] = useState<string | null>(null)
+  const [phoneNumber, setPhoneNumber] = useState<any>(null)
 
 
   useEffect(() => {
