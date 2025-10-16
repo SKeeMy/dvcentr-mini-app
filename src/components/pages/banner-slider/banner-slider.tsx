@@ -30,7 +30,7 @@ export const BannerSlider = () => {
   return (
     <Container>
       <div className={s.slider_wrapper}>
-        <Swiper
+        {/* <Swiper
           className={s.swiper}
           spaceBetween={10}
           slidesPerView={1.1}
@@ -43,9 +43,9 @@ export const BannerSlider = () => {
           }}
 
           modules={[Pagination]}
-        >
+        > */}
           {slides.map(slide => (
-            <SwiperSlide>
+            // <SwiperSlide>
               <BannerSlide key={slide.id}
                 text={slide.text}
                 sticker_image={slide.sticker_image}
@@ -53,9 +53,9 @@ export const BannerSlider = () => {
                 id={slide.id}
                 stricker_pos={slide.stricker_pos}
               />
-            </SwiperSlide>
+            // </SwiperSlide>
           ))}
-        </Swiper>
+        {/* </Swiper> */}
       </div>
     </Container>
   )
