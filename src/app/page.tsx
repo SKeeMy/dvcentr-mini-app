@@ -8,7 +8,7 @@ import { Orders } from '@/components/pages/home/orders/orders'
 import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.interface'
 import { ButtonClose } from '@/components/shared/buttons/button-close'
 import { Close } from '@/components/shared/icons/close'
-import { init, requestContact, initData } from '@telegram-apps/sdk';
+import { init, requestContact, initData, viewport, isTMA } from '@telegram-apps/sdk';
 
 interface UserData {
   id: number
@@ -29,8 +29,23 @@ export default function Home() {
   const [openPopup, setOpenPopup] = useState<boolean>(false)
   const [isTelegramEnv, setIsTelegramEnv] = useState(false)
   const [accessGranted, setAccessGranted] = useState(false)
-
-  // Функция для запроса номера телефона
+  useEffect(() => {
+    async function initTg() {
+      if (await isTMA()) {
+        init();
+  
+        if (viewport.mount.isAvailable()) {
+          await viewport.mount();
+          viewport.expand();
+        }
+  
+        if (viewport.requestFullscreen.isAvailable()) {
+          await viewport.requestFullscreen();
+        }
+      }
+    }
+    initTg();
+  }, []);
   const requestPhoneNumber = async () => {
     console.log('=== НАЧАЛО ФУНКЦИИ requestPhoneNumber ===');
     
@@ -49,7 +64,6 @@ export default function Home() {
         if (contactData && contactData.contact) {
           console.log('5. Контакт получен:', contactData.contact.phone_number);
 
-          // Обновляем данные пользователя
           const updatedUserData = {
             id: contactData.contact.user_id,
             first_name: contactData.contact.first_name || 'User',
@@ -81,24 +95,20 @@ export default function Home() {
     const initializeWebApp = async () => {
       console.log('🚀 Начало инициализации WebApp с @telegram-apps/sdk...');
       try {
-        // Инициализируем Telegram WebApp
         console.log('1. Инициализируем Telegram WebApp...');
         init();
         console.log('✅ Инициализация завершена');
 
-        // Получаем данные инициализации
         console.log('2. Получаем initData...');
 
         //@ts-ignore
         const initDataValue = initData();
         console.log('   initData.user:', initDataValue?.user);
 
-        // Проверяем, находимся ли мы в Telegram
         const isInTelegram = !!initDataValue?.user;
         console.log('🔍 Проверка окружения Telegram:', isInTelegram);
         setIsTelegramEnv(isInTelegram);
 
-        // ГЛАВНАЯ ПРОВЕРКА: проверяем доступность requestContact
         console.log('3. Проверяем доступность requestContact.isAvailable()...');
         const isContactAvailable = requestContact.isAvailable();
         console.log('   requestContact.isAvailable() =', isContactAvailable);
@@ -108,7 +118,6 @@ export default function Home() {
           const telegramUser = initDataValue.user as UserData;
           setUserData(telegramUser);
 
-          // Если requestContact доступен, сразу даем доступ
           if (isContactAvailable) {
             console.log('🎉 requestContact доступен - предоставляем полный доступ');
             setAccessGranted(true);
@@ -197,7 +206,6 @@ export default function Home() {
     )
   }
 
-  // Если доступ не предоставлен - показываем только экран доступа
   if (!accessGranted) {
     return (
       <Container>
@@ -254,7 +262,6 @@ export default function Home() {
     )
   }
 
-  // Если доступ предоставлен - показываем полный контент
   return (
     <Container>
       <div className="app-container">
@@ -307,7 +314,6 @@ export default function Home() {
           <div className="header-content">
             <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
             <p className="app-subtitle">Наше мини приложение</p>
-            <div className="access-badge granted">✅ Доступ предоставлен</div>
           </div>
           <div className="header-decoration">
             <div className="decoration-circle circle-1"></div>
@@ -369,16 +375,6 @@ export default function Home() {
 
         {/* Features Grid */}
         <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">🚀</div>
-            <h3 className="feature-title">Быстро</h3>
-            <p className="feature-description">Мгновенная работа</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🔒</div>
-            <h3 className="feature-title">Безопасно</h3>
-            <p className="feature-description">Ваши данные защищены</p>
-          </div>
           <div className="feature-card">
             <div className="feature-icon">✅</div>
             <h3 className="feature-title">Доступ открыт</h3>
