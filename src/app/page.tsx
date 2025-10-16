@@ -20,32 +20,9 @@ interface UserData {
   phone?: string
 }
 
-// Mock данные для тестирования
-const mockUsers: UserData[] = [
-  {
-    id: 123456789,
-    first_name: "Анна",
-    last_name: "Иванова",
-    username: "anna_ivanova",
-    language_code: "ru",
-    is_premium: true,
-    phone: "+79147275655"
-  },
-  {
-    id: 987654321,
-    first_name: "Дмитрий",
-    last_name: "Петров",
-    username: "dmitry_petrov",
-    language_code: "ru",
-    is_premium: false,
-    phone: "+79147275656"
-  }
-]
-
 export default function Home() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [currentMockIndex, setCurrentMockIndex] = useState(0)
   const [data, setData] = useState<IApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,18 +50,11 @@ export default function Home() {
           console.log('5. Контакт получен:', contactData.contact.phone_number);
 
           // Обновляем данные пользователя
-          const updatedUserData = userData ? {
-            ...userData,
-            phone: contactData.contact.phone_number,
-            first_name: contactData.contact.first_name || userData.first_name,
-            last_name: contactData.contact.last_name || userData.last_name
-          } : {
+          const updatedUserData = {
             id: contactData.contact.user_id,
             first_name: contactData.contact.first_name || 'User',
             last_name: contactData.contact.last_name,
-            username: userData?.username,
-            language_code: userData?.language_code || 'ru',
-            is_premium: userData?.is_premium,
+            language_code: 'ru',
             phone: contactData.contact.phone_number
           };
 
@@ -111,16 +81,6 @@ export default function Home() {
     const initializeWebApp = async () => {
       console.log('🚀 Начало инициализации WebApp с @telegram-apps/sdk...');
       try {
-        const isAvailable = requestContact.isAvailable();
-      console.log('   requestContact.isAvailable() =', isAvailable);
-      
-      if (isAvailable) {
-        console.log('2. requestContact доступен, начинаем запрос контакта...');
-        
-        console.log('3. Вызываем requestContact()...');
-        const contactData = await requestContact();
-        console.log('datadatadata', contactData)
-      }
         // Инициализируем Telegram WebApp
         console.log('1. Инициализируем Telegram WebApp...');
         init();
@@ -152,30 +112,11 @@ export default function Home() {
           if (isContactAvailable) {
             console.log('🎉 requestContact доступен - предоставляем полный доступ');
             setAccessGranted(true);
-          } else {
-            console.log('⚠️ requestContact недоступен - требуется ручной запрос');
-            setAccessGranted(false);
-          }
-        } else {
-          console.log('🔄 Используем моковые данные пользователя');
-          const mockUser = mockUsers[currentMockIndex];
-          setUserData(mockUser);
-          
-          // Вне Telegram тоже проверяем доступность
-          if (isContactAvailable) {
-            console.log('🎉 requestContact доступен - предоставляем полный доступ');
-            setAccessGranted(true);
-          } else {
-            console.log('⚠️ requestContact недоступен - требуется ручной запрос');
-            setAccessGranted(false);
           }
         }
       } catch (error) {
         console.log('❌ Ошибка инициализации Telegram SDK:', error);
-        const mockUser = mockUsers[currentMockIndex];
-        setUserData(mockUser);
         setIsTelegramEnv(false);
-        setAccessGranted(false);
       } finally {
         console.log('⏳ Завершение загрузки...');
         setTimeout(() => {
@@ -191,7 +132,7 @@ export default function Home() {
     };
 
     initializeWebApp();
-  }, [currentMockIndex]);
+  }, []);
 
   const sendPhoneRequest = async () => {
     console.log('📞 Вызов sendPhoneRequest...');
@@ -202,20 +143,13 @@ export default function Home() {
       setLoading(true);
 
       try {
-        // Для запроса к API используем текущий номер или запрашиваем новый
-        let phoneToSend = userData?.phone;
+        const phoneToSend = userData?.phone;
 
-        // Если доступ не предоставлен, но есть номер - используем его
-        if (!accessGranted && phoneToSend) {
-          console.log('1. Используем существующий номер:', phoneToSend);
-        } else if (!accessGranted && !phoneToSend) {
-          console.log('1. Номер отсутствует, но доступ не предоставлен - используем моковый');
-          phoneToSend = mockUsers[currentMockIndex]?.phone || '+79147275655';
-        } else {
-          console.log('1. Доступ предоставлен, используем номер:', phoneToSend);
+        if (!phoneToSend) {
+          throw new Error('Не удалось получить номер телефона');
         }
 
-        console.log('2. Отправляем запрос к API с номером:', phoneToSend);
+        console.log('1. Отправляем запрос к API с номером:', phoneToSend);
         const response = await fetch('/api/tg-react-app', {
           method: 'POST',
           headers: {
@@ -235,7 +169,7 @@ export default function Home() {
         }
 
         const result = await response.json();
-        console.log('3. API ответ получен');
+        console.log('2. API ответ получен');
         setData(result);
       } catch (err) {
         console.error('❌ Ошибка в sendPhoneRequest:', err);
@@ -263,20 +197,64 @@ export default function Home() {
     )
   }
 
-  if (!userData) {
+  // Если доступ не предоставлен - показываем только экран доступа
+  if (!accessGranted) {
     return (
       <Container>
-        <div className="error-container">
-          <div className="error-icon">⚠️</div>
-          <h2 className="error-title">Доступ ограничен</h2>
-          <p className="error-description">
-            Пожалуйста, откройте это приложение через Telegram бота
-          </p>
+        <div className="access-screen">
+          {/* Header */}
+          <header className="app-header">
+            <div className="header-content">
+              <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
+              <p className="app-subtitle">Наше мини приложение</p>
+              <div className="access-badge restricted">⚠️ Требуется подтверждение доступа</div>
+            </div>
+            <div className="header-decoration">
+              <div className="decoration-circle circle-1"></div>
+              <div className="decoration-circle circle-2"></div>
+            </div>
+          </header>
+
+          {/* Access Content */}
+          <div className="access-content">
+            <div className="access-icon">🔒</div>
+            <h2 className="access-title">Доступ к приложению</h2>
+            <p className="access-description">
+              Для использования всех функций приложения необходимо предоставить доступ к вашему номеру телефона
+            </p>
+            
+            <div className="access-features">
+              <div className="access-feature">
+                <span className="feature-icon">✅</span>
+                <span className="feature-text">Безопасный доступ</span>
+              </div>
+              <div className="access-feature">
+                <span className="feature-icon">✅</span>
+                <span className="feature-text">Все функции приложения</span>
+              </div>
+              <div className="access-feature">
+                <span className="feature-icon">✅</span>
+                <span className="feature-text">Персональные предложения</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={requestPhoneNumber} 
+              className="access-button primary"
+            >
+              📱 Предоставить доступ
+            </button>
+
+            <p className="access-note">
+              Нажмите кнопку выше и разрешите доступ к вашему контакту в Telegram
+            </p>
+          </div>
         </div>
       </Container>
     )
   }
 
+  // Если доступ предоставлен - показываем полный контент
   return (
     <Container>
       <div className="app-container">
@@ -329,11 +307,7 @@ export default function Home() {
           <div className="header-content">
             <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
             <p className="app-subtitle">Наше мини приложение</p>
-            {accessGranted ? (
-              <div className="access-badge granted">✅ Полный доступ предоставлен</div>
-            ) : (
-              <div className="access-badge restricted">⚠️ Требуется подтверждение номера</div>
-            )}
+            <div className="access-badge granted">✅ Доступ предоставлен</div>
           </div>
           <div className="header-decoration">
             <div className="decoration-circle circle-1"></div>
@@ -348,44 +322,41 @@ export default function Home() {
               <div
                 className="user-avatar"
                 style={{
-                  background: `linear-gradient(135deg, #${userData.id.toString().slice(0, 6)}, #${userData.id.toString().slice(3, 9)})`
+                  background: `linear-gradient(135deg, #${userData?.id?.toString().slice(0, 6) || '000000'}, #${userData?.id?.toString().slice(3, 9) || 'ffffff'})`
                 }}
               >
-                {userData.first_name[0]}{userData.last_name?.[0] || ''}
+                {userData?.first_name?.[0]}{userData?.last_name?.[0] || ''}
               </div>
-              {userData.is_premium && (
+              {userData?.is_premium && (
                 <div className="premium-badge">⭐</div>
               )}
             </div>
             <div className="user-info">
               <h2 className="user-name">
-                {userData.first_name} {userData.last_name || ''}
+                {userData?.first_name} {userData?.last_name || ''}
               </h2>
-              {userData.username && (
+              {userData?.username && (
                 <p className="user-username">@{userData.username}</p>
               )}
-              <div className="user-id">ID: {userData.id}</div>
-              {userData.phone && (
+              <div className="user-id">ID: {userData?.id}</div>
+              {userData?.phone && (
                 <div className="user-phone">📱 {userData.phone}</div>
-              )}
-              {!isTelegramEnv && (
-                <div className="env-badge">🌐 Вне Telegram</div>
               )}
             </div>
           </div>
 
           <div className="profile-stats">
             <div className="stat-item">
-              <div className="stat-value">{userData.id.toString().slice(0, 3)}</div>
+              <div className="stat-value">{userData?.id?.toString().slice(0, 3) || '000'}</div>
               <div className="stat-label">Префикс</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">{userData.language_code.toUpperCase()}</div>
+              <div className="stat-value">{userData?.language_code?.toUpperCase() || 'RU'}</div>
               <div className="stat-label">Язык</div>
             </div>
             <div className="stat-item">
               <div className="stat-value">
-                {userData.is_premium ? 'Yes' : 'No'}
+                {userData?.is_premium ? 'Yes' : 'No'}
               </div>
               <div className="stat-label">Premium</div>
             </div>
@@ -408,46 +379,22 @@ export default function Home() {
             <h3 className="feature-title">Безопасно</h3>
             <p className="feature-description">Ваши данные защищены</p>
           </div>
-          {accessGranted ? (
-            <div className="feature-card">
-              <div className="feature-icon">✅</div>
-              <h3 className="feature-title">Доступ открыт</h3>
-              <p className="feature-description">Все функции доступны</p>
-            </div>
-          ) : (
-            <div className="feature-card disabled">
-              <div className="feature-icon">📱</div>
-              <h3 className="feature-title">Подтверждение</h3>
-              <p className="feature-description">Требуется номер телефона</p>
-            </div>
-          )}
+          <div className="feature-card">
+            <div className="feature-icon">✅</div>
+            <h3 className="feature-title">Доступ открыт</h3>
+            <p className="feature-description">Все функции доступны</p>
+          </div>
         </div>
 
         {/* Action Buttons */}
         <div className="actions-container">
           <button 
             onClick={sendPhoneRequest} 
-            className={clsx('action-button', accessGranted ? 'primary' : 'disabled')}
-            disabled={!accessGranted}
+            className="action-button primary"
           >
-            {accessGranted ? 'Доступно по доверенности' : 'Требуется подтверждение номера'}
+            Доступно по доверенности
           </button>
-          
-          {/* Кнопка для запроса номера телефона показывается только если доступ не предоставлен */}
-          {!accessGranted && (
-            <button onClick={requestPhoneNumber} className="action-button secondary">
-              Получить номер телефона
-            </button>
-          )}
         </div>
-
-        {/* Информация о доступе */}
-        {!accessGranted && (
-          <div className="info-box">
-            <h3>Для доступа к функциям приложения</h3>
-            <p>Нажмите кнопку "Получить номер телефона" и разрешите доступ к вашему контакту</p>
-          </div>
-        )}
       </div>
     </Container>
   )
