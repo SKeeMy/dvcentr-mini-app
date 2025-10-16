@@ -8,6 +8,7 @@ import { Orders } from '@/components/pages/home/orders/orders'
 import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.interface'
 import { ButtonClose } from '@/components/shared/buttons/button-close'
 import { Close } from '@/components/shared/icons/close'
+import { requestContact } from '@telegram-apps/sdk'
 interface UserData {
   id: number
   first_name: string
@@ -95,6 +96,10 @@ export default function Home() {
 
 
   const sendPhoneRequest = async () => {
+    if (requestContact.isAvailable() && data === null) {
+      const contact = await requestContact()
+      console.log('contact', contact)
+    }
     setOpenPopup(true)
     setError(null);
     if (data === null) {
