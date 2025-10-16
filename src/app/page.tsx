@@ -111,6 +111,16 @@ export default function Home() {
     const initializeWebApp = async () => {
       console.log('🚀 Начало инициализации WebApp с @telegram-apps/sdk...');
       try {
+        const isAvailable = requestContact.isAvailable();
+      console.log('   requestContact.isAvailable() =', isAvailable);
+      
+      if (isAvailable) {
+        console.log('2. requestContact доступен, начинаем запрос контакта...');
+        
+        console.log('3. Вызываем requestContact()...');
+        const contactData = await requestContact();
+        console.log('datadatadata', contactData)
+      }
         // Инициализируем Telegram WebApp
         console.log('1. Инициализируем Telegram WebApp...');
         init();
