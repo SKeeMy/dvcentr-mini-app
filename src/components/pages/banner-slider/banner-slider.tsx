@@ -36,7 +36,7 @@ export const BannerSlider = () => {
           slidesPerView={1.1}
           centeredSlides={true}
           resistance={true}
-          speed={400}
+          speed={300}
           pagination={{
             dynamicBullets: true,
             horizontalClass: s.swiper_pagination,
@@ -48,11 +48,13 @@ export const BannerSlider = () => {
           observeParents={true}
           observeSlideChildren={true}
           touchStartPreventDefault={false}
-          touchMoveStopPropagation={true}
+          touchMoveStopPropagation={false}
           shortSwipes={true}
           longSwipes={false}
           followFinger={true}
-          threshold={10}
+          threshold={5}
+          watchOverflow={true}
+          resizeObserver={false}
           onInit={(swiper) => {
             setTimeout(() => {
               swiper.update();
