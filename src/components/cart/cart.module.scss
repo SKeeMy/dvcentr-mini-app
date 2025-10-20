@@ -1,0 +1,52 @@
+.cart_counter {
+  border-radius: 50%;
+  position: absolute;
+  color: white;
+  width: 12px;
+  height: 12px;
+  top: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: -5px;
+  background-color: var(--primary-orange);
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  height: 100%; // важно: занимает всю высоту родителя
+  max-height: 100%;
+
+  &_items {
+    flex: 1; // занимает все доступное пространство
+    overflow-y: auto; // вертикальный скролл
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 0; // критически важно для корректного скролла в flex контейнере
+  }
+
+  .order {
+    flex-shrink: 0; // предотвращает сжатие
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 80px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 16px 16px 0 0;
+    background: white; // добавляем фон
+    margin-top: auto; // прижимается к низу (альтернативный вариант)
+    
+    &_link {
+      font-size: 12px;
+      background-color: var(--primary-orange);
+      color: white;
+      font-weight: 700;
+    }
+  }
+}
+
+.product {
+  flex: 0 0 auto; // предотвращает сжатие продуктов
+}
