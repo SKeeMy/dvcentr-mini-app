@@ -15,4 +15,18 @@ export const catalog_products: IProductProps[] = [
     image: '/images/catalog-toys.png',
     price: 6300,
   },
+  {
+    id: 3,
+    title: 'Сумка-шоппер складная "Геометрия"',
+    description: 'Сумка-шоппер складная "Геометрия"',
+    image: '/images/catalog-bags.png',
+    price: 1470,
+  },
+  {
+    id: 4,
+    title: 'Сумка-шоппер складная "Тигриные узоры"',
+    description: 'Сумка-шоппер складная "Тигриные узоры"',
+    image: '/images/catalog-bags-2.png',
+    price: 1470,
+  },
 ]
