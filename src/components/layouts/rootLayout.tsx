@@ -17,21 +17,22 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
         backButton.mount()
 
-        miniApp.mount();
+        await miniApp.mount();
         miniApp.bindCssVars();
 
-        themeParams.mount();
+        await themeParams.mount();
         themeParams.bindCssVars();
-        void viewport
-          .mount()
-          .catch(e => {
-            console.error('Something went wrong mounting the viewport', e)
-          })
-          .then(() => {
-            viewport.bindCssVars()
-          })
-      }
 
+        try {
+          await viewport.mount();
+          viewport.expand();
+          viewport.bindCssVars();
+        } catch (e) {
+          console.error('Something went wrong mounting the viewport', e)
+        }
+
+        initData.restore();
+      }
     }
 
     initTg();
