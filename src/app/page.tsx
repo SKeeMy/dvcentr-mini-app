@@ -29,23 +29,7 @@ export default function Home() {
   const [openPopup, setOpenPopup] = useState<boolean>(false)
   const [isTelegramEnv, setIsTelegramEnv] = useState(false)
   const [accessGranted, setAccessGranted] = useState(false)
-  useEffect(() => {
-    async function initTg() {
-      if (await isTMA()) {
-        init();
   
-        if (viewport.mount.isAvailable()) {
-          await viewport.mount();
-          viewport.expand();
-        }
-  
-        // if (viewport.requestFullscreen.isAvailable()) {
-        //   await viewport.requestFullscreen();
-        // }
-      }
-    }
-    initTg();
-  }, []);
   const requestPhoneNumber = async () => {
     console.log('=== НАЧАЛО ФУНКЦИИ requestPhoneNumber ===');
     
