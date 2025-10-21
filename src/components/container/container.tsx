@@ -1,10 +1,12 @@
+import clsx from 'clsx'
 import React from 'react'
 import { PropsWithChildren } from 'react'
 import { FC } from 'react'
 import s from './container.module.scss'
-export const Container: FC<PropsWithChildren> = ({children}) => {
+
+export const Container = ({children, className}: {className?: string, children: React.ReactNode}) => {
   return (
-    <div className='container'>{children}</div>
+    <div className={clsx('container', className)}>{children}</div>
   )
 }
   // const [data, setData] = useState(null);

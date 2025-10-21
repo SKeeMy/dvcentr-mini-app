@@ -3,6 +3,8 @@ import React, { FC } from 'react'
 import { useCartStore } from '@/store/cart-store'
 import s from './product.module.scss'
 import clsx from 'clsx'
+import { Trash } from '@/components/shared/icons/trash'
+import { formatPrice } from '@/app/utils/formatPrice'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -10,7 +12,8 @@ export const Product: FC<IProductProps> = (props) => {
     image,
     price,
     description,
-    className
+    className,
+    product_type
   } = props
 
   const product = { ...props }
@@ -18,18 +21,16 @@ export const Product: FC<IProductProps> = (props) => {
   const items = useCartStore(state => state.items)
   const addToCart = useCartStore(state => state.addToCart)
   const getItemQuantity = useCartStore(state => state.getItemQuantity)
-
+  const removeFromCart = useCartStore(state => state.removeFromCart)
   const quantityInCart = getItemQuantity(id)
   const isInCart = quantityInCart > 0
-
-  const formatPrice = (priceValue: number | undefined): string => {
-    if (!priceValue && priceValue !== 0) return 'Цена не указана'
-    return priceValue.toLocaleString('ru-RU') + ' ₽'
-  }
+  const openCartFooter = useCartStore(state => state.openFooterCart)
+  
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
     addToCart(product)
+    openCartFooter()
     console.log('Добавить в корзину:', { id, title, price })
   }
 
@@ -41,6 +42,34 @@ export const Product: FC<IProductProps> = (props) => {
     return null
   }
 
+  const handleRemoveItemFromCart = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    removeFromCart(id)
+  }
+
+  if (product_type === 'cart') {
+    return (
+      <div className={clsx(s.product, className, s.product_cart)} onClick={handleProductClick}>
+        <div>
+          <div className={clsx(s.imageContainer, s.imageContainer_cart)}>
+            <img
+              src={image}
+              alt={title}
+              className={s.image}
+              onError={(e) => {
+                e.currentTarget.src = '/images/product-placeholder.jpg'
+              }}
+            />
+          </div>
+          <div className={s.price}>{formatPrice(price)}</div>
+        </div>
+        <div className={s.content}>
+          <h3 className={s.title}>{title}</h3>
+        </div>
+        <button onClick={handleRemoveItemFromCart} className={s.remove_item}><Trash /></button>
+      </div>
+    )
+  }
   return (
     <div className={clsx(s.product, className)} onClick={handleProductClick}>
       <div className={s.imageContainer}>
@@ -53,7 +82,7 @@ export const Product: FC<IProductProps> = (props) => {
           }}
         />
 
-        
+
       </div>
 
       <div className={s.content}>

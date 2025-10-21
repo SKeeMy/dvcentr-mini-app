@@ -5,4 +5,5 @@ export interface IProductProps {
   price: number
   description?: string
   className?: string
+  product_type?: 'cart' | 'catalog'
 }
