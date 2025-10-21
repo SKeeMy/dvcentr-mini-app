@@ -10,6 +10,7 @@ import { Cart as CartOrder } from '../cart/cart'
 import dynamic from 'next/dynamic'
 import { Trash } from '../shared/icons/trash'
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -28,7 +29,8 @@ export const Footer = () => {
       closeFooterCart()
     }
   }, [items])
-
+  const pathname = usePathname()
+  if (pathname === '/') return null
   return (
     <footer className={clsx(s.footer, openFooter && s.open)}>
       {/* <Container className={s.footer_container}> */}

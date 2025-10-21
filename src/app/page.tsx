@@ -39,9 +39,9 @@ export default function Home() {
           viewport.expand();
         }
   
-        if (viewport.requestFullscreen.isAvailable()) {
-          await viewport.requestFullscreen();
-        }
+        // if (viewport.requestFullscreen.isAvailable()) {
+        //   await viewport.requestFullscreen();
+        // }
       }
     }
     initTg();

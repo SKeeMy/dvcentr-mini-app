@@ -5,6 +5,7 @@ import s from './product.module.scss'
 import clsx from 'clsx'
 import { Trash } from '@/components/shared/icons/trash'
 import { formatPrice } from '@/app/utils/formatPrice'
+import Image from 'next/image'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -25,7 +26,7 @@ export const Product: FC<IProductProps> = (props) => {
   const quantityInCart = getItemQuantity(id)
   const isInCart = quantityInCart > 0
   const openCartFooter = useCartStore(state => state.openFooterCart)
-  
+
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -52,9 +53,13 @@ export const Product: FC<IProductProps> = (props) => {
       <div className={clsx(s.product, className, s.product_cart)} onClick={handleProductClick}>
         <div>
           <div className={clsx(s.imageContainer, s.imageContainer_cart)}>
-            <img
+            <Image
               src={image}
               alt={title}
+              width={100}
+              height={100}
+              loading={'lazy'}
+              quality={10}
               className={s.image}
               onError={(e) => {
                 e.currentTarget.src = '/images/product-placeholder.jpg'
@@ -73,9 +78,12 @@ export const Product: FC<IProductProps> = (props) => {
   return (
     <div className={clsx(s.product, className)} onClick={handleProductClick}>
       <div className={s.imageContainer}>
-        <img
+        <Image
           src={image}
           alt={title}
+          width={100}
+          height={100}
+          quality={10}
           className={s.image}
           onError={(e) => {
             e.currentTarget.src = '/images/product-placeholder.jpg'
