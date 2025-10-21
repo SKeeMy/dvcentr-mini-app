@@ -30,19 +30,36 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         } catch (e) {
           console.error('Something went wrong mounting the viewport', e)
         }
-        if (swipeBehavior.disableVertical.isAvailable()) {
-          swipeBehavior.disableVertical()
+
+        // Отключаем вертикальные свайпы и логируем
+        if (swipeBehavior.isSupported) {
+          console.log('Swipe behavior is supported');
+          
+          // Монтируем если доступно
+          if (swipeBehavior.mount.isAvailable()) {
+            await swipeBehavior.mount();
+          }
+  
+          // Логируем состояние до отключения
+          console.log('Initial vertical swipes state:', swipeBehavior.isVerticalEnabled);
+  
+          // Отключаем вертикальные свайпы
+          if (swipeBehavior.disableVertical.isAvailable()) {
+            swipeBehavior.disableVertical();
+            console.log('Vertical swipes disabled successfully');
+          }
+  
+          // Логируем состояние после отключения
+          console.log('Final vertical swipes state:', swipeBehavior.isVerticalEnabled);
         }
-        console.log('Vertical', isVerticalSwipesEnabled);
-        console.log('Vertical disabled', disableVerticalSwipes);
 
         initData.restore();
+      } else {
+        console.log('Not in Telegram Mini Apps environment');
       }
     }
 
     initTg();
-
-
   }, []);
   return (
     <>
