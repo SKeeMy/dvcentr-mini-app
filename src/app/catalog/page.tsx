@@ -16,15 +16,7 @@ export default function Catalog() {
     async function initializeCatalog() {
       try {
         if (await isTMA()) {
-          init();
-          alert(1)
-          await viewport.mount();
-          viewport.expand();
-          
-          if (swipeBehavior.isSupported()) {
-            await swipeBehavior.disableVertical()
-            
-          }
+
 
           backHandlerRef.current = () => {
             router.push('/');
