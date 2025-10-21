@@ -1,5 +1,5 @@
 'use client'
-import { useQRScanner } from "@/app/hooks/useQrScanner"
+import { useQRScanner } from "@telegram-apps/sdk/dist/dts/scopes/components/qr-scanner/qr-scanner"
 
 export const QRScannerButton = () => {
   const { 
