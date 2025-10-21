@@ -11,6 +11,7 @@ import dynamic from 'next/dynamic'
 import { Trash } from '../shared/icons/trash'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { hapticFeedback } from '@telegram-apps/sdk'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -27,6 +28,9 @@ export const Footer = () => {
   useEffect(() => {
     if (items.length === 0) {
       closeFooterCart()
+    }
+    if (hapticFeedback.impactOccurred.isAvailable()) {
+      hapticFeedback.impactOccurred('medium');
     }
   }, [items])
   const pathname = usePathname()

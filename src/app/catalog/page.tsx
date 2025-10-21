@@ -7,53 +7,35 @@ import { useRouter } from 'next/navigation';
 import { Product } from "@/components/pages/catalog/product/product";
 import { IProductProps } from "../types";
 import { CatalogItems } from "@/components/pages/catalog/catalog-items/catalog-items";
+import { useAppBackButton } from "../hooks/useAppBackButton";
 
 export default function Catalog() {
   const router = useRouter();
-  const backHandlerRef = useRef<(() => void) | null>(null);
+
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    console.log('Back button clicked, navigating to home');
+    router.push('/');
+  });
 
   useEffect(() => {
-    // async function initializeCatalog() {
-    //   try {
-    //     if (await isTMA()) {
+    async function initializeCatalog() {
+      try {
+        if (await isTMA()) {
+          showButton();
+          console.log('Back button shown, visible:', isVisible);
+        }
+      } catch (error) {
+        console.error('Ошибка инициализации каталога:', error);
+      }
+    }
 
-    //       viewport.expand();
+    initializeCatalog();
 
-    //       if (swipeBehavior.isSupported()) {
-    //         await swipeBehavior.mountSwipeBehavior();
-    //         swipeBehavior.disableVerticalSwipes();
-    //       }
+    return () => {
+      hideButton();
+    };
+  }, [showButton, hideButton, isVisible]);
 
-    //       if (backButton.isAvailable()) {
-    //         if (!backButton.isMounted()) {
-    //           await backButton.mount();
-    //         }
-
-    //         backHandlerRef.current = () => {
-    //           router.push('/');
-    //         };
-
-    //         backButton.show();
-    //         backButton.onClick(backHandlerRef.current);
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error('Ошибка инициализации каталога:', error);
-    //   }
-    // }
-
-    // initializeCatalog();
-
-    // return () => {
-    //   // Очистка backButton
-    //   if (backButton.isAvailable() && backHandlerRef.current) {
-    //     backButton.offClick(backHandlerRef.current);
-    //     backButton.hide();
-    //   }
-
-
-    // };
-  }, [router]);
 
 
   const products: IProductProps[] = [
