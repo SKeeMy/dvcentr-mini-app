@@ -2,7 +2,7 @@
 import { Container } from "@/components/container/container";
 import { Section } from "@/components/section/section";
 import { useEffect, useRef } from 'react';
-import { init, viewport, backButton, isTMA, disableVerticalSwipes } from '@telegram-apps/sdk';
+import { init, viewport, backButton, isTMA, swipeBehavior } from '@telegram-apps/sdk';
 import { useRouter } from 'next/navigation';
 import { Product } from "@/components/pages/catalog/product/product";
 import { IProductProps } from "../types";
@@ -17,11 +17,14 @@ export default function Catalog() {
       try {
         if (await isTMA()) {
           init();
-
+          alert(1)
           await viewport.mount();
           viewport.expand();
           
-          disableVerticalSwipes()
+          if (swipeBehavior.isSupported()) {
+            await swipeBehavior.disableVertical()
+            
+          }
 
           backHandlerRef.current = () => {
             router.push('/');
