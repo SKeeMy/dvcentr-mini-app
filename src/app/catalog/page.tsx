@@ -13,31 +13,46 @@ export default function Catalog() {
   const backHandlerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    async function initializeCatalog() {
-      try {
-        if (await isTMA()) {
+    // async function initializeCatalog() {
+    //   try {
+    //     if (await isTMA()) {
+
+    //       viewport.expand();
+
+    //       if (swipeBehavior.isSupported()) {
+    //         await swipeBehavior.mountSwipeBehavior();
+    //         swipeBehavior.disableVerticalSwipes();
+    //       }
+
+    //       if (backButton.isAvailable()) {
+    //         if (!backButton.isMounted()) {
+    //           await backButton.mount();
+    //         }
+
+    //         backHandlerRef.current = () => {
+    //           router.push('/');
+    //         };
+
+    //         backButton.show();
+    //         backButton.onClick(backHandlerRef.current);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error('Ошибка инициализации каталога:', error);
+    //   }
+    // }
+
+    // initializeCatalog();
+
+    // return () => {
+    //   // Очистка backButton
+    //   if (backButton.isAvailable() && backHandlerRef.current) {
+    //     backButton.offClick(backHandlerRef.current);
+    //     backButton.hide();
+    //   }
 
 
-          backHandlerRef.current = () => {
-            router.push('/');
-          };
-
-          backButton.show();
-          backButton.onClick(backHandlerRef.current);
-        }
-      } catch (error) {
-        console.error('Ошибка инициализации каталога:', error);
-      }
-    }
-
-    initializeCatalog();
-
-    return () => {
-      if (backHandlerRef.current) {
-        backButton.offClick(backHandlerRef.current);
-      }
-      backButton.hide();
-    };
+    // };
   }, [router]);
 
 
@@ -62,7 +77,7 @@ export default function Catalog() {
   return (
 
     <Section name={null}>
-       <CatalogItems products={products} /> 
+      <CatalogItems products={products} />
     </Section>
   );
 }
