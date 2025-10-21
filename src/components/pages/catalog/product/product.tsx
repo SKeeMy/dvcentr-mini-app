@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { Trash } from '@/components/shared/icons/trash'
 import { formatPrice } from '@/app/utils/formatPrice'
 import Image from 'next/image'
+import { ProductCounter } from './product-counter'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -50,28 +51,35 @@ export const Product: FC<IProductProps> = (props) => {
 
   if (product_type === 'cart') {
     return (
-      <div className={clsx(s.product, className, s.product_cart)} onClick={handleProductClick}>
-        <div>
-          <div className={clsx(s.imageContainer, s.imageContainer_cart)}>
-            <Image
-              src={image}
-              alt={title}
-              width={100}
-              height={100}
-              loading={'lazy'}
-              quality={10}
-              className={s.image}
-              onError={(e) => {
-                e.currentTarget.src = '/images/product-placeholder.jpg'
-              }}
-            />
+      <div className={clsx(s.product, className, s.product_cart)}>
+        <div className={s.product_cart_left}>
+          <div>
+
+            <div className={clsx(s.imageContainer, s.imageContainer_cart)}>
+              <Image
+                src={image}
+                alt={title}
+                width={100}
+                height={100}
+                loading={'lazy'}
+                quality={10}
+                className={s.image}
+                onError={(e) => {
+                  e.currentTarget.src = '/images/product-placeholder.jpg'
+                }}
+              />
+            </div>
+            <div className={s.price}>{formatPrice(price)}</div>
           </div>
-          <div className={s.price}>{formatPrice(price)}</div>
+
+          <div className={s.content}>
+            <h3 className={s.title}>{title}</h3>
+          </div>
         </div>
-        <div className={s.content}>
-          <h3 className={s.title}>{title}</h3>
+        <div className={s.product_cart_right}>
+          <button onClick={handleRemoveItemFromCart} className={s.remove_item}><Trash /></button>
+          <ProductCounter productId={id} />
         </div>
-        <button onClick={handleRemoveItemFromCart} className={s.remove_item}><Trash /></button>
       </div>
     )
   }

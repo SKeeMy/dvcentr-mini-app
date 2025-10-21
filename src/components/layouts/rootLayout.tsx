@@ -30,6 +30,9 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         } catch (e) {
           console.error('Something went wrong mounting the viewport', e)
         }
+        if (swipeBehavior.disableVertical.isAvailable()) {
+          swipeBehavior.disableVertical()
+        }
 
         initData.restore();
       }
