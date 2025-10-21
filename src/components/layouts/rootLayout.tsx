@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { FC, PropsWithChildren } from 'react'
 import { Footer } from '../footer/footer'
 import { Header } from '../header/header'
-import { init, requestContact, initData, viewport, isTMA, swipeBehavior, disableVerticalSwipes, backButton, miniApp, themeParams } from '@telegram-apps/sdk';
+import { init, requestContact, initData, viewport, isTMA, swipeBehavior, disableVerticalSwipes, backButton, miniApp, themeParams, isVerticalSwipesEnabled } from '@telegram-apps/sdk';
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -33,6 +33,8 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         if (swipeBehavior.disableVertical.isAvailable()) {
           swipeBehavior.disableVertical()
         }
+        console.log('Vertical', isVerticalSwipesEnabled);
+        console.log('Vertical disabled', disableVerticalSwipes);
 
         initData.restore();
       }
