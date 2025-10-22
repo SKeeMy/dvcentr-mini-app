@@ -18,10 +18,16 @@
 //   }
 // }
 .section {
-  min-height: 100vh;
+  height: 100%;
   background-color: white;
   width: 100%;
   position: relative;
+  flex: 1;
+  border-radius: 0 0 40px 40px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  max-height: calc(100vh - 58px - 75px);
+  overflow-y: auto;
   &_name {
     position: absolute;
     left: 50%;

@@ -3,7 +3,10 @@ import React, { useEffect } from 'react'
 import { FC, PropsWithChildren } from 'react'
 import { Footer } from '../footer/footer'
 import { Header } from '../header/header'
+import clsx from "clsx";
+import { golosTextFont, steppeFont } from "@/fonts/steppe/index";
 import { init, requestContact, initData, viewport, isTMA, swipeBehavior, disableVerticalSwipes, backButton, miniApp, themeParams, isVerticalSwipesEnabled } from '@telegram-apps/sdk';
+import { usePathname } from 'next/navigation'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -34,21 +37,21 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         // Отключаем вертикальные свайпы и логируем
         if (swipeBehavior.isSupported) {
           console.log('Swipe behavior is supported');
-          
+
           // Монтируем если доступно
           if (swipeBehavior.mount.isAvailable()) {
             await swipeBehavior.mount();
           }
-  
+
           // Логируем состояние до отключения
           console.log('Initial vertical swipes state:', swipeBehavior.isVerticalEnabled);
-  
+
           // Отключаем вертикальные свайпы
           if (swipeBehavior.disableVertical.isAvailable()) {
             swipeBehavior.disableVertical();
             console.log('Vertical swipes disabled successfully');
           }
-  
+
           // Логируем состояние после отключения
           console.log('Final vertical swipes state:', swipeBehavior.isVerticalEnabled);
         }
@@ -61,12 +64,15 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
     initTg();
   }, []);
+
+  
+  const pathname = usePathname()
   return (
-    <>
-      {/* <Header /> */}
+    <body className={clsx(golosTextFont.variable, steppeFont.variable, pathname !== '/' && 'body_content')}>
+      <Header header_type='catalog' />
       <main>{children}</main>
       <Footer />
-    </>
+    </body>
   )
 }
 

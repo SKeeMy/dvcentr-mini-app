@@ -2,9 +2,28 @@
   padding: 13px 0;
   background: white;
   border-radius: 0 0 16px 16px;
+
   &_items {
     display: grid;
     grid-template-columns: 1fr 42px 42px;
     gap: 10px;
+  }
+}
+
+.catalog {
+  padding: 13px 0;
+  background: white;
+  img {
+    // border: 2px solid black;
+    border-radius: 6px;
+  }
+  h2 {
+    font-size: 15px;
+  }
+
+  &_left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 }

@@ -103,19 +103,20 @@ export const Product: FC<IProductProps> = (props) => {
 
       <div className={s.content}>
         <h3 className={s.title}>{title}</h3>
-        {description && (
+        {/* {description && (
           <p className={s.description}>{description}</p>
-        )}
+        )} */}
+        <div className={s.bottom_card_wraper}>
+          <div className={s.price}>{formatPrice(price)}</div>
 
-        <div className={s.price}>{formatPrice(price)}</div>
-
-        <button
-          className={`${s.addButton} ${isInCart ? s.inCart : ''}`}
-          onClick={handleAddToCart}
-          disabled={!price}
-        >
-          {isInCart ? `Добавлен 🛒` : 'В корзину'}
-        </button>
+          <button
+            className={`${s.addButton} ${isInCart ? s.inCart : ''}`}
+            onClick={handleAddToCart}
+            disabled={!price}
+          >
+            {isInCart ? `✓︎ ` : '🛒'}
+          </button>
+        </div>
       </div>
     </div>
   )

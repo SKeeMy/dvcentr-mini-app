@@ -9,7 +9,7 @@ import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.
 import { ButtonClose } from '@/components/shared/buttons/button-close'
 import { Close } from '@/components/shared/icons/close'
 import { init, requestContact, initData, viewport, isTMA } from '@telegram-apps/sdk';
-import { QRScannerButton } from '@/components/shared/buttons/qr-button'
+// import { QRScannerButton } from '@/components/shared/buttons/qr-button'
 
 interface UserData {
   id: number
@@ -376,7 +376,7 @@ export default function Home() {
           >
             Доступно по доверенности
           </button>
-          <QRScannerButton />
+          {/* <QRScannerButton /> */}
         </div>
       </div>
     </Container>
