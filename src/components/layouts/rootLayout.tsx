@@ -25,7 +25,14 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
         await themeParams.mount();
         themeParams.bindCssVars();
+        if (viewport.mount.isAvailable()) {
+          await viewport.mount();
+          viewport.expand();
+        }
 
+        if (viewport.requestFullscreen.isAvailable()) {
+          await viewport.requestFullscreen();
+        }
         try {
           await viewport.mount();
           viewport.expand();
@@ -65,7 +72,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
     initTg();
   }, []);
 
-  
+
   const pathname = usePathname()
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, pathname !== '/' && 'body_content')}>
