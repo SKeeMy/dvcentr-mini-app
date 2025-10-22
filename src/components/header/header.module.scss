@@ -14,12 +14,26 @@
   padding: 13px 0;
   background: white;
   padding-top: 40px;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  border-radius: 0 0 50px 50px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
   // border-radius: 0 0 50px 50px;
   // padding-bottom: 0;
   img {
     // border: 2px solid black;
     border-radius: 6px;
   }
+
   h2 {
     font-size: 15px;
   }
@@ -29,5 +43,22 @@
     align-items: center;
     gap: 4px;
     justify-content: center;
+    background-color: white;
+    justify-self: center;
+    padding: 4px 8px;
+    border-radius: 6px;
   }
+}
+.catalog::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+  z-index: -1;
+  border-radius: 0 0 50px 50px;
 }

@@ -26,8 +26,10 @@
   border-radius: 0 0 40px 40px;
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
-  max-height: calc(100vh - 85px - 75px);
+  max-height: calc(100vh - 75px);
   overflow-y: auto;
+
+
   &_name {
     position: absolute;
     left: 50%;

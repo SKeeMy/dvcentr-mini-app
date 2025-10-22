@@ -5,31 +5,35 @@
   overflow: hidden;
   cursor: pointer;
   // border: 1px solid #f0f0f0;
-  
+
 }
 
 .product_cart {
   display: flex;
   padding: 20px;
-justify-content: space-between;
+  justify-content: space-between;
   box-shadow: none;
   border: 0;
   border-bottom: 1px solid rgb(131, 131, 131);
   border-radius: 0;
   background-color: transparent;
+
   &_left {
     display: flex;
   }
+
   &_right {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
   }
+
   .price {
     margin: 0;
     margin-top: 10px;
   }
+
   .title {
     font-size: 12px;
     margin: 0;
@@ -121,11 +125,13 @@ justify-content: space-between;
   color: #1a1a1a;
   // margin-bottom: 8px;
 }
+
 .bottom_card_wraper {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
 }
+
 .addButton {
   width: 30px;
   height: 30px;
@@ -298,6 +304,7 @@ justify-content: space-between;
   align-items: flex-end;
   justify-content: space-between;
   width: 90px;
+
   span {
     display: flex;
     color: white;
@@ -305,6 +312,7 @@ justify-content: space-between;
     width: 20px;
     justify-content: center;
   }
+
   button {
     flex: 0 0 auto;
     background-color: white;
