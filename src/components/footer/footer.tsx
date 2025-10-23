@@ -33,10 +33,16 @@ export const Footer = () => {
   }, [items])
 
   useEffect(() => {
-    if (openFooter)
+    const mainTag = document.querySelector('main')
+    if (openFooter) {
       if (hapticFeedback.impactOccurred.isAvailable()) {
         hapticFeedback.impactOccurred('rigid');
       }
+    } else {
+      mainTag.style.pointerEvents = 'all'
+
+    }
+      
   }, [openFooter])
 
   const pathname = usePathname()
