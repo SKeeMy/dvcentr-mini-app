@@ -1,27 +1,25 @@
+import { useFooterStore } from '@/store/footer-strore'
 import { useCartStore } from '@/store/cart-store'
 import clsx from 'clsx'
 import React from 'react'
 import s from './footer.module.scss'
 import { Sheet } from 'react-modal-sheet'
-import { Cart as CartOrder } from '../cart/cart'
-import { useState, useEffect, useRef } from 'react'
 
-export const FooterPopup = () => {
-
-
-  const { openFooter, closeFooterCart, items, clearCart } = useCartStore();
-
+export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
+  const { isOpen, closeFooter, contentType } = useFooterStore()
+  const { clearCart } = useCartStore()
 
   const handleRemoveItemsFromTrash = () => {
-    clearCart();
-    closeFooterCart()
+    clearCart()
+    closeFooter()
   }
 
+  const showClearButton = contentType === 'cart'
 
   return (
     <Sheet
-      isOpen={openFooter}
-      onClose={closeFooterCart}
+      isOpen={isOpen}
+      onClose={closeFooter}
       detent="content"
       snapPoints={[0, 1]}
       initialSnap={1}
@@ -30,33 +28,30 @@ export const FooterPopup = () => {
       modalEffectRootId="root"
     >
       <Sheet.Container
-        className={s.sheet_container}
         style={{
           background: 'white',
           borderTopLeftRadius: '30px',
           borderTopRightRadius: '30px',
         }}
       >
-        <Sheet.Header
-          className={s.sheet_header}
-          disableDrag={false}
-        >
+        <Sheet.Header disableDrag={false}>
           <div className={s.footer_body_header}>
-            <button onClick={closeFooterCart} className={s.footer_close_cart}>
+            <button onClick={closeFooter} className={s.footer_close_cart}>
               Закрыть
             </button>
-            <button onClick={handleRemoveItemsFromTrash} className={s.footer_close_cart}>
-              Очистить
-            </button>
+            {showClearButton && (
+              <button onClick={handleRemoveItemsFromTrash} className={s.footer_close_cart}>
+                Очистить
+              </button>
+            )}
           </div>
         </Sheet.Header>
 
-
-        <CartOrder />
+        {children}
       </Sheet.Container>
 
       <Sheet.Backdrop
-        onTap={closeFooterCart}
+        onTap={closeFooter}
         style={{ background: 'rgba(0, 0, 0, 0.5)' }}
       />
     </Sheet>

@@ -1,10 +1,11 @@
 import React from 'react'
-import { SVGProps } from 'react'
-export const Profile = (props: SVGProps<SVGSVGElement>) => {
+
+export const Profile = () => {
   return (
-    <svg {...props} width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 8.5C15 10.433 13.433 12 11.5 12C9.567 12 8 10.433 8 8.5C8 6.567 9.567 5 11.5 5C13.433 5 15 6.567 15 8.5Z" fill="#000000" />
-      <path d="M17.6305 20H5.94623C5.54449 20 5.31716 19.559 5.56788 19.2451C6.68379 17.8479 9.29072 15 12 15C14.7275 15 17.0627 17.8864 18.0272 19.2731C18.2474 19.5897 18.0161 20 17.6305 20Z" fill="#000000" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M8.73378 23.0138C4.48818 23.0138 0.862549 22.3531 0.862549 19.7072C0.862549 17.0613 4.46518 14.6188 8.73378 14.6188C12.9794 14.6188 16.605 17.0376 16.605 19.6835C16.605 22.3284 13.0024 23.0138 8.73378 23.0138Z" stroke="white" strokeWidth="1.725" strokeLinecap="round" strokeLinejoin="round" />
+      <path fillRule="evenodd" clipRule="evenodd" d="M8.72532 10.9522C11.5115 10.9522 13.7696 8.69405 13.7696 5.90791C13.7696 3.12178 11.5115 0.862549 8.72532 0.862549C5.93919 0.862549 3.67996 3.12178 3.67996 5.90791C3.67055 8.68464 5.91305 10.9428 8.68978 10.9522C8.70232 10.9522 8.71382 10.9522 8.72532 10.9522Z" stroke="white" strokeWidth="1.725" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+
   )
 }

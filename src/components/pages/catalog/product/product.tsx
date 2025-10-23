@@ -7,6 +7,7 @@ import { Trash } from '@/components/shared/icons/trash'
 import { formatPrice } from '@/app/utils/formatPrice'
 import Image from 'next/image'
 import { ProductCounter } from './product-counter'
+import { useFooterStore } from '@/store/footer-strore'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -26,13 +27,13 @@ export const Product: FC<IProductProps> = (props) => {
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const quantityInCart = getItemQuantity(id)
   const isInCart = quantityInCart > 0
-  const openCartFooter = useCartStore(state => state.openFooterCart)
+  const openCartFooter = useFooterStore(state => state.openFooter)
 
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
     addToCart(product)
-    openCartFooter()
+    openCartFooter('cart')
     console.log('Добавить в корзину:', { id, title, price })
   }
 

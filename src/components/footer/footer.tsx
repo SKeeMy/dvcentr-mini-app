@@ -5,6 +5,7 @@ import { Container } from '../container/container'
 import { Cart } from '../shared/icons/cart'
 import s from './footer.module.scss'
 import { useCartStore } from '@/store/cart-store'
+import { useFooterStore } from '@/store/footer-strore'
 import clsx from 'clsx'
 
 import dynamic from 'next/dynamic'
@@ -14,55 +15,104 @@ import { usePathname } from 'next/navigation'
 import { hapticFeedback } from '@telegram-apps/sdk'
 import { FooterPopup } from './footer-popup'
 import { useBodyLock } from '@/app/hooks/useBodyLock'
+import { Heart } from '../shared/icons/heart'
+import { Profile } from '../shared/icons/profile'
+import { QRScanner } from '../shared/icons/qr'
+import { Home } from '../shared/icons/home'
+import { Cart as CartOrder } from '../cart/cart'
+
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
 })
+
+// Компоненты для разного контента
+const QRContent = () => <div>Контент для QR</div>
+const FavoritesContent = () => <div>Контент для Избранного</div>
+const ProfileContent = () => <div>Контент профиля</div>
+
 export const Footer = () => {
-
-  const { openFooter, openFooterCart, closeFooterCart, items, clearCart } = useCartStore()
-
-  useBodyLock(openFooter)
+  const { items } = useCartStore()
+  const { isOpen, contentType, openFooter, closeFooter } = useFooterStore()
+  
+  useBodyLock(isOpen)
 
   useEffect(() => {
     if (items.length === 0) {
-      closeFooterCart()
+      closeFooter()
     }
     if (hapticFeedback.impactOccurred.isAvailable()) {
-      hapticFeedback.impactOccurred('medium');
+      hapticFeedback.impactOccurred('medium')
     }
   }, [items])
 
   useEffect(() => {
-    if (openFooter) {
-      if (hapticFeedback.impactOccurred.isAvailable()) {
-        hapticFeedback.impactOccurred('rigid');
-      }
-    } else {
-
+    if (isOpen && hapticFeedback.impactOccurred.isAvailable()) {
+      hapticFeedback.impactOccurred('rigid')
     }
-      
-  }, [openFooter])
+  }, [isOpen])
 
   const pathname = usePathname()
   if (pathname === '/') return null
-  return (
 
-    <footer className={clsx(s.footer, openFooter && s.open)}>
-      {/* <Container className={s.footer_container}> */}
+  // Функция для рендеринга контента
+  const renderContent = () => {
+    switch (contentType) {
+      case 'cart':
+        return <CartOrder />
+      case 'qr':
+        return <QRContent />
+      case 'favorites':
+        return <FavoritesContent />
+      case 'profile':
+        return <ProfileContent />
+      default:
+        return null
+    }
+  }
+
+  return (
+    <footer className={clsx(s.footer, isOpen && s.open)}>
       <div className={s.footer_content}>
-        <div className={clsx(s.footer_items, openFooter && items.length && s.footer_cart)}>
-          {!openFooter && <button onClick={items.length > 0 ? openFooterCart : undefined} className={s.footer_item} >
+        <div className={clsx(s.footer_items)}>
+          <Link href={'/'} className={s.footer_item}>
+            <Home />
+          </Link>
+          
+          <button 
+            className={s.footer_item}
+            onClick={() => openFooter('qr')}
+          >
+            <QRScanner />
+          </button>
+          
+          <button 
+            onClick={() => items.length > 0 && openFooter('cart')} 
+            className={s.footer_item} 
+          >
             <Cart />
             <CartCounter />
-          </button>}
-
+          </button>
+          
+          <button 
+            className={s.footer_item}
+            onClick={() => openFooter('favorites')}
+          >
+            <Heart />
+          </button>
+          
+          <button 
+            className={s.footer_item}
+            onClick={() => openFooter('profile')}
+          >
+            <Profile />
+          </button>
         </div>
-        <FooterPopup />
+        
+        <FooterPopup>
+          {renderContent()}
+        </FooterPopup>
       </div>
-
-      {/* </Container> */}
     </footer>
-
   )
 }

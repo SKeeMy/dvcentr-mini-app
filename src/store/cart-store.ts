@@ -1,4 +1,3 @@
-// stores/cart-store.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { IProductProps } from '@/app/types'
@@ -10,7 +9,6 @@ export type CartItem = {
 
 export type CartState = {
   items: CartItem[]
-  openFooter: boolean
 
   addToCart: (product: IProductProps) => void
   removeFromCart: (productId: number) => void
@@ -20,27 +18,17 @@ export type CartState = {
   getTotalItems: () => number
   getItemQuantity: (productId: number) => number
   isInCart: (productId: number) => boolean
-  openFooterCart: () => void
-  closeFooterCart: () => void
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      openFooter: false,
-
-      openFooterCart: () => set({ openFooter: true }),
-
-      closeFooterCart: () => {
-        set({ openFooter: false })
-      },
-
 
       addToCart: (product: IProductProps) => {
         const { items } = get()
         const existingItem = items.find(item => item.product.id === product.id)
-        
+
         if (existingItem) {
           set({
             items: items.map(item =>
@@ -53,15 +41,15 @@ export const useCartStore = create<CartState>()(
           set({ items: [...items, { product, quantity: 1 }] })
         }
       },
-      
+
       removeFromCart: (productId: number) => {
         const { items } = get()
         set({ items: items.filter(item => item.product.id !== productId) })
       },
-      
+
       updateQuantity: (productId: number, quantity: number) => {
         const { items } = get()
-        
+
         if (quantity <= 0) {
           get().removeFromCart(productId)
         } else {
@@ -74,24 +62,24 @@ export const useCartStore = create<CartState>()(
           })
         }
       },
-      
+
       clearCart: () => set({ items: [] }),
-      
+
       getTotalPrice: () => {
         const { items } = get()
         return items.reduce((total, item) => total + (item.product.price * item.quantity), 0)
       },
-      
+
       getTotalItems: () => {
         const { items } = get()
         return items.reduce((total, item) => total + item.quantity, 0)
       },
-      
+
       getItemQuantity: (productId: number) => {
         const { items } = get()
         return items.find(item => item.product.id === productId)?.quantity || 0
       },
-      
+
       isInCart: (productId: number) => {
         const { items } = get()
         return items.some(item => item.product.id === productId)
@@ -100,7 +88,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'cart-storage',
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         items: state.items
       }),
     }
