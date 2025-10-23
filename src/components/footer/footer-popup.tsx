@@ -20,13 +20,12 @@ export const FooterPopup = () => {
 
   return (
     <Sheet
-      
       isOpen={openFooter}
       onClose={closeFooterCart}
-      detent="default"
-      snapPoints={[0, 0.85, 1]}
-      // initialSnap={1}
-      tweenConfig={{ ease: 'easeOut', duration: 0.4 }}
+      detent="content"
+      snapPoints={[0, 1]}
+      initialSnap={1}
+      tweenConfig={{ ease: 'easeOut', duration: 0.3 }}
       disableDrag={false}
       modalEffectRootId="root"
     >
@@ -35,7 +34,7 @@ export const FooterPopup = () => {
         style={{
           background: 'white',
           borderTopLeftRadius: '30px',
-          borderTopRightRadius: '30px'
+          borderTopRightRadius: '30px',
         }}
       >
         <Sheet.Header

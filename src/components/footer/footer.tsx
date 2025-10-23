@@ -14,6 +14,7 @@ import { usePathname } from 'next/navigation'
 import { hapticFeedback } from '@telegram-apps/sdk'
 import { FooterPopup } from './footer-popup'
 import { useBodyLock } from '@/app/hooks/useBodyLock'
+import { useAppBackButton } from '@/app/hooks/useAppBackButton'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -21,6 +22,10 @@ const CartCounter = dynamic(() => import('../cart/cart-counter'), {
 export const Footer = () => {
 
   const { openFooter, openFooterCart, closeFooterCart, items, clearCart } = useCartStore()
+
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    closeFooterCart()
+  });
 
   useBodyLock(openFooter)
 
@@ -37,9 +42,10 @@ export const Footer = () => {
     if (openFooter) {
       if (hapticFeedback.impactOccurred.isAvailable()) {
         hapticFeedback.impactOccurred('rigid');
+        showButton()
       }
     } else {
-
+      hideButton()
     }
       
   }, [openFooter])
