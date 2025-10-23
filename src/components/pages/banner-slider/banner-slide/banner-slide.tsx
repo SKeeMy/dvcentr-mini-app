@@ -29,10 +29,10 @@ export const BannerSlide: FC<IBannerSlideProps> = (props) => {
           className={s.slide_bg}
           loading="lazy"
           decoding="async"
-          onError={(e) => {
-            // Скрываем битое изображение
-            e.currentTarget.style.display = 'none';
-          }}
+          // onError={(e) => {
+          //   // Скрываем битое изображение
+          //   e.currentTarget.style.display = 'none';
+          // }}
         />
       )}
 

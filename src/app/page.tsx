@@ -193,7 +193,7 @@ export default function Home() {
     )
   }
 
-  if (accessGranted) {
+  if (!accessGranted) {
     return (
       <Container>
         <div className="access-screen">
