@@ -25,7 +25,7 @@
   &_right {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
   }
 
@@ -66,6 +66,10 @@
 }
 
 .remove_item {
+  svg {
+    width: 24px;
+    height: 24px;
+  }
   path {
     stroke: var(--primary-orange);
     stroke-width: 1.5px;
