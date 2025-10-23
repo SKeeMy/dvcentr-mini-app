@@ -32,6 +32,8 @@ export const FooterPopup = () => {
     if (deltaY > 0) {
       setCurrentY(touch.clientY);
       e.preventDefault();
+
+      e.stopPropagation();
     }
   };
 

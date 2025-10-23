@@ -13,6 +13,7 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { hapticFeedback } from '@telegram-apps/sdk'
 import { FooterPopup } from './footer-popup'
+import { useBodyLock } from '@/app/hooks/useBodyLock'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -21,7 +22,7 @@ export const Footer = () => {
 
   const { openFooter, openFooterCart, closeFooterCart, items, clearCart } = useCartStore()
 
-  
+  useBodyLock(openFooter)
 
   useEffect(() => {
     if (items.length === 0) {
@@ -33,13 +34,11 @@ export const Footer = () => {
   }, [items])
 
   useEffect(() => {
-    const mainTag = document.querySelector('main')
     if (openFooter) {
       if (hapticFeedback.impactOccurred.isAvailable()) {
         hapticFeedback.impactOccurred('rigid');
       }
     } else {
-      mainTag.style.pointerEvents = 'all'
 
     }
       
