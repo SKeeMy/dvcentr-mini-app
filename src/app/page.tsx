@@ -287,7 +287,7 @@ export default function Home() {
         </div>
 
         {/* Header */}
-        <BannerSlider />
+        {/* <BannerSlider /> */}
 
         {/* User Profile Card */}
         <div className="profile-card">
