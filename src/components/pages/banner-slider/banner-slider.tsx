@@ -12,11 +12,12 @@ export const BannerSlider = () => {
   const slides: IBannerSlideProps[] = [
     {
       id: 1,
-      text: 'Запустили мини-приложение!',
+      text: 'Мини-приложение от DVCENTR👋',
       background_image: '/images/i.webp',
       sticker_image: 'images/ecs.png',
       stricker_pos: 'right'
     },
+
     {
       id: 2,
       text: 'Фирменный мерч в наличии!',
@@ -28,7 +29,6 @@ export const BannerSlider = () => {
 
 
   return (
-    <Container>
       <div className={s.slider_wrapper}>
         <Swiper
           className={s.swiper}
@@ -75,6 +75,5 @@ export const BannerSlider = () => {
           ))}
         </Swiper>
       </div>
-    </Container>
   )
 }

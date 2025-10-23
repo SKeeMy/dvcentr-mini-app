@@ -205,7 +205,11 @@ body {
 // App Container
 .app-container {
   padding: 20px;
-  min-height: 100vh;
+  margin-top: 115px;
+  width: 100%;
+}
+.app_container_home {
+  width: 100%;
 }
 
 // Header Styles
@@ -271,7 +275,7 @@ body {
 
 // Profile Card Styles
 .profile-card {
-  background: white;
+  background: #282C32;
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
@@ -481,6 +485,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 
   &.primary {
     background: var(--primary-gradient);
@@ -719,13 +724,13 @@ body {
 }
 
 .access-screen {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
+  margin-top: 115px;
 }
 
 .access-content {

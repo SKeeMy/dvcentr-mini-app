@@ -13,7 +13,7 @@ type HeaderProps = {
 }
 export const Header: FC<HeaderProps> = ({ header_type }) => {
   const pathname = usePathname()
-  if (pathname === '/') return null
+  // if (pathname === '/') return null
   if (header_type === 'catalog') {
     return (
       <header className={s.catalog}>

@@ -20,9 +20,12 @@ export const BannerSlide: FC<IBannerSlideProps> = (props) => {
     <div className={s.slide}>
       {/* Фоновая картинка - с ограничением размера */}
       {background_image && isVisible && (
-        <img
+        <Image
           src={background_image}
           alt=""
+          width={200}
+          height={200}
+          quality={10}
           className={s.slide_bg}
           loading="lazy"
           decoding="async"

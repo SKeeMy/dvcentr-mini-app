@@ -1,7 +1,8 @@
 .slider {
   &_wrapper {
     width: 100%;
-    margin: 60px 0;
+    // margin: 60px 0;
+    margin-bottom: 30px;
   }
 }
 
@@ -14,17 +15,17 @@
     justify-content: center;
     gap: 2px;
     &_bullet {
-      width: 10px;
-      height: 10px;
+      width: 13px;
+      height: 13px;
       display: block;
       border-radius: 50%;
-      background-color: rgb(62, 62, 62);
+      background-color: var(--primary-orange-light);
       opacity: 0.5;
       transform: scale(0.46);
       transition: transform .15s;
     }
     &_active {
-      background-color: white;
+      background-color: var(--primary-orange);
       opacity: 1;
       transform: scale(1) !important;
       margin-left: 2px !important;

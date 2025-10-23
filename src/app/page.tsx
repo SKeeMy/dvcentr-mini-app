@@ -9,6 +9,8 @@ import { IApiResponse, IOrderData } from '@/components/pages/home/orders/orders.
 import { ButtonClose } from '@/components/shared/buttons/button-close'
 import { Close } from '@/components/shared/icons/close'
 import { init, requestContact, initData, viewport, isTMA } from '@telegram-apps/sdk';
+import { BannerSlider } from '@/components/pages/banner-slider/banner-slider'
+import { Section } from '@/components/section/section'
 
 interface UserData {
   id: number
@@ -30,22 +32,22 @@ export default function Home() {
   const [openPopup, setOpenPopup] = useState<boolean>(false)
   const [isTelegramEnv, setIsTelegramEnv] = useState(false)
   const [accessGranted, setAccessGranted] = useState(false)
-  
+
   const requestPhoneNumber = async () => {
     console.log('=== НАЧАЛО ФУНКЦИИ requestPhoneNumber ===');
-    
+
     try {
       console.log('1. Проверяем доступность requestContact.isAvailable()...');
       const isAvailable = requestContact.isAvailable();
       console.log('   requestContact.isAvailable() =', isAvailable);
-      
+
       if (isAvailable) {
         console.log('2. requestContact доступен, начинаем запрос контакта...');
-        
+
         console.log('3. Вызываем requestContact()...');
         const contactData = await requestContact();
         console.log('4. requestContact() завершился успешно');
-        
+
         if (contactData && contactData.contact) {
           console.log('5. Контакт получен:', contactData.contact.phone_number);
 
@@ -132,7 +134,7 @@ export default function Home() {
     console.log('📞 Вызов sendPhoneRequest...');
     setOpenPopup(true);
     setError(null);
-    
+
     if (data === null) {
       setLoading(true);
 
@@ -196,17 +198,7 @@ export default function Home() {
       <Container>
         <div className="access-screen">
           {/* Header */}
-          <header className="app-header">
-            <div className="header-content">
-              <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
-              <p className="app-subtitle">Наше мини приложение</p>
-              <div className="access-badge restricted">⚠️ Требуется подтверждение доступа</div>
-            </div>
-            <div className="header-decoration">
-              <div className="decoration-circle circle-1"></div>
-              <div className="decoration-circle circle-2"></div>
-            </div>
-          </header>
+          
 
           {/* Access Content */}
           <div className="access-content">
@@ -215,7 +207,7 @@ export default function Home() {
             <p className="access-description">
               Для использования всех функций приложения необходимо предоставить доступ к вашему номеру телефона
             </p>
-            
+
             <div className="access-features">
               <div className="access-feature">
                 <span className="feature-icon">✅</span>
@@ -231,11 +223,11 @@ export default function Home() {
               </div>
             </div>
 
-            <button 
-              onClick={requestPhoneNumber} 
+            <button
+              onClick={requestPhoneNumber}
               className="access-button primary"
             >
-              📱 Предоставить доступ
+               Поделиться номером 📱 
             </button>
 
             <p className="access-note">
@@ -248,7 +240,7 @@ export default function Home() {
   }
 
   return (
-    <Container>
+    <Section name={null}>
       <div className="app-container">
         <div
           className={clsx('popup-overlay', openPopup && 'visible')}
@@ -295,29 +287,13 @@ export default function Home() {
         </div>
 
         {/* Header */}
-        <header className="app-header">
-          <div className="header-content">
-            <h1 className="app-title">Приветствуем, DVCENTR.RU!👋</h1>
-            <p className="app-subtitle">Наше мини приложение</p>
-          </div>
-          <div className="header-decoration">
-            <div className="decoration-circle circle-1"></div>
-            <div className="decoration-circle circle-2"></div>
-          </div>
-        </header>
+        <BannerSlider />
 
         {/* User Profile Card */}
         <div className="profile-card">
           <div className="profile-header">
             <div className="avatar-container">
-              <div
-                className="user-avatar"
-                style={{
-                  background: `linear-gradient(135deg, #${userData?.id?.toString().slice(0, 6) || '000000'}, #${userData?.id?.toString().slice(3, 9) || 'ffffff'})`
-                }}
-              >
-                {userData?.first_name?.[0]}{userData?.last_name?.[0] || ''}
-              </div>
+              
               {userData?.is_premium && (
                 <div className="premium-badge">⭐</div>
               )}
@@ -329,7 +305,7 @@ export default function Home() {
               {userData?.username && (
                 <p className="user-username">@{userData.username}</p>
               )}
-              <div className="user-id">ID: {userData?.id}</div>
+             
               {userData?.phone && (
                 <div className="user-phone">📱 {userData.phone}</div>
               )}
@@ -337,19 +313,19 @@ export default function Home() {
           </div>
 
           <div className="profile-stats">
-            <div className="stat-item">
-              <div className="stat-value">{userData?.id?.toString().slice(0, 3) || '000'}</div>
-              <div className="stat-label">Префикс</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">{userData?.language_code?.toUpperCase() || 'RU'}</div>
-              <div className="stat-label">Язык</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">
-                {userData?.is_premium ? 'Yes' : 'No'}
-              </div>
-              <div className="stat-label">Premium</div>
+            <div className="actions-container">
+              <button
+                onClick={sendPhoneRequest}
+                className="action-button primary"
+              >
+                Доступно по доверенности
+              </button>
+              <button
+                onClick={sendPhoneRequest}
+                className="action-button primary"
+              >
+                Мои остатки
+              </button>
             </div>
           </div>
         </div>
@@ -358,25 +334,10 @@ export default function Home() {
           Каталог
         </Link>
 
-        {/* Features Grid */}
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">✅</div>
-            <h3 className="feature-title">Доступ открыт</h3>
-            <p className="feature-description">Все функции доступны</p>
-          </div>
-        </div>
+
 
         {/* Action Buttons */}
-        <div className="actions-container">
-          <button 
-            onClick={sendPhoneRequest} 
-            className="action-button primary"
-          >
-            Доступно по доверенности
-          </button>
-        </div>
       </div>
-    </Container>
+    </Section>
   )
 }

@@ -52,7 +52,7 @@ export const Footer = () => {
   }, [isOpen])
 
   const pathname = usePathname()
-  if (pathname === '/') return null
+  // if (pathname === '/') return null
 
   const renderContent = () => {
     switch (contentType) {

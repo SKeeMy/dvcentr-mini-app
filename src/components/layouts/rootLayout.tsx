@@ -75,7 +75,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   const pathname = usePathname()
   return (
-    <body className={clsx(golosTextFont.variable, steppeFont.variable, pathname !== '/' && 'body_content')}>
+    <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
       <Header header_type='catalog' />
       <main>{children}</main>
       <Footer />
