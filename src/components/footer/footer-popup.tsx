@@ -26,9 +26,11 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
       tweenConfig={{ ease: 'easeOut', duration: 0.3 }}
       disableDrag={false}
       modalEffectRootId="root"
+      dragCloseThreshold={0.4}
+      dragVelocityThreshold={200}
     >
       <Sheet.Container
-      className={s.sheet_container}
+        className={s.sheet_container}
         style={{
           background: 'white',
           borderTopLeftRadius: '30px',
