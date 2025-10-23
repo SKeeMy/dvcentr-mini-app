@@ -26,7 +26,6 @@ const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   loading: () => null
 })
 
-// Компоненты для разного контента
 const QRContent = () => <div>Контент для QR</div>
 const FavoritesContent = () => <div>Контент для Избранного</div>
 const ProfileContent = () => <div>Контент профиля</div>
@@ -55,7 +54,6 @@ export const Footer = () => {
   const pathname = usePathname()
   if (pathname === '/') return null
 
-  // Функция для рендеринга контента
   const renderContent = () => {
     switch (contentType) {
       case 'cart':

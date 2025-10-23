@@ -22,6 +22,7 @@
   height: 100%;
   gap: 10px;
   overflow: auto;
+  flex: 1;
   &_items {
     display: flex;
     flex-direction: column;
@@ -37,6 +38,7 @@
     background: white;
     padding: 20px 20px;
     align-self: stretch;
+    margin-top: auto;
     &_link {
       font-size: 14px;
       background-color: var(--primary-orange);

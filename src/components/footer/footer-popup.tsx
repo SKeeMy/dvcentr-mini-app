@@ -28,6 +28,7 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
       modalEffectRootId="root"
     >
       <Sheet.Container
+      className={s.sheet_container}
         style={{
           background: 'white',
           borderTopLeftRadius: '30px',
