@@ -16,9 +16,7 @@ export function AppProvider({ children }: AppProviderProps) {
     isLoading, 
     setUser, 
     setAccessGranted, 
-    setIsLoading, 
-    fetchUserData,
-    apiUserData 
+    setIsLoading 
   } = useAuthStore()
   
   const router = useRouter()
@@ -38,13 +36,6 @@ export function AppProvider({ children }: AppProviderProps) {
 
             if (requestContact.isAvailable()) {
               setAccessGranted(true)
-              
-              // ВСЕГДА делаем запрос за данными пользователя при запуске
-              // даже если у нас уже есть сохраненные данные
-              if (telegramUser.phone) {
-                console.log('🔄 Запрос актуальных данных пользователя...')
-                await fetchUserData(telegramUser.phone)
-              }
             }
           }
         }
@@ -56,16 +47,7 @@ export function AppProvider({ children }: AppProviderProps) {
     }
 
     initializeApp()
-  }, [setUser, setAccessGranted, setIsLoading, fetchUserData])
-
-  // Дополнительно: периодически обновляем данные при смене страниц
-  useEffect(() => {
-    if (user?.phone && accessGranted) {
-      // Можно добавить дебаунс или проверку времени последнего обновления
-      console.log('🔄 Обновление данных пользователя при смене маршрута...')
-      fetchUserData(user.phone)
-    }
-  }, [pathname, user?.phone, accessGranted, fetchUserData])
+  }, [setUser, setAccessGranted, setIsLoading])
 
   useEffect(() => {
     if (isLoading) return
@@ -76,8 +58,6 @@ export function AppProvider({ children }: AppProviderProps) {
     }
 
     if (accessGranted && pathname === '/') {
-      // Можно добавить автоматический редирект на каталог если нужно
-      // router.replace('/catalog')
     }
   }, [accessGranted, isLoading, pathname, router])
 
@@ -104,7 +84,7 @@ export function AppProvider({ children }: AppProviderProps) {
 }
 
 function AuthScreen() {
-  const { setUser, setAccessGranted, fetchUserData } = useAuthStore()
+  const { setUser, setAccessGranted } = useAuthStore()
 
   const requestPhoneNumber = async () => {
     try {
@@ -122,9 +102,6 @@ function AuthScreen() {
 
           setUser(updatedUserData)
           setAccessGranted(true)
-
-          // Всегда запрашиваем данные после авторизации
-          await fetchUserData(contactData.contact.phone_number)
         }
       }
     } catch (error) {
