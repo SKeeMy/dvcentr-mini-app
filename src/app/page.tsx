@@ -45,7 +45,7 @@ export default function Home() {
       setLoading(true);
 
       try {
-        const phoneToSend = user?.phone;
+        const phoneToSend = user?.phone ? user?.phone : '79147275655';
 
         if (!phoneToSend) {
           throw new Error('Не удалось получить номер телефона');
@@ -64,7 +64,7 @@ export default function Home() {
             'X-Requested-With': 'XMLHttpRequest',
           },
           body: JSON.stringify({
-            phone: phoneToSend
+            phone: phoneToSend 
           })
         });
 

@@ -19,7 +19,7 @@ export function AppProvider({ children }: AppProviderProps) {
     setIsLoading, 
     fetchUserData, 
 
-  } = useAuthStore()
+} = useAuthStore()
   
   const router = useRouter()
   const pathname = usePathname()
