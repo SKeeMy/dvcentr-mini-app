@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { golosTextFont, steppeFont } from "@/fonts/steppe/index";
 import { init, requestContact, initData, viewport, isTMA, swipeBehavior, disableVerticalSwipes, backButton, miniApp, themeParams, isVerticalSwipesEnabled } from '@telegram-apps/sdk';
 import { usePathname } from 'next/navigation'
+import { AppProvider } from './providers/app-provider'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -76,9 +77,11 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   const pathname = usePathname()
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
-      <Header header_type='catalog' />
-      <main>{children}</main>
-      <Footer />
+      <AppProvider>
+        <Header header_type='catalog' />
+        <main>{children}</main>
+        <Footer />
+      </AppProvider>
     </body>
   )
 }

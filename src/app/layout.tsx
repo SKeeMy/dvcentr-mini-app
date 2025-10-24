@@ -1,10 +1,11 @@
-
 import { RootLayout } from "@/components/layouts/rootLayout";
 import type { Metadata } from "next";
 import "./styles/global.scss";
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { ProtectedRoute } from "@/components/layouts/protected-route";
+import { AppProvider } from "@/components/layouts/providers/app-provider";
 
 export const metadata: Metadata = {
   title: "DVCentr Mini APP",
@@ -16,7 +17,7 @@ export default async function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
+
 
   return (
     <html lang="ru">
