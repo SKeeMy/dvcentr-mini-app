@@ -84,7 +84,7 @@ export function AppProvider({ children }: AppProviderProps) {
 }
 
 function AuthScreen() {
-  const { setUser, setAccessGranted } = useAuthStore()
+  const { setUser, setAccessGranted, fetchUserData } = useAuthStore()
 
   const requestPhoneNumber = async () => {
     try {
@@ -102,6 +102,8 @@ function AuthScreen() {
 
           setUser(updatedUserData)
           setAccessGranted(true)
+
+          await fetchUserData(contactData.contact.phone_number)
         }
       }
     } catch (error) {
