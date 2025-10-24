@@ -45,7 +45,7 @@ export default function Home() {
       setLoading(true);
 
       try {
-        const phoneToSend = userData?.phone;
+        const phoneToSend = user?.phone;
 
         if (!phoneToSend) {
           throw new Error('Не удалось получить номер телефона');
