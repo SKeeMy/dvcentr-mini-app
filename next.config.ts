@@ -11,11 +11,11 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/tg-react-app/check-user',
-        destination: 'https://dvcentr.ru/api/tg-react-app/check-user',
+        destination: 'https://dvcentr.ru/api/tg-react-app/check-user/',
       },
       {
         source: '/api/tg-react-app/get-order-phone',
-        destination: 'https://dvcentr.ru/api/tg-react-app/get-order-phone',
+        destination: 'https://dvcentr.ru/api/tg-react-app/get-order-phone/',
       },
 
     ];
