@@ -77,11 +77,11 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   const pathname = usePathname()
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
-      {/* <AppProvider> */}
+      <AppProvider>
         <Header header_type='catalog' />
         <main>{children}</main>
         <Footer />
-      {/* </AppProvider> */}
+      </AppProvider>
     </body>
   )
 }
