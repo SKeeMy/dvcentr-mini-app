@@ -25,7 +25,7 @@ interface UserData {
 
 
 export default function Home() {
-  const { user, apiUserData } = useAuthStore()
+  const { user, apiUserData, userLoading } = useAuthStore()
   const [data, setData] = useState<IApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function Home() {
             'X-Requested-With': 'XMLHttpRequest',
           },
           body: JSON.stringify({
-            phone: phoneToSend 
+            phone: phoneToSend
           })
         });
 
@@ -146,20 +146,23 @@ export default function Home() {
 
 
             </div>
-            <div className="user-info">
-              <h2 className="user-name">
-                {user?.first_name} {user?.last_name || ''}
-              </h2>
-              {user?.username && (
-                <p className="user-username">@{user.username}</p>
-              )}
+            {!apiUserData ?
+              <div className="user-info">
+                <h2 className="user-name">
+                  {userLoading ? <span className='skeleton-text-loading'></span> : `Здравствуйте,  ${user?.first_name}!👋`}
 
-              {user?.phone && (
-                <div className="user-phone">📱 {user.phone}</div>
-              )}
-            </div>
+                </h2>
+              </div> :
+              <div className="user-info">
+                <h2 className="user-name">
+                  {userLoading ? <span className='skeleton-text-loading'></span> : `  Здравствуйте,  ${apiUserData.name}!👋`}
 
-            {apiUserData && (
+                </h2>
+              </div>
+            }
+
+
+            {/* {apiUserData && (
               <div className="api-user-data">
                 <h3>Данные из системы:</h3>
                 <div className="api-data-grid">
@@ -183,24 +186,43 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="profile-stats">
-            <div className="actions-container">
-              <button
-                onClick={sendPhoneRequest}
-                className="action-button primary"
-              >
-                Доступно по доверенности
-              </button>
-              <button
-                onClick={sendPhoneRequest}
-                className="action-button primary"
-              >
-                Мои остатки
-              </button>
-            </div>
+            {userLoading ? <div className='profile-stats-loading-wrapper'>
+              <div className='profile-stats-loading'></div>
+              <div className='profile-stats-loading'></div>
+            </div> :
+
+              apiUserData ? <div className="actions-container">
+
+                <button
+                  onClick={sendPhoneRequest}
+                  className="action-button primary"
+                >
+                  Доступно по доверенности
+                </button>
+                <button
+                  onClick={sendPhoneRequest}
+                  className="action-button primary"
+                >
+                  Мои остатки
+                </button>
+              </div> : <div className="actions-container">
+                <button
+                  onClick={sendPhoneRequest}
+                  className="action-button primary"
+                >
+                  Зарегистрироваться
+                </button>
+                <p className="reg-description">
+                  Для доступа ко всем функциям пройдите быструю регистрацию
+                </p>
+              </div>
+            }
+
+
           </div>
         </div>
 

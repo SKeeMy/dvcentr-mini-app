@@ -1,4 +1,3 @@
-// components/app-provider.tsx
 'use client'
 import { useAuthStore } from '@/store/auth-store'
 import { useRouter, usePathname } from 'next/navigation'
@@ -16,7 +15,8 @@ export function AppProvider({ children }: AppProviderProps) {
     isLoading, 
     setUser, 
     setAccessGranted, 
-    setIsLoading 
+    setIsLoading ,
+    fetchUserData
   } = useAuthStore()
   
   const router = useRouter()
@@ -48,6 +48,12 @@ export function AppProvider({ children }: AppProviderProps) {
 
     initializeApp()
   }, [setUser, setAccessGranted, setIsLoading])
+
+  useEffect(() => {
+    if (user?.phone) {
+      fetchUserData(user.phone)
+    }
+  }, [pathname, accessGranted, user?.phone, fetchUserData])
 
   useEffect(() => {
     if (isLoading) return
@@ -117,7 +123,7 @@ function AuthScreen() {
         <div className="access-icon">🔒</div>
         <h2 className="access-title">Доступ к приложению</h2>
         <p className="access-description">
-          Для использования всех функций приложения необходимо предоставить доступ к вашему номеру телефона
+          Для доступа к приложению необходимо предоставить доступ к вашему номеру телефона
         </p>
 
         <div className="access-features">

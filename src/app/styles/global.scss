@@ -19,6 +19,7 @@ header {
 footer {
   flex-shrink: 0;
 }
+
 // .react-modal-sheet-container {
 //   transition: transform 0.3s ease-out !important;
 // }
@@ -36,7 +37,7 @@ main {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  
+
 
 
 
@@ -208,6 +209,7 @@ body {
   margin-top: 115px;
   width: 100%;
 }
+
 .app_container_home {
   width: 100%;
 }
@@ -840,4 +842,47 @@ body {
     color: white;
     border: 1px solid rgba(255, 152, 0, 0.2);
   }
+}
+
+.skeleton-text-loading {
+  width: 290px;
+  height: 26px;
+  background: #cecece;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+  display: block;
+}
+
+.reg-description {
+  text-align: center;
+  font-size: 13px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.profile-stats-loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.profile-stats-loading {
+  width: 100%;
+  height: 51px;
+  border-radius: 16px;
+  background: #cecece;
+  animation: pulse 1.5s ease-in-out infinite;
 }

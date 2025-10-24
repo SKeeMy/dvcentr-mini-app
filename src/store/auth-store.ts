@@ -33,10 +33,18 @@ interface AuthState {
   apiUserData: ApiUserData | null
   accessGranted: boolean
   isLoading: boolean
+  userLoading: boolean
+  apiError: string | null
+  
+  // Setters
   setUser: (user: UserData | null) => void
   setApiUserData: (apiUserData: ApiUserData | null) => void
   setAccessGranted: (granted: boolean) => void
   setIsLoading: (loading: boolean) => void
+  setUserLoading: (loading: boolean) => void
+  setApiError: (error: string | null) => void
+  
+  // Actions
   logout: () => void
   fetchUserData: (phone: string) => Promise<void>
 }
@@ -48,22 +56,31 @@ export const useAuthStore = create<AuthState>()(
       apiUserData: null,
       accessGranted: false,
       isLoading: true,
-      
+      userLoading: false,
+      apiError: null,
+
+      // Setters
       setUser: (user) => set({ user }),
       setApiUserData: (apiUserData) => set({ apiUserData }),
       setAccessGranted: (accessGranted) => set({ accessGranted }),
       setIsLoading: (isLoading) => set({ isLoading }),
-      
-      logout: () => set({ 
-        user: null, 
-        apiUserData: null, 
-        accessGranted: false 
+      setUserLoading: (userLoading) => set({ userLoading }),
+      setApiError: (apiError) => set({ apiError }),
+
+      logout: () => set({
+        user: null,
+        apiUserData: null,
+        accessGranted: false,
+        userLoading: false,
+        apiError: null
       }),
-      
+
       fetchUserData: async (phone: string) => {
+        set({ userLoading: true, apiError: null })
+        
         try {
           console.log('📞 Отправка запроса к API с номером:', phone)
-          
+
           const response = await fetch('/api/tg-react-app/check-user', {
             method: 'POST',
             headers: {
@@ -84,13 +101,21 @@ export const useAuthStore = create<AuthState>()(
           console.log('✅ API ответ получен:', result)
 
           if (result.status === '1') {
-            set({ apiUserData: result.data })
+            set({ 
+              apiUserData: result.data,
+              apiError: null 
+            })
             console.log('📊 Данные пользователя сохранены:', result.data)
           } else {
+            set({ apiError: result.message })
             console.warn('⚠️ Пользователь не найден в системе:', result.message)
           }
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка'
+          set({ apiError: errorMessage })
           console.error('❌ Ошибка при запросе данных пользователя:', error)
+        } finally {
+          set({ userLoading: false })
         }
       }
     }),
