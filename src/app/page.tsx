@@ -25,7 +25,7 @@ interface UserData {
 
 
 export default function Home() {
-  const { user } = useAuthStore()
+  const { user, apiUserData } = useAuthStore()
   const [data, setData] = useState<IApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +52,9 @@ export default function Home() {
         }
 
         console.log('1. Отправляем запрос к API с номером:', phoneToSend);
-        const response = await fetch('/api/tg-react-app', {
+
+
+        const response = await fetch('/api/tg-react-app/get-order-phone', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,6 +158,32 @@ export default function Home() {
                 <div className="user-phone">📱 {user.phone}</div>
               )}
             </div>
+
+            {apiUserData && (
+              <div className="api-user-data">
+                <h3>Данные из системы:</h3>
+                <div className="api-data-grid">
+                  <div className="api-data-item">
+                    <strong>Bitrix ID:</strong> {apiUserData.bitrix_id}
+                  </div>
+                  <div className="api-data-item">
+                    <strong>Имя:</strong> {apiUserData.name}
+                  </div>
+                  <div className="api-data-item">
+                    <strong>Фамилия:</strong> {apiUserData.last_name}
+                  </div>
+                  <div className="api-data-item">
+                    <strong>Отчество:</strong> {apiUserData.second_name}
+                  </div>
+                  <div className="api-data-item">
+                    <strong>Email:</strong> {apiUserData.email}
+                  </div>
+                  <div className="api-data-item">
+                    <strong>Телефон:</strong> {apiUserData.personal_phone}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="profile-stats">

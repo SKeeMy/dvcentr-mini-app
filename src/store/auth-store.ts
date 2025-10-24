@@ -11,32 +11,94 @@ interface UserData {
   phone?: string
 }
 
+interface ApiUserData {
+  bitrix_id: string
+  last_name: string
+  name: string
+  second_name: string
+  email: string
+  email_approved: string
+  personal_phone: string
+  personal_phone_approved: string
+}
+
+interface ApiResponse {
+  status: string
+  message: string
+  data: ApiUserData
+}
+
 interface AuthState {
   user: UserData | null
+  apiUserData: ApiUserData | null
   accessGranted: boolean
   isLoading: boolean
   setUser: (user: UserData | null) => void
+  setApiUserData: (apiUserData: ApiUserData | null) => void
   setAccessGranted: (granted: boolean) => void
   setIsLoading: (loading: boolean) => void
   logout: () => void
+  fetchUserData: (phone: string) => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
+      apiUserData: null,
       accessGranted: false,
       isLoading: true,
       
       setUser: (user) => set({ user }),
+      setApiUserData: (apiUserData) => set({ apiUserData }),
       setAccessGranted: (accessGranted) => set({ accessGranted }),
       setIsLoading: (isLoading) => set({ isLoading }),
-      logout: () => set({ user: null, accessGranted: false })
+      
+      logout: () => set({ 
+        user: null, 
+        apiUserData: null, 
+        accessGranted: false 
+      }),
+      
+      fetchUserData: async (phone: string) => {
+        try {
+          console.log('📞 Отправка запроса к API с номером:', phone)
+          
+          const response = await fetch('/api/tg-react-app/check-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Forwarded-Proto': 'https',
+              'X-Forwarded-Ssl': 'on',
+              'HTTPS': 'YES',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ phone })
+          })
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+
+          const result: ApiResponse = await response.json()
+          console.log('✅ API ответ получен:', result)
+
+          if (result.status === '1') {
+            set({ apiUserData: result.data })
+            console.log('📊 Данные пользователя сохранены:', result.data)
+          } else {
+            console.warn('⚠️ Пользователь не найден в системе:', result.message)
+          }
+        } catch (error) {
+          console.error('❌ Ошибка при запросе данных пользователя:', error)
+        }
+      }
     }),
     {
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
+        apiUserData: state.apiUserData,
         accessGranted: state.accessGranted
       }),
     }
