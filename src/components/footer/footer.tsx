@@ -20,6 +20,7 @@ import { Profile } from '../shared/icons/profile'
 import { QRScanner } from '../shared/icons/qr'
 import { Home } from '../shared/icons/home'
 import { Cart as CartOrder } from '../cart/cart'
+import { UserProfile } from '../user-profile/user-profile'
 
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
@@ -28,7 +29,7 @@ const CartCounter = dynamic(() => import('../cart/cart-counter'), {
 
 const QRContent = () => <div>Контент для QR</div>
 const FavoritesContent = () => <div>Контент для Избранного</div>
-const ProfileContent = () => <div>Контент профиля</div>
+const ProfileContent = () => <UserProfile />
 
 export const Footer = () => {
   const { items } = useCartStore()
