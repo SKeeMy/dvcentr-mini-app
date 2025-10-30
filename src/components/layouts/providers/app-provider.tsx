@@ -54,6 +54,9 @@ export function AppProvider({ children }: AppProviderProps) {
       fetchUserData(user.phone)
     }
   }, [pathname, accessGranted, user?.phone, fetchUserData])
+  useEffect(() => {
+      fetchUserData(user.phone)
+  }, [])
 
   useEffect(() => {
     if (isLoading) return

@@ -4,17 +4,27 @@ import clsx from 'clsx'
 import React from 'react'
 import s from './footer.module.scss'
 import { Sheet } from 'react-modal-sheet'
+import { useAuthStore } from '@/store/auth-store'
 
 export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
   const { isOpen, closeFooter, contentType } = useFooterStore()
   const { clearCart } = useCartStore()
-
+  const {fetchUserData, user} = useAuthStore()
   const handleRemoveItemsFromTrash = () => {
     clearCart()
     closeFooter()
   }
 
+  const requestPhoneNumber = async () => {
+    try {
+          await fetchUserData(user?.phone)
+    } catch (error) {
+      console.error('Ошибка запроса контакта:', error)
+    }
+  }
+
   const showClearButton = contentType === 'cart'
+  const showRefreshButton = contentType === 'profile'
 
   return (
     <Sheet
@@ -45,6 +55,11 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
             {showClearButton && (
               <button onClick={handleRemoveItemsFromTrash} className={s.footer_close_cart}>
                 Очистить
+              </button>
+            )}
+            {showRefreshButton && (
+              <button onClick={requestPhoneNumber} className={s.footer_close_cart}>
+                Обновить
               </button>
             )}
           </div>
