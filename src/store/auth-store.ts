@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
       apiUserData: null,
       accessGranted: false,
       isLoading: true,
-      userLoading: true,
+      userLoading: false,
       apiError: null,
 
       // Setters
