@@ -49,13 +49,16 @@ export function AppProvider({ children }: AppProviderProps) {
     initializeApp()
   }, [setUser, setAccessGranted, setIsLoading])
 
+  // useEffect(() => {
+  //   if (user?.phone) {
+  //     fetchUserData(user.phone)
+  //   }
+  // }, [pathname, accessGranted, user?.phone, fetchUserData])
+  // useEffect(() => {
+  //     fetchUserData(user.phone)
+  // }, [])
   useEffect(() => {
-    if (user?.phone) {
-      fetchUserData(user.phone)
-    }
-  }, [pathname, accessGranted, user?.phone, fetchUserData])
-  useEffect(() => {
-      fetchUserData(user.phone)
+    alert('test')
   }, [])
 
   useEffect(() => {
