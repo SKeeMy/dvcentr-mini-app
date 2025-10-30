@@ -17,10 +17,9 @@ type HeaderProps = {
 export const Header: FC<HeaderProps> = ({ header_type }) => {
   const pathname = usePathname()
   const { fetchUserData, user } = useAuthStore()
-  const { isOpen } = useFooterStore()
+  const { isOpen, contentType } = useFooterStore()
   useEffect(() => {
-    alert(1)
-    if (isOpen === true) {
+    if (isOpen === true && contentType === 'profile') {
       fetchUserData(user?.phone)
     }
   }, [pathname, isOpen])
