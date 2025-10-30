@@ -10,17 +10,20 @@ import { Profile } from '../ui/profile/profile'
 import clsx from 'clsx'
 import { user } from '@telegram-apps/sdk/dist/dts/scopes/components/init-data/init-data'
 import { useAuthStore } from '@/store/auth-store'
+import { useFooterStore } from '@/store/footer-strore'
 type HeaderProps = {
   header_type: 'catalog' | 'any'
 }
 export const Header: FC<HeaderProps> = ({ header_type }) => {
   const pathname = usePathname()
   const { fetchUserData, user } = useAuthStore()
+  const { isOpen } = useFooterStore()
   useEffect(() => {
-    if (user?.phone) {
+    alert(1)
+    if (isOpen === true) {
       fetchUserData(user?.phone)
     }
-  }, [])
+  }, [pathname, isOpen])
   // if (pathname === '/') return null
   if (header_type === 'catalog') {
     return (
