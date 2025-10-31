@@ -3,15 +3,20 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  flex: 1;
+  justify-content: space-between;
+  overflow: hidden;
+  gap: 10px;
   .btn {
     color: var(--primary-orange);
     border: none;
     font-size: 16px;
     font-weight: 600;
-    position: absolute ;
+    position: absolute;
     top: 22px;
     right: 20px;
   }
+
   &_title {
     padding-bottom: 10px;
     text-align: center;
@@ -19,13 +24,7 @@
     color: white;
   }
 
-  &_images {
-    width: 100%;
-    height: 400px;
-    display: flex;
-    padding: 0 10px;
-    position: relative;
-  }
+
 
   &_info {
     width: 100%;
@@ -69,6 +68,7 @@
       padding: 0 10px 19px 10px;
       max-height: 100%; // Ограничиваем высоту для скролла
       padding: 20px;
+
       // Стили для контента внутри
       &>div {
         padding-bottom: 20px;
@@ -77,17 +77,18 @@
     }
 
     &_bottom {
-      position: absolute;
-      bottom: 0;
+      // position: absolute;
+      // bottom: 0;
       width: 100%;
       background-color: #282C32;
       display: grid;
-      border-radius: 20px 20px 0 0 ;
+      border-radius: 20px 20px 0 0;
       bottom: 0;
       z-index: 99999999999;
       grid-template-columns: 1fr 2fr;
       gap: 15px;
       padding: 15px 10px 10px 10px;
+      padding-bottom: 30px;
 
       &_price {
         color: #9CA0AF;
@@ -133,6 +134,13 @@
   .swiper {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex: 1;
+  }
+
+  .wrapper_swiper {
+    height: auto !important;
+
   }
 
   .image {
@@ -181,6 +189,7 @@
   left: 0;
   top: 0;
   height: 40px;
+
   &_close {
     color: var(--primary-orange);
     border: none;
@@ -191,4 +200,3 @@
     left: 20px;
   }
 }
-

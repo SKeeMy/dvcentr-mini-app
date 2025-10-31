@@ -30,7 +30,6 @@ export const ProductDetail = () => {
   return (
     <div className={s.product}>
       <span onClick={() => setDescriptionShow(true)} className={s.btn}>Описание</span>
-      <div className={s.product_images}>
         <Swiper
           className={s.swiper}
           spaceBetween={10}
@@ -38,6 +37,7 @@ export const ProductDetail = () => {
           centeredSlides={true}
           resistance={true}
           speed={300}
+          wrapperClass={s.wrapper_swiper}
           zoom={{
             maxRatio: 3,
             minRatio: 1,
@@ -60,7 +60,6 @@ export const ProductDetail = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
       <Sheet
         isOpen={descriptionShow}
         onClose={() => setDescriptionShow(false)}
