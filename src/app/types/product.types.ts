@@ -6,4 +6,10 @@ export interface IProductProps {
   description?: string
   className?: string
   product_type?: 'cart' | 'catalog'
+  additional?: productInfo | null
+}
+
+interface productInfo {
+  images: string[]
+  description?: string
 }

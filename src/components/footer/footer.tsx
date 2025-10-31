@@ -21,6 +21,7 @@ import { QRScanner } from '../shared/icons/qr'
 import { Home } from '../shared/icons/home'
 import { Cart as CartOrder } from '../cart/cart'
 import { UserProfile } from '../user-profile/user-profile'
+import { ProductDetail } from '../pages/catalog/product-detail/product-detail'
 
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
@@ -65,6 +66,8 @@ export const Footer = () => {
         return <FavoritesContent />
       case 'profile':
         return <ProfileContent />
+      case 'product':
+         return <ProductDetail />
       default:
         return null
     }

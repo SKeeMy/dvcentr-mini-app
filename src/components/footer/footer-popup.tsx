@@ -25,7 +25,7 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
 
   const showClearButton = contentType === 'cart'
   const showRefreshButton = contentType === 'profile'
-
+  const showProduct = contentType === 'product'
   return (
     <Sheet
       isOpen={isOpen}
@@ -40,7 +40,7 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
       dragVelocityThreshold={200}
     >
       <Sheet.Container
-        className={s.sheet_container}
+        className={clsx(s.sheet_container, showProduct && s.sheet_container_full)}
         style={{
           background: 'white',
           borderTopLeftRadius: '30px',

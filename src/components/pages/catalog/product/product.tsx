@@ -16,7 +16,8 @@ export const Product: FC<IProductProps> = (props) => {
     price,
     description,
     className,
-    product_type
+    product_type,
+    additional
   } = props
 
   const product = { ...props }
@@ -28,7 +29,7 @@ export const Product: FC<IProductProps> = (props) => {
   const quantityInCart = getItemQuantity(id)
   const isInCart = quantityInCart > 0
   const openCartFooter = useFooterStore(state => state.openFooter)
-
+  const selectProduct = useCartStore(state => state.selectProduct)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -38,6 +39,10 @@ export const Product: FC<IProductProps> = (props) => {
   }
 
   const handleProductClick = () => {
+
+    openCartFooter('product')
+    selectProduct(product)
+
     console.log('Открыть детали товара:', { id, title })
   }
 

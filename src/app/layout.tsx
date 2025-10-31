@@ -4,6 +4,7 @@ import "./styles/global.scss";
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/zoom'
 import { ProtectedRoute } from "@/components/layouts/protected-route";
 import { AppProvider } from "@/components/layouts/providers/app-provider";
 

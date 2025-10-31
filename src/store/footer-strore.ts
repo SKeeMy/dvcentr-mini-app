@@ -1,14 +1,15 @@
+import { IProductProps } from '@/app/types'
 import { create } from 'zustand'
 
-export type FooterContentType = 'cart' | 'qr' | 'favorites' | 'profile' | null
+export type FooterContentType = 'cart' | 'qr' | 'favorites' | 'profile' | 'product' | null
 
 export type FooterState = {
   isOpen: boolean
   contentType: FooterContentType
-  
   openFooter: (type: FooterContentType) => void
   closeFooter: () => void
   setContentType: (type: FooterContentType) => void
+
 }
 
 export const useFooterStore = create<FooterState>((set) => ({
@@ -20,4 +21,5 @@ export const useFooterStore = create<FooterState>((set) => ({
   closeFooter: () => set({ isOpen: false, contentType: null }),
   
   setContentType: (type: FooterContentType) => set({ contentType: type })
+
 }))

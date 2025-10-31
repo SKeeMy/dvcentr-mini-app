@@ -1,0 +1,117 @@
+.product {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh; 
+  gap: 10px;
+  
+  &_title {
+    padding-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: white;
+  }
+  
+  &_images {
+    width: 100%;
+    height: 35vh; 
+    flex: 0 0 auto; 
+    padding: 0 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  
+  &_info {
+    width: 100%;
+    height: 65vh; 
+    flex: 0 0 auto; 
+    background-image: url('/images/background.svg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    padding-top: 35px;
+    padding-bottom: 25px;
+    position: relative;
+
+    // &::after {
+    //   background-color: var(--primary-orange);
+    //   content: "";
+    //   border-radius: 8px;
+    //   width: 19px;
+    //   height: 4.6px;
+    //   position: absolute;
+    //   top: -1px;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    // }
+
+    &_wrapper{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    &_top {
+      border-bottom: 2px solid #434A55;
+      margin-bottom: 15px;
+      max-height: 100%;
+      overflow-y: auto;
+      flex: 1;
+      color: white;
+      padding-left: 10px;
+      padding-bottom: 19px;
+    }
+    &_bottom {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      flex: 1 1 auto;
+      &_price {
+        color: #9CA0AF;
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        span {
+          font-size: 16px ;
+          font-weight: 800;
+          color: white;
+        }
+      }
+      &_cart {
+        background-color: var(--primary-orange);
+        color: white;
+        font-weight: 600;
+        width: 100%;
+        height: 48px;
+        font-size: 14px;
+        border-radius: 23px;
+        &:disabled{
+          background-color: #f89633cc;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+  
+  &_slide {
+    position: relative;
+  }
+  
+  .swiper {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .image {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+  }
+}
+
+.container {
+  height: 100%;
+}
