@@ -1,0 +1,15 @@
+.count {
+  border-radius: 50%;
+  position: absolute;
+  color: white;
+  width: 18px;
+  height: 18px;
+  top: -9px;
+  font-size: 11px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: -5px;
+  background-color: var(--primary-orange);
+}

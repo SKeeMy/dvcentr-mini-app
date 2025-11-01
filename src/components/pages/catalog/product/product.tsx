@@ -8,6 +8,9 @@ import { formatPrice } from '@/app/utils/formatPrice'
 import Image from 'next/image'
 import { ProductCounter } from './product-counter'
 import { useFooterStore } from '@/store/footer-strore'
+import { Heart } from '@/components/shared/icons/heart'
+import { useFavoriteStore } from '@/store/favorite-store'
+import { useRef } from 'react'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -30,6 +33,23 @@ export const Product: FC<IProductProps> = (props) => {
   const isInCart = quantityInCart > 0
   const openCartFooter = useFooterStore(state => state.openFooter)
   const selectProduct = useCartStore(state => state.selectProduct)
+  const refFavorite = useRef<HTMLDivElement>(null)
+  const {
+    addToFavorites,
+    removeFromFavorites,
+    isInFavorites
+  } = useFavoriteStore()
+
+  const isFavorite = isInFavorites(product.id)
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (isFavorite) {
+      removeFromFavorites(product.id)
+    } else {
+      addToFavorites(product)
+    }
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -39,7 +59,6 @@ export const Product: FC<IProductProps> = (props) => {
   }
 
   const handleProductClick = () => {
-
     openCartFooter('product')
     selectProduct(product)
 
@@ -91,6 +110,7 @@ export const Product: FC<IProductProps> = (props) => {
   }
   return (
     <div className={clsx(s.product, className)} onClick={handleProductClick}>
+      <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}><Heart /></button>
       <div className={s.imageContainer}>
         <Image
           src={image}

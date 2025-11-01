@@ -22,14 +22,20 @@ import { Home } from '../shared/icons/home'
 import { Cart as CartOrder } from '../cart/cart'
 import { UserProfile } from '../user-profile/user-profile'
 import { ProductDetail } from '../pages/catalog/product-detail/product-detail'
+import { Favorite } from '../favorite/favorite'
 
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
 })
 
+const FavoriteCounter = dynamic(() => import('../favorite/favorite-counter'), {
+  ssr: false,
+  loading: () => null
+})
+
 const QRContent = () => <div>Контент для QR</div>
-const FavoritesContent = () => <div>Контент для Избранного</div>
+const FavoritesContent = () => <Favorite />
 const ProfileContent = () => <UserProfile />
 
 export const Footer = () => {
@@ -100,6 +106,7 @@ export const Footer = () => {
             className={s.footer_item}
             onClick={() => openFooter('favorites')}
           >
+            <FavoriteCounter />
             <Heart />
           </button>
           

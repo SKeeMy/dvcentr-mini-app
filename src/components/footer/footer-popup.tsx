@@ -5,19 +5,28 @@ import React from 'react'
 import s from './footer.module.scss'
 import { Sheet } from 'react-modal-sheet'
 import { useAuthStore } from '@/store/auth-store'
+import { useFavoriteStore } from '@/store/favorite-store'
 
 export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
   const { isOpen, closeFooter, contentType } = useFooterStore()
   const { clearCart } = useCartStore()
-  const {fetchUserData, user} = useAuthStore()
+  const { fetchUserData, user } = useAuthStore()
+  const { clearFavorites } = useFavoriteStore()
+
   const handleRemoveItemsFromTrash = () => {
     clearCart()
     closeFooter()
   }
 
+  const handleRemoveFavorites = () => {
+    clearFavorites()
+    closeFooter()
+  }
+
+
   const requestPhoneNumber = async () => {
     try {
-          await fetchUserData(user?.phone)
+      await fetchUserData(user?.phone)
     } catch (error) {
       console.error('Ошибка запроса контакта:', error)
     }
@@ -26,6 +35,9 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
   const showClearButton = contentType === 'cart'
   const showRefreshButton = contentType === 'profile'
   const showProduct = contentType === 'product'
+
+  const showClearButtonFavorite = contentType === 'favorites'
+
   return (
     <Sheet
       isOpen={isOpen}
@@ -54,6 +66,11 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
             </button>
             {showClearButton && (
               <button onClick={handleRemoveItemsFromTrash} className={s.footer_close_cart}>
+                Очистить
+              </button>
+            )}
+            {showClearButtonFavorite && (
+              <button onClick={handleRemoveFavorites} className={s.footer_close_cart}>
                 Очистить
               </button>
             )}
