@@ -14,7 +14,7 @@ import { Spinner } from '@/components/ui/spinner/spinner'
 import { ProductDetailImage as Slide } from './product-detail-image'
 export const ProductDetail = () => {
   const { currentProduct, addToCart, getItemQuantity } = useCartStore()
-  const { isOpen, closeFooter, contentType } = useFooterStore()
+  const { isOpen, closeFooter, contentType, openFooter } = useFooterStore()
   const [descriptionShow, setDescriptionShow] = useState(false)
   const quantityInCart = getItemQuantity(currentProduct.id)
 
@@ -25,6 +25,8 @@ export const ProductDetail = () => {
 
   const ref = useRef<SheetRef>(null);
   const snapPoints = [0, 1];
+
+  
 
 
 
@@ -94,9 +96,13 @@ export const ProductDetail = () => {
           Цена:
           <span>{formatPrice(currentProduct.price)}</span>
         </div>
-        <button onClick={handleAddToCart} disabled={isInCart} className={clsx(s.product_info_bottom_cart,)}>
-          {isInCart ? 'Добавлен' : 'В корзину'}
+        {!isInCart ? <button onClick={handleAddToCart} disabled={isInCart} className={clsx(s.product_info_bottom_cart,)}>
+          В корзину
         </button>
+        :
+        <button onClick={() => openFooter('cart')}  className={clsx(s.product_info_bottom_cart)}>
+          Оформить
+        </button>}
       </div>
 
     </div>

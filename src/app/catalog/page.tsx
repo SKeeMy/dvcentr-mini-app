@@ -9,33 +9,39 @@ import { IProductProps } from "../types";
 import { CatalogItems } from "@/components/pages/catalog/catalog-items/catalog-items";
 import { useAppBackButton } from "../hooks/useAppBackButton";
 import { catalog_products } from "../config/products";
+import { useFooterStore } from "@/store/footer-strore";
 
 export default function Catalog() {
   const router = useRouter();
+  const { isOpen, closeFooter } = useFooterStore()
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    if (isOpen) {
+      closeFooter()
+    } else {
+      router.push('/');
+      console.log('Back button clicked, navigating to home');
 
-  // const { showButton, hideButton, isVisible } = useAppBackButton(() => {
-  //   console.log('Back button clicked, navigating to home');
-  //   router.push('/');
-  // });
+    }
+  });
 
-  // useEffect(() => {
-  //   async function initializeCatalog() {
-  //     try {
-  //       if (await isTMA()) {
-  //         showButton();
-  //         console.log('Back button shown, visible:', isVisible);
-  //       }
-  //     } catch (error) {
-  //       console.error('Ошибка инициализации каталога:', error);
-  //     }
-  //   }
+  useEffect(() => {
+    async function initializeCatalog() {
+      try {
+        if (await isTMA()) {
+          showButton();
+          console.log('Back button shown, visible:', isVisible);
+        }
+      } catch (error) {
+        console.error('Ошибка инициализации каталога:', error);
+      }
+    }
 
-  //   initializeCatalog();
+    initializeCatalog();
 
-  //   return () => {
-  //     hideButton();
-  //   };
-  // }, [showButton, hideButton, isVisible]);
+    return () => {
+      hideButton();
+    };
+  }, [showButton, hideButton, isVisible]);
 
 
 
