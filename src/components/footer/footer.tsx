@@ -105,7 +105,7 @@ export const Footer = () => {
           <button 
             className={s.footer_item}
             onClick={() => openFooter('favorites')}
-          >
+        >
             <FavoriteCounter />
             <Heart />
           </button>

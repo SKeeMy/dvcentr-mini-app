@@ -12,6 +12,8 @@ import { init, requestContact, initData, viewport, isTMA } from '@telegram-apps/
 import { BannerSlider } from '@/components/pages/banner-slider/banner-slider'
 import { Section } from '@/components/section/section'
 import { useAuthStore } from '@/store/auth-store'
+import { PrimaryButton } from '@/components/shared/buttons/primary-button/primary-button'
+import { useFooterStore } from '@/store/footer-strore'
 
 interface UserData {
   id: number
@@ -31,6 +33,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [openPopup, setOpenPopup] = useState<boolean>(false)
 
+  const {openFooter} = useFooterStore()
 
 
 
@@ -160,33 +163,6 @@ export default function Home() {
                 </h2>
               </div>
             }
-
-
-            {/* {apiUserData && (
-              <div className="api-user-data">
-                <h3>Данные из системы:</h3>
-                <div className="api-data-grid">
-                  <div className="api-data-item">
-                    <strong>Bitrix ID:</strong> {apiUserData.bitrix_id}
-                  </div>
-                  <div className="api-data-item">
-                    <strong>Имя:</strong> {apiUserData.name}
-                  </div>
-                  <div className="api-data-item">
-                    <strong>Фамилия:</strong> {apiUserData.last_name}
-                  </div>
-                  <div className="api-data-item">
-                    <strong>Отчество:</strong> {apiUserData.second_name}
-                  </div>
-                  <div className="api-data-item">
-                    <strong>Email:</strong> {apiUserData.email}
-                  </div>
-                  <div className="api-data-item">
-                    <strong>Телефон:</strong> {apiUserData.personal_phone}
-                  </div>
-                </div>
-              </div>
-            )} */}
           </div>
 
           <div className="profile-stats">
@@ -196,26 +172,11 @@ export default function Home() {
             </div> :
 
               apiUserData ? <div className="actions-container">
-
-                <button
-                  onClick={sendPhoneRequest}
-                  className="action-button primary"
-                >
-                  Доступно по доверенности
-                </button>
-                <button
-                  onClick={sendPhoneRequest}
-                  className="action-button primary"
-                >
-                  Мои остатки
-                </button>
+                <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
+                <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
+                <PrimaryButton onClick={sendPhoneRequest} buttonText='Мои остатки' />
               </div> : <div className="actions-container">
-                <button
-                  onClick={sendPhoneRequest}
-                  className="action-button primary"
-                >
-                  Зарегистрироваться
-                </button>
+                <PrimaryButton onClick={sendPhoneRequest} buttonText='Зарегистрироваться' />
                 <p className="reg-description">
                   Для доступа ко всем функциям пройдите быструю регистрацию
                 </p>
@@ -226,9 +187,8 @@ export default function Home() {
           </div>
         </div>
 
-        <Link href={'/catalog'} className="action-button primary">
-          Каталог
-        </Link>
+        <PrimaryButton href={'/catalog'} buttonText='Каталог' />
+        
 
 
 

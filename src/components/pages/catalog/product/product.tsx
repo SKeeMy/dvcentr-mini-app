@@ -11,6 +11,7 @@ import { useFooterStore } from '@/store/footer-strore'
 import { Heart } from '@/components/shared/icons/heart'
 import { useFavoriteStore } from '@/store/favorite-store'
 import { useRef } from 'react'
+import { Close } from '@/components/shared/icons/close'
 export const Product: FC<IProductProps> = (props) => {
   const {
     id,
@@ -110,7 +111,10 @@ export const Product: FC<IProductProps> = (props) => {
   }
   return (
     <div className={clsx(s.product, className)} onClick={handleProductClick}>
-      <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}><Heart /></button>
+      {product_type !== 'favorite' ?<button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}><Heart /></button> : 
+      <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}>
+        <Close/>
+      </button>}
       <div className={s.imageContainer}>
         <Image
           src={image}

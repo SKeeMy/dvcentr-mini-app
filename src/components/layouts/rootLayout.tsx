@@ -8,6 +8,8 @@ import { golosTextFont, steppeFont } from "@/fonts/steppe/index";
 import { init, requestContact, initData, viewport, isTMA, swipeBehavior, disableVerticalSwipes, backButton, miniApp, themeParams, isVerticalSwipesEnabled } from '@telegram-apps/sdk';
 import { usePathname } from 'next/navigation'
 import { AppProvider } from './providers/app-provider'
+import Transition from './transtion'
+import { AnimatePresence } from 'framer-motion'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -75,12 +77,18 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
 
   const pathname = usePathname()
+  const onExitComplete = () => {
+    window.scrollTo({ top: 0 })
+  }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
       {/* <AppProvider> */}
-        <Header header_type='catalog' />
-        <main>{children}</main>
-        <Footer />
+      <Header header_type='catalog' />
+      {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
+        <main><Transition>{children}</Transition></main>
+      {/* </AnimatePresence> */}
+
+      <Footer />
       {/* </AppProvider> */}
     </body>
   )

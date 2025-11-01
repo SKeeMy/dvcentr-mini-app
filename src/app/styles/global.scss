@@ -45,7 +45,7 @@ main {
 
 .swiper-lazy-preloader {
   border-color: var(--primary-orange) !important;
-  border-top-color:rgba(0, 0, 0, 0) !important;
+  border-top-color: rgba(0, 0, 0, 0) !important;
 }
 
 .layout_catalog {
@@ -854,6 +854,14 @@ body {
   border-radius: 4px;
   animation: pulse 1.5s ease-in-out infinite;
   display: block;
+}
+
+.transition-layout {
+  flex-direction: column;
+  flex: auto;
+  min-height: 0;
+  display: flex;
+  overflow-y: auto;
 }
 
 .reg-description {

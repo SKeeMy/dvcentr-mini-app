@@ -2,8 +2,14 @@
 import s from './cart.module.scss'
 import React from 'react'
 import { useCartStore } from '@/store/cart-store'
-import { CountIcon } from '../shared/count-icon/count-icon'
+import dynamic from 'next/dynamic'
+
+
 export default function CartCounter() {
+  const Counter = dynamic(() => import('../shared/count-icon/count-icon'), {
+    ssr: false,
+    loading: () => null
+  })
   const items = useCartStore(state => state.items)
   const getTotalItems = useCartStore(state => state.getTotalItems)
   
@@ -11,5 +17,5 @@ export default function CartCounter() {
 
   if (totalItems === 0) return null
   
-  return <CountIcon value={totalItems} />
+  return <Counter value={totalItems} />
 }

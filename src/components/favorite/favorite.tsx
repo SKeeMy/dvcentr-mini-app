@@ -31,7 +31,7 @@ export const Favorite = () => {
       <Container>
         <div className={s.favorites}>
           {favorites.map((item, idx) => (
-            <Product key={idx} {...item} />
+            <Product product_type='favorite' key={idx} {...item} />
           ))}
         </div>
       </Container>
