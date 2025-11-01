@@ -43,7 +43,10 @@ main {
 
 }
 
-
+.swiper-lazy-preloader {
+  border-color: var(--primary-orange) !important;
+  border-top-color:rgba(0, 0, 0, 0) !important;
+}
 
 .layout_catalog {
   display: flex;

@@ -133,6 +133,7 @@ export const catalog_products: IProductProps[] = [
         '/images/toy-voice/1.png',
         '/images/toy-voice/2.png',
         '/images/toy-voice/3.png',
+        '/images/toy-voice/4.png',
       ],
       description: `
       <p>

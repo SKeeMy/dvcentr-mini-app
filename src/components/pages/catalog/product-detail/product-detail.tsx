@@ -5,16 +5,19 @@ import { useCartStore } from '@/store/cart-store'
 import { Container } from '@/components/container/container'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import Image from 'next/image'
-import { Zoom } from 'swiper/modules'
+import { Pagination, Zoom } from 'swiper/modules'
 import { formatPrice } from '@/app/utils/formatPrice'
 import clsx from 'clsx'
 import { Sheet, SheetRef } from 'react-modal-sheet'
 import { useFooterStore } from '@/store/footer-strore'
+import { Spinner } from '@/components/ui/spinner/spinner'
+import { ProductDetailImage as Slide } from './product-detail-image'
 export const ProductDetail = () => {
   const { currentProduct, addToCart, getItemQuantity } = useCartStore()
   const { isOpen, closeFooter, contentType } = useFooterStore()
   const [descriptionShow, setDescriptionShow] = useState(false)
   const quantityInCart = getItemQuantity(currentProduct.id)
+
   const isInCart = quantityInCart > 0
   const handleAddToCart = () => {
     addToCart(currentProduct)
@@ -24,42 +27,41 @@ export const ProductDetail = () => {
   const snapPoints = [0, 1];
 
 
- 
+
 
 
   return (
     <div className={s.product}>
       <span onClick={() => setDescriptionShow(true)} className={s.btn}>Описание</span>
-        <Swiper
-          className={s.swiper}
-          spaceBetween={10}
-          slidesPerView={1}
-          centeredSlides={true}
-          resistance={true}
-          speed={300}
-          wrapperClass={s.wrapper_swiper}
-          zoom={{
-            maxRatio: 3,
-            minRatio: 1,
-          }}
-          modules={[Zoom]}
-        >
-          {currentProduct?.additional.images.map((src, idx) => (
-            <SwiperSlide key={idx} className={s.product_slide}>
-              <div className="swiper-zoom-container">
-                <Image
-                  alt={currentProduct.title}
-                  src={src}
-                  width={600}
-                  height={600}
-                  quality={50}
-                  loading="lazy"
-                  className={s.image}
-                />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <Swiper
+        className={s.swiper}
+        spaceBetween={10}
+        slidesPerView={1}
+        centeredSlides={true}
+        resistance={true}
+        speed={300}
+        wrapperClass={s.wrapper_swiper}
+        zoom={{
+          maxRatio: 3,
+          minRatio: 1,
+        }}
+        
+        pagination={{
+          dynamicBullets: true,
+          horizontalClass: s.swiper_pagination,
+          bulletActiveClass: s.swiper_pagination_active,
+          bulletClass: s.swiper_pagination_bullet
+        }}
+        modules={[Zoom, Pagination]}
+      >
+        {currentProduct?.additional.images.map((src, idx) => (
+          <SwiperSlide  className={s.product_slide}>
+            <Slide key={idx} src={src} title={currentProduct.title} />
+            
+          </SwiperSlide>
+
+        ))}
+      </Swiper>
       <Sheet
         isOpen={descriptionShow}
         onClose={() => setDescriptionShow(false)}
