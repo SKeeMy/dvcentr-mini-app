@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/store/auth-store'
+import { useFooterStore } from '@/store/footer-strore'
 import React from 'react'
 import { Container } from '../container/container'
 import s from './user-profile.module.scss'
@@ -8,7 +9,7 @@ import s from './user-profile.module.scss'
 
 export const UserProfile = () => {
   const { apiUserData, userLoading } = useAuthStore()
-
+  const { openFooter } = useFooterStore()
   if (userLoading) {
     return (
         <div className={s.wrapper_skeleton}>
@@ -25,7 +26,7 @@ export const UserProfile = () => {
   if (!apiUserData) {
     return <div className={s.user_profile_card}>
       <Container>
-        <div className={s.user_profile_card_box}> <h3>Персональные данные отсутствуют</h3><button className='action-button primary'>Зарегистрироваться</button></div>
+        <div className={s.user_profile_card_box}> <h3>Персональные данные отсутствуют</h3><button onClick={() => openFooter('registration')} className='action-button primary'>Зарегистрироваться</button></div>
       </Container>
     </div>
   }

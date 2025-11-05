@@ -171,12 +171,12 @@ export default function Home() {
               <div className='profile-stats-loading'></div>
             </div> :
 
-              apiUserData ? <div className="actions-container">
+              !apiUserData ? <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Мои остатки' />
               </div> : <div className="actions-container">
-                <PrimaryButton onClick={sendPhoneRequest} buttonText='Зарегистрироваться' />
+                <PrimaryButton onClick={() => openFooter('registration')} buttonText='Зарегистрироваться' />
                 <p className="reg-description">
                   Для доступа ко всем функциям пройдите быструю регистрацию
                 </p>
