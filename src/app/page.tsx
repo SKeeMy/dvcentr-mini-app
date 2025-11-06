@@ -37,10 +37,15 @@ export default function Home() {
 
 
   useEffect(() => {
-    console.log('user page')
-    fetchUserData(user?.phone)
-    console.log('userphone', user?.phone);
-  }, [])
+    console.log('📱 Home component mounted');
+    
+    if (user?.phone) {
+      console.log('✅ Using existing phone:', user.phone);
+      fetchUserData(user.phone);
+    } else {
+      console.log('🔄 Fetching user data without phone');
+    }
+  }, [user?.phone]);
 
 
 
