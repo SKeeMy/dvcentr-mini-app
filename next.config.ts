@@ -2,24 +2,24 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   async rewrites() {
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
     return [
       {
         source: '/api/tg-react-app',
-        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/`,
+        destination: `${serverUrl}/api/tg-react-app/`,
       },
       {
         source: '/api/tg-react-app/check-user',
-        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/check-user/`,
+        destination: `${serverUrl}/api/tg-react-app/check-user/`,
       },
       {
         source: '/api/tg-react-app/get-order-phone',
-        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/get-order-phone/`,
+        destination: `${serverUrl}/api/tg-react-app/get-order-phone/`,
       },
       {
         source: '/api/tg-react-app/register-user',
-        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/register-user/`,
+        destination: `${serverUrl}/api/tg-react-app/register-user/`,
       },
 
     ];
