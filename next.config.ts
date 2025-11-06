@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
-
+import { env } from "process";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   async rewrites() {
-    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+    const serverUrl = env.NEXT_PUBLIC_SERVER_URL;
     return [
       {
         source: '/api/tg-react-app',
