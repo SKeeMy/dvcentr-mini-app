@@ -2,6 +2,7 @@
   max-width: 500px;
   margin: 0 auto;
   padding: 40px 20px;
+  position: relative;
 }
 
 .title {
@@ -66,4 +67,11 @@
 
 .container {
   overflow: auto !important;
+}
+
+.loader {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: scale(2.5);
 }

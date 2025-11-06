@@ -8,6 +8,8 @@ import { PrimaryButton } from '../shared/buttons/primary-button/primary-button'
 import { useAuthStore } from '@/store/auth-store'
 import clsx from 'clsx'
 import { useFooterStore } from '@/store/footer-strore'
+import { Spinner } from '../ui/spinner/spinner'
+import { userInfo } from 'os'
 
 interface RegistrationForm {
   dadata_patronymic: string
@@ -29,7 +31,8 @@ export const UserRegistration = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
-    setValue
+    setValue,
+    reset
   } = useForm<RegistrationForm>({
     defaultValues: {
       // receivePromotions: false,
@@ -37,7 +40,8 @@ export const UserRegistration = () => {
       // agreeToTerms: false,
       USER_PHONE_NUMBER: user?.phone || ''
     },
-    mode: 'onBlur'
+    mode: 'onBlur',
+
   })
 
   React.useEffect(() => {
@@ -75,13 +79,14 @@ export const UserRegistration = () => {
 
       const result = await response.json();
       if (result.MESSAGE === 'LINK_PHYS_SUCCESS' || result.MESSAGE === 'FISIC_SUCCESS') {
-        alert(result.STATUS)
+        alert('Аккаунт зарегистрирован!')
         fetchUserData(data.USER_PHONE_NUMBER)
         openFooter('profile')
-        
+        reset()
       }
       setSubmiting(false)
     } catch (error) {
+      reset()
       console.error('Registration error:', error)
       if (error.name === 'AbortError') {
         alert('Запрос занял слишком много времени. Пожалуйста, попробуйте еще раз.')
@@ -93,12 +98,12 @@ export const UserRegistration = () => {
   }
 
   const agreeToTerms = watch('agreeToTerms')
-
+  console.log(user?.phone)
   return (
     <Container className={s.container}>
       <div className={s.registration}>
         <h3 className={s.title}>Регистрация</h3>
-
+        {isSubmiting && <Spinner className={s.loader} />}
         <form onSubmit={handleSubmit(onSubmit)} className={clsx(s.form, isSubmiting && s.disabled)}>
           <div className={s.formRow}>
             <Input<RegistrationForm>
@@ -127,7 +132,7 @@ export const UserRegistration = () => {
             placeholder="Введите ваше отчество"
           />
 
-          <Input<RegistrationForm>
+          {(user?.phone === undefined || user?.phone === '' || user.phone === null) && <Input<RegistrationForm>
             label="Телефон"
             name="USER_PHONE_NUMBER"
             type="tel"
@@ -135,8 +140,8 @@ export const UserRegistration = () => {
             error={errors.USER_PHONE_NUMBER?.message}
             required={true}
             placeholder="+7 (XXX) XXX-XX-XX"
-          // disabled={true}
-          />
+            // disabled={true}
+          />}
 
           <Input<RegistrationForm>
             label="Email"

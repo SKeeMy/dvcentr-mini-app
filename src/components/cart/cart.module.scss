@@ -60,3 +60,14 @@
 .product {
   flex: 0 0 auto;
 }
+
+.reg {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  gap: 5px;
+  button {
+    padding: 10px 10px !important;
+  }
+}

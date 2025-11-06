@@ -23,7 +23,7 @@ export default function Catalog() {
 
     }
   });
-console.log('test');
+  console.log('test');
   useEffect(() => {
     async function initializeCatalog() {
       try {

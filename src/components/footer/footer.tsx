@@ -96,12 +96,12 @@ export const Footer = () => {
             <Home />
           </Link>
           
-          <button 
+          {/* <button 
             className={s.footer_item}
             onClick={() => openFooter('qr')}
           >
             <QRScanner />
-          </button>
+          </button> */}
           
           <button 
             onClick={() => items.length > 0 && openFooter('cart')} 
