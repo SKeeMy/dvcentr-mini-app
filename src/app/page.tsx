@@ -28,13 +28,17 @@ interface UserData {
 
 
 export default function Home() {
-  const { user, apiUserData, userLoading } = useAuthStore()
+  const { user, apiUserData, userLoading, fetchUserData } = useAuthStore()
   const [error, setError] = useState<string | null>(null);
 
   const {openFooter} = useFooterStore()
 
   const { setLoading, setData, data} = useOrdersStore()
 
+
+  useEffect(() => {
+    fetchUserData(user?.phone)
+  }, [])
 
 
 

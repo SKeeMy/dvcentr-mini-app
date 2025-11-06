@@ -35,7 +35,7 @@ interface AuthState {
   isLoading: boolean
   userLoading: boolean
   apiError: string | null
-  
+
   // Setters
   setUser: (user: UserData | null) => void
   setApiUserData: (apiUserData: ApiUserData | null) => void
@@ -43,7 +43,7 @@ interface AuthState {
   setIsLoading: (loading: boolean) => void
   setUserLoading: (loading: boolean) => void
   setApiError: (error: string | null) => void
-  
+
   // Actions
   logout: () => void
   fetchUserData: (phone: string) => Promise<void>
@@ -77,10 +77,11 @@ export const useAuthStore = create<AuthState>()(
 
       fetchUserData: async (phone: string) => {
         set({ userLoading: true, apiError: null })
-        
+
         try {
+          // const phone = '79089672757'
           console.log('📞 Отправка запроса к API с номером:', phone)
-          
+
           const response = await fetch('/api/tg-react-app/check-user', {
             method: 'POST',
             headers: {
@@ -101,13 +102,16 @@ export const useAuthStore = create<AuthState>()(
           console.log('✅ API ответ получен:', result)
 
           if (result.status === '1') {
-            set({ 
+            set({
               apiUserData: result.data,
-              apiError: null 
+              apiError: null
             })
             console.log('📊 Данные пользователя сохранены:', result.data)
           } else {
-            set({ apiError: result.message })
+            set({
+              apiError: result.message,
+              apiUserData: null
+            })
             console.warn('⚠️ Пользователь не найден в системе:', result.message)
           }
         } catch (error) {
