@@ -17,6 +17,12 @@
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: ease .3s;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.78;
+    filter: brightness(0.5);
+  }
 }
 
 .formRow {

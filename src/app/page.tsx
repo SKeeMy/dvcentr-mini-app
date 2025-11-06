@@ -14,6 +14,7 @@ import { Section } from '@/components/section/section'
 import { useAuthStore } from '@/store/auth-store'
 import { PrimaryButton } from '@/components/shared/buttons/primary-button/primary-button'
 import { useFooterStore } from '@/store/footer-strore'
+import { useOrdersStore } from '@/store/orders-store'
 
 interface UserData {
   id: number
@@ -28,27 +29,26 @@ interface UserData {
 
 export default function Home() {
   const { user, apiUserData, userLoading } = useAuthStore()
-  const [data, setData] = useState<IApiResponse | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [openPopup, setOpenPopup] = useState<boolean>(false)
 
   const {openFooter} = useFooterStore()
 
+  const { setLoading, setData, data} = useOrdersStore()
 
 
 
 
   const sendPhoneRequest = async () => {
     console.log('📞 Вызов sendPhoneRequest...');
-    setOpenPopup(true);
+    openFooter('orders')
     setError(null);
 
     if (data === null) {
       setLoading(true);
 
       try {
-        const phoneToSend = user?.phone ? user?.phone : '79147275655';
+        // const phoneToSend = user?.phone ? user?.phone : '79147275655';
+        const phoneToSend ='79147275655';
 
         if (!phoneToSend) {
           throw new Error('Не удалось получить номер телефона');
@@ -87,7 +87,7 @@ export default function Home() {
       }
     } else {
       console.log('📊 Данные уже загружены, открываем popup');
-      setOpenPopup(true);
+      openFooter('orders');
     }
   };
 
@@ -97,49 +97,7 @@ export default function Home() {
   return (
     <Section name={null}>
       <div className="app-container">
-        <div
-          className={clsx('popup-overlay', openPopup && 'visible')}
-          onClick={() => setOpenPopup(false)}
-        >
-          <div
-            className={clsx('popup', openPopup && 'visible')}
-          >
-            <div className='popup_inner'>
-              <ButtonClose aria-label='Close dialog' className='popup__close-btn' onClose={() => setOpenPopup(false)}>
-                <Close />
-              </ButtonClose>
-              <span className='popup__line'></span>
-              <div className='popup_content_wrapper'>
-                <div className="popup__data">
-                  <div>
-                    <span className="popup__desc">
-                      {user?.phone || 'Номер не получен'}
-                    </span>
-                    <p className='popup__title'>Телефон</p>
-                  </div>
-                  {data && <div>
-                    <span className="popup__desc">{data.DATA.Data.length}</span>
-                    <p className='popup__title'>Доступно</p>
-                  </div>}
-                </div>
-              </div>
-              {data && data.DATA.Data.map((order, index) => (
-                <Orders
-                  key={`${order.SalesId}-${index}`}
-                  orderData={order}
-                  loading={loading}
-                />
-              ))}
-
-              {data === null && loading &&
-                <Orders
-                  orderData={null}
-                  loading={loading}
-                />
-              }
-            </div>
-          </div>
-        </div>
+        
 
         <BannerSlider />
 

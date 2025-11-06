@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthState>()(
         
         try {
           console.log('📞 Отправка запроса к API с номером:', phone)
-
+          
           const response = await fetch('/api/tg-react-app/check-user', {
             method: 'POST',
             headers: {

@@ -7,15 +7,19 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/tg-react-app',
-        destination: 'https://dvcentr.ru/api/tg-react-app/',
+        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/`,
       },
       {
         source: '/api/tg-react-app/check-user',
-        destination: 'https://dvcentr.ru/api/tg-react-app/check-user/',
+        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/check-user/`,
       },
       {
         source: '/api/tg-react-app/get-order-phone',
-        destination: 'https://dvcentr.ru/api/tg-react-app/get-order-phone/',
+        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/get-order-phone/`,
+      },
+      {
+        source: '/api/tg-react-app/register-user',
+        destination: `${process.env.NEXT_SERVER_URL}/api/tg-react-app/register-user/`,
       },
 
     ];

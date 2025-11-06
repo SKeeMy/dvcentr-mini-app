@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Container } from '../container/container'
 import { Input } from '../ui/input/Input'
@@ -6,21 +6,24 @@ import { Checkbox } from '../ui/checkbox/checkbox'
 import s from './user-registration.module.scss'
 import { PrimaryButton } from '../shared/buttons/primary-button/primary-button'
 import { useAuthStore } from '@/store/auth-store'
+import clsx from 'clsx'
+import { useFooterStore } from '@/store/footer-strore'
 
 interface RegistrationForm {
-  lastName: string
-  firstName: string
-  middleName: string
-  phone: string
-  email: string
+  dadata_patronymic: string
+  dadata_name: string
+  dadata_surname: string
+  USER_PHONE_NUMBER: string
+  USER_EMAIL: string
   receivePromotions: boolean
   receiveNotifications: boolean
   agreeToTerms: boolean
 }
 
 export const UserRegistration = () => {
-  const { user } = useAuthStore();
-  
+  const { user, fetchUserData } = useAuthStore();
+  const { openFooter } = useFooterStore()
+  const [isSubmiting, setSubmiting] = useState<boolean>(false)
   const {
     register,
     handleSubmit,
@@ -29,28 +32,63 @@ export const UserRegistration = () => {
     setValue
   } = useForm<RegistrationForm>({
     defaultValues: {
-      receivePromotions: false,
-      receiveNotifications: false,
-      agreeToTerms: false,
-      phone: user?.phone || ''
+      // receivePromotions: false,
+      // receiveNotifications: false,
+      // agreeToTerms: false,
+      USER_PHONE_NUMBER: user?.phone || ''
     },
     mode: 'onBlur'
   })
 
   React.useEffect(() => {
     if (user?.phone) {
-      setValue('phone', user.phone)
+      setValue("USER_PHONE_NUMBER", user.phone)
     }
   }, [user?.phone, setValue])
 
   const onSubmit = async (data: RegistrationForm) => {
+    setSubmiting(true)
     try {
       console.log('Registration data:', data)
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      alert('Регистрация успешно завершена!')
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+      const response = await fetch('/api/tg-react-app/register-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Forwarded-Proto': 'https',
+          'X-Forwarded-Ssl': 'on',
+          'HTTPS': 'YES',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ ...data }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (result.MESSAGE === 'LINK_PHYS_SUCCESS' || result.MESSAGE === 'FISIC_SUCCESS') {
+        alert(result.STATUS)
+        fetchUserData(data.USER_PHONE_NUMBER)
+        openFooter('profile')
+        
+      }
+      setSubmiting(false)
     } catch (error) {
       console.error('Registration error:', error)
-      alert('Произошла ошибка при регистрации')
+      if (error.name === 'AbortError') {
+        alert('Запрос занял слишком много времени. Пожалуйста, попробуйте еще раз.')
+      } else {
+        alert('Произошла ошибка при регистрации')
+      }
+      setSubmiting(false)
     }
   }
 
@@ -61,51 +99,51 @@ export const UserRegistration = () => {
       <div className={s.registration}>
         <h3 className={s.title}>Регистрация</h3>
 
-        <form onSubmit={handleSubmit(onSubmit)} className={s.form}>
+        <form onSubmit={handleSubmit(onSubmit)} className={clsx(s.form, isSubmiting && s.disabled)}>
           <div className={s.formRow}>
             <Input<RegistrationForm>
               label="Фамилия"
-              name="lastName"
+              name="dadata_surname"
               register={register}
-              error={errors.lastName?.message}
+              error={errors.dadata_surname?.message}
               required={true}
               placeholder="Введите вашу фамилию"
             />
           </div>
           <Input<RegistrationForm>
-              label="Имя"
-              name="firstName"
-              register={register}
-              error={errors.firstName?.message}
-              required={true}
-              placeholder="Введите ваше имя"
-            />
+            label="Имя"
+            name="dadata_name"
+            register={register}
+            error={errors.dadata_name?.message}
+            required={true}
+            placeholder="Введите ваше имя"
+          />
 
           <Input<RegistrationForm>
             label="Отчество"
-            name="middleName"
+            name="dadata_patronymic"
             register={register}
-            error={errors.middleName?.message}
+            error={errors.dadata_patronymic?.message}
             placeholder="Введите ваше отчество"
           />
 
           <Input<RegistrationForm>
             label="Телефон"
-            name="phone"
+            name="USER_PHONE_NUMBER"
             type="tel"
             register={register}
-            error={errors.phone?.message}
+            error={errors.USER_PHONE_NUMBER?.message}
             required={true}
             placeholder="+7 (XXX) XXX-XX-XX"
-            disabled={true}
+          // disabled={true}
           />
 
           <Input<RegistrationForm>
             label="Email"
-            name="email"
+            name="USER_EMAIL"
             type="email"
             register={register}
-            error={errors.email?.message}
+            error={errors.USER_EMAIL?.message}
             required={true}
             placeholder="example@mail.ru"
             validation={{
@@ -117,27 +155,27 @@ export const UserRegistration = () => {
           />
 
           <div className={s.checkboxGroup}>
-            <Checkbox<RegistrationForm>
+            {/* <Checkbox<RegistrationForm>
               label="Получать уведомления об акциях и специальных предложениях"
               name="receivePromotions"
               register={register}
             />
-            
-            
+
+
             <Checkbox<RegistrationForm>
               label="Я согласен на обработку персональных данных"
               name="agreeToTerms"
               register={register}
               error={errors.agreeToTerms?.message}
               required={true}
-            />
+            /> */}
           </div>
 
-          <PrimaryButton 
-            buttonText={isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'} 
+          <PrimaryButton
+            buttonText={isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
             type="submit"
             className={s.submitButton}
-            disabled={!agreeToTerms || isSubmitting}
+          // disabled={!agreeToTerms || isSubmitting}
           />
         </form>
       </div>

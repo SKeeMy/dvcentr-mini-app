@@ -24,6 +24,7 @@ import { UserProfile } from '../user-profile/user-profile'
 import { ProductDetail } from '../pages/catalog/product-detail/product-detail'
 import { Favorite } from '../favorite/favorite'
 import { UserRegistration } from '../user-registration/user-registration'
+import { GetOrder } from '../get-order/get-order'
 
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
@@ -38,6 +39,7 @@ const FavoriteCounter = dynamic(() => import('../favorite/favorite-counter'), {
 const QRContent = () => <div>Контент для QR</div>
 const FavoritesContent = () => <Favorite />
 const ProfileContent = () => <UserProfile />
+const GetOrdersContent = () => <GetOrder />
 
 const RegistrationContent = () => <UserRegistration />
 
@@ -79,6 +81,8 @@ export const Footer = () => {
          return <ProductDetail />
       case 'registration':
          return <RegistrationContent />
+      case 'orders':
+         return <GetOrdersContent />
       default:
         return null
     }
