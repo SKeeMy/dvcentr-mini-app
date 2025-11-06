@@ -47,8 +47,8 @@ export default function Home() {
       setLoading(true);
 
       try {
-        // const phoneToSend = user?.phone ? user?.phone : '79147275655';
-        const phoneToSend ='79147275655';
+        const phoneToSend = user?.phone ? user?.phone : '79147275655';
+        // const phoneToSend ='79147275655';
 
         if (!phoneToSend) {
           throw new Error('Не удалось получить номер телефона');
@@ -129,7 +129,7 @@ export default function Home() {
               <div className='profile-stats-loading'></div>
             </div> :
 
-              !apiUserData ? <div className="actions-container">
+              apiUserData ? <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Мои остатки' />
