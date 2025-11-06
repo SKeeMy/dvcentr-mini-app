@@ -37,7 +37,9 @@ export default function Home() {
 
 
   useEffect(() => {
+    console.log('user page')
     fetchUserData(user?.phone)
+    console.log('userphone', user?.phone);
   }, [])
 
 
