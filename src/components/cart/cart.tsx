@@ -9,6 +9,7 @@ import { formatPrice } from '@/app/utils/formatPrice'
 import { useAuthStore } from '@/store/auth-store'
 import { useFooterStore } from '@/store/footer-strore'
 import { popup, miniApp } from '@telegram-apps/sdk'
+import { useOrdersStore } from '@/store/orders-store'
 
 const Product = dynamic(() => import('../pages/catalog/product/product').then(mod => mod.Product), {
   ssr: false,
@@ -21,10 +22,11 @@ const TotalPrice = dynamic(() => import('./cart-price').then(mod => mod.CartPric
 })
 
 export const Cart = () => {
-  const { items } = useCartStore()
+  const { items, clearCart } = useCartStore()
   const totalPrice = useCartStore(state => state.getTotalPrice())
   const { apiUserData } = useAuthStore()
   const { openFooter, closeFooter } = useFooterStore()
+  const { setIsOrdering } = useOrdersStore()
 
   const handleOpenRegistration = () => {
     closeFooter()
@@ -59,8 +61,14 @@ export const Cart = () => {
 
 
   const handleCreateOrder = async () => {
-    OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
-    OrderData.ClientBitrixId = apiUserData.bitrix_id
+    // OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
+    // OrderData.ClientBitrixId = apiUserData.bitrix_id
+
+    const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+     
+
 
     OrderData.OrderList = items.map(item => ({
       axCode: item.product.id,
@@ -68,7 +76,26 @@ export const Cart = () => {
       Qty: item.quantity
     }))
 
+    // const response = await fetch('/api/tg-react-app/register-user', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'X-Forwarded-Proto': 'https',
+    //     'X-Forwarded-Ssl': 'on',
+    //     'HTTPS': 'YES',
+    //     'X-Requested-With': 'XMLHttpRequest',
+    //   },
+    //   body: JSON.stringify(OrderData),
+    //   signal: controller.signal
+    // });
+
+    // clearTimeout(timeoutId);
+
     console.log(OrderData)
+
+    closeFooter()
+    setIsOrdering(true)
+
     try {
       const result = await popup.open({
         title: 'Заказ оформлен',
@@ -83,18 +110,23 @@ export const Cart = () => {
       })
       if (result === 'ok') {
         miniApp.close()
+        clearCart()
+        setIsOrdering(false)
       }
+     
     } catch (error) {
       console.error(error)
 
     }
+    
   }
 
 
 
 
+
   const renderButton = () => {
-    if (apiUserData === null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
+    if (apiUserData !== null) return <div className={s.reg}>Для продолжения<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
     else return <button onClick={handleCreateOrder} className={s.order_link}>Оформить заказ на
       <TotalPrice price={totalPrice} />
     </button>

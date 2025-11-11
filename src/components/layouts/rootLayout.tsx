@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation'
 import { AppProvider } from './providers/app-provider'
 import Transition from './transtion'
 import { AnimatePresence } from 'framer-motion'
+import { Ordering } from '../ordering/ordering'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -82,14 +83,15 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
-      <AppProvider>
-        <Header header_type='catalog' />
-        {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
-        <main><Transition>{children}</Transition></main>
-        {/* </AnimatePresence> */}
+      {/* <AppProvider> */}
+      <Ordering />
+      <Header header_type='catalog' />
+      {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
+      <main><Transition>{children}</Transition></main>
+      {/* </AnimatePresence> */}
 
-        <Footer />
-      </AppProvider>
+      <Footer />
+      {/* </AppProvider> */}
     </body>
   )
 }
