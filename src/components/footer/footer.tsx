@@ -101,13 +101,13 @@ export const Footer = () => {
         await promise;
         qrScanner.isOpened(); // false
 
-        qrScanner.isOpened(); // false
-        promise = qrScanner.open({
-          text: 'Scan some specific QR',
-          capture(qr) {
-            return qr === 'some-specific-qr';
-          },
-        });
+        // qrScanner.isOpened(); // false
+        // promise = qrScanner.open({
+        //   text: 'Scan some specific QR',
+        //   capture(qr) {
+        //     return qr === 'some-specific-qr';
+        //   },
+        // });
         qrScanner.isOpened(); // true
         await promise;
         qrScanner.isOpened(); // false

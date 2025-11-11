@@ -8,7 +8,8 @@ import { useCartStore } from '@/store/cart-store'
 import { formatPrice } from '@/app/utils/formatPrice'
 import { useAuthStore } from '@/store/auth-store'
 import { useFooterStore } from '@/store/footer-strore'
-import {  } from '@telegram-apps/sdk'
+import { popup, miniApp } from '@telegram-apps/sdk'
+
 const Product = dynamic(() => import('../pages/catalog/product/product').then(mod => mod.Product), {
   ssr: false,
   loading: () => <ProductSkeleton />
@@ -50,35 +51,53 @@ export const Cart = () => {
       FiasAddressCode: '',
       Zip: '',
       Latitude: '',
-      Longitude: '', 
+      Longitude: '',
       CoordinateCode: ''
     },
     OrderList: []
   }
 
 
-  const handleCreateOrder = () => {
-    // OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
-    // OrderData.ClientBitrixId = apiUserData.bitrix_id
-   
-  
+  const handleCreateOrder = async () => {
+    OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
+    OrderData.ClientBitrixId = apiUserData.bitrix_id
 
     OrderData.OrderList = items.map(item => ({
       axCode: item.product.id,
       AmountOneWithTax: item.product.price,
       Qty: item.quantity
     }))
-    
+
     console.log(OrderData)
+    try {
+      const result = await popup.open({
+        title: 'Заказ оформлен',
+        message: 'В чат придет инструкция по оплате',
+        buttons: [{
+          id: 'ok',
+          type: 'default',
+          text: 'Понятно!'
+        }
+
+        ]
+      })
+      if (result === 'ok') {
+        miniApp.close()
+      }
+    } catch (error) {
+      console.error(error)
+
+    }
   }
+
 
 
 
   const renderButton = () => {
     if (apiUserData !== null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
     else return <button onClick={handleCreateOrder} className={s.order_link}>Оформить заказ на
-                    <TotalPrice price={totalPrice} />
-                </button>
+      <TotalPrice price={totalPrice} />
+    </button>
   }
 
   return (
