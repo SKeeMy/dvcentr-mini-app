@@ -17,7 +17,7 @@ import { FooterPopup } from './footer-popup'
 import { useBodyLock } from '@/app/hooks/useBodyLock'
 import { Heart } from '../shared/icons/heart'
 import { Profile } from '../shared/icons/profile'
-import { QRScanner } from '../shared/icons/qr'
+import { QRScanner as QRIcon } from '../shared/icons/qr'
 import { Home } from '../shared/icons/home'
 import { Cart as CartOrder } from '../cart/cart'
 import { UserProfile } from '../user-profile/user-profile'
@@ -25,6 +25,7 @@ import { ProductDetail } from '../pages/catalog/product-detail/product-detail'
 import { Favorite } from '../favorite/favorite'
 import { UserRegistration } from '../user-registration/user-registration'
 import { GetOrder } from '../get-order/get-order'
+import { qrScanner } from '@telegram-apps/sdk'
 
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
@@ -46,7 +47,7 @@ const RegistrationContent = () => <UserRegistration />
 export const Footer = () => {
   const { items } = useCartStore()
   const { isOpen, contentType, openFooter, closeFooter } = useFooterStore()
-  
+
   useBodyLock(isOpen)
 
   useEffect(() => {
@@ -78,13 +79,43 @@ export const Footer = () => {
       case 'profile':
         return <ProfileContent />
       case 'product':
-         return <ProductDetail />
+        return <ProductDetail />
       case 'registration':
-         return <RegistrationContent />
+        return <RegistrationContent />
       case 'orders':
-         return <GetOrdersContent />
+        return <GetOrdersContent />
       default:
         return null
+    }
+  }
+
+
+  const handlerOpenScanner = async () => {
+    // openFooter('qr')
+
+    if (qrScanner.open.isAvailable()) {
+      try {
+        qrScanner.isOpened(); // false
+        let promise = qrScanner.open({ text: 'Scan any QR' });
+        qrScanner.isOpened(); // true
+        await promise;
+        qrScanner.isOpened(); // false
+
+        qrScanner.isOpened(); // false
+        promise = qrScanner.open({
+          text: 'Scan some specific QR',
+          capture(qr) {
+            return qr === 'some-specific-qr';
+          },
+        });
+        qrScanner.isOpened(); // true
+        await promise;
+        qrScanner.isOpened(); // false
+      } catch (error) {
+        console.error('QR Scanner error:', error);
+      }
+    } else {
+      console.log('QR Scanner is not available');
     }
   }
 
@@ -95,38 +126,38 @@ export const Footer = () => {
           <Link href={'/'} className={s.footer_item}>
             <Home />
           </Link>
-          
-          {/* <button 
+
+          <button
             className={s.footer_item}
-            onClick={() => openFooter('qr')}
+            onClick={handlerOpenScanner}
           >
-            <QRScanner />
-          </button> */}
-          
-          <button 
-            onClick={() => items.length > 0 && openFooter('cart')} 
-            className={s.footer_item} 
+            <QRIcon />
+          </button>
+
+          <button
+            onClick={() => items.length > 0 && openFooter('cart')}
+            className={s.footer_item}
           >
             <Cart />
             <CartCounter />
           </button>
-          
-          <button 
+
+          <button
             className={s.footer_item}
             onClick={() => openFooter('favorites')}
-        >
+          >
             <FavoriteCounter />
             <Heart />
           </button>
-          
-          <button 
+
+          <button
             className={s.footer_item}
             onClick={() => openFooter('profile')}
           >
             <Profile />
           </button>
         </div>
-        
+
         <FooterPopup>
           {renderContent()}
         </FooterPopup>

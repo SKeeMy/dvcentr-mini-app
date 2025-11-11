@@ -8,6 +8,7 @@ import { useCartStore } from '@/store/cart-store'
 import { formatPrice } from '@/app/utils/formatPrice'
 import { useAuthStore } from '@/store/auth-store'
 import { useFooterStore } from '@/store/footer-strore'
+import {  } from '@telegram-apps/sdk'
 const Product = dynamic(() => import('../pages/catalog/product/product').then(mod => mod.Product), {
   ssr: false,
   loading: () => <ProductSkeleton />
@@ -32,10 +33,52 @@ export const Cart = () => {
     }, 100);
   }
 
+  let OrderData = {
+    ConsigneeMobilePhone: '',
+    DateShip: '',
+    TransTime: '',
+    ClientBitrixId: '', //
+    MethodDelivery: '',
+    Geo: {
+      Address: '',
+      ZoneDlv: '',
+      FiasAddressStateOrProvince: '',
+      FiasAddressTown: '',
+      FiasAddressSettlement: '',
+      FiasAddressStreet: '',
+      FiasAddressHouse: '',
+      FiasAddressCode: '',
+      Zip: '',
+      Latitude: '',
+      Longitude: '', 
+      CoordinateCode: ''
+    },
+    OrderList: []
+  }
+
+
+  const handleCreateOrder = () => {
+    // OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
+    // OrderData.ClientBitrixId = apiUserData.bitrix_id
+   
+  
+
+    OrderData.OrderList = items.map(item => ({
+      axCode: item.product.id,
+      AmountOneWithTax: item.product.price,
+      Qty: item.quantity
+    }))
+    
+    console.log(OrderData)
+  }
+
+
 
   const renderButton = () => {
-    if (apiUserData === null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
-    else return <Link href={'/cart'} className={s.order_link}>Оформить заказ на  <TotalPrice price={totalPrice} /></Link>
+    if (apiUserData !== null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
+    else return <button onClick={handleCreateOrder} className={s.order_link}>Оформить заказ на
+                    <TotalPrice price={totalPrice} />
+                </button>
   }
 
   return (
