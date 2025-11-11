@@ -94,7 +94,7 @@ export const Cart = () => {
 
 
   const renderButton = () => {
-    if (apiUserData !== null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
+    if (apiUserData === null) return <div className={s.reg}>Для продолжения,<button onClick={handleOpenRegistration} className={s.order_link}> зарегистрируйтесь</button></div>
     else return <button onClick={handleCreateOrder} className={s.order_link}>Оформить заказ на
       <TotalPrice price={totalPrice} />
     </button>
