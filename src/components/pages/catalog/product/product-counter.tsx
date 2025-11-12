@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import s from './product.module.scss'
 import { useCartStore } from '@/store/cart-store'
-import { useState } from 'react'
+
 export const ProductCounter = ({ productId }: { productId: string }) => {
-  const [count, setCount] = useState<number>(1);
-  const { updateQuantity } = useCartStore()
+  const { updateQuantity, getItemQuantity, removeFromCart } = useCartStore()
+  const count = getItemQuantity(productId)
 
   const handleIncrement = () => {
-    setCount(value => value + 1)
-    updateQuantity(productId, count)
+    updateQuantity(productId, count + 1)
   }
+
   const handleDecrement = () => {
-    setCount(value => value - 1)
+    if (count > 1) {
+      updateQuantity(productId, count - 1)
+    } else {
+      removeFromCart(productId)
+    }
   }
-  
-  useEffect(() => {
-    updateQuantity(productId, count)
-  }, [count])
 
   return (
     <div className={s.counter}>
-      <button onClick={handleDecrement}>-</button>
+      <button onClick={handleDecrement} >-</button>
       <span>{count}</span>
       <button onClick={handleIncrement}>+</button>
     </div>
