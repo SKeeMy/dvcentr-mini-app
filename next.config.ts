@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         source: '/api/tg-react-app/register-user',
         destination: `${serverUrl}/api/tg-react-app/register-user/`,
       },
+      {
+        source: '/api/tg-react-app/create-order',
+        destination: `${serverUrl}/api/tg-react-app/create-order/`,
+      },
 
     ];
   },

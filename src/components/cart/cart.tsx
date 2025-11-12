@@ -61,64 +61,73 @@ export const Cart = () => {
 
 
   const handleCreateOrder = async () => {
-    // OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
-    // OrderData.ClientBitrixId = apiUserData.bitrix_id
+    OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
+    OrderData.ClientBitrixId = apiUserData.bitrix_id
 
-    const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 120000);
-
-     
-
-
+    closeFooter()
+    setIsOrdering(true)
+    
     OrderData.OrderList = items.map(item => ({
       axCode: item.product.id,
       AmountOneWithTax: item.product.price,
       Qty: item.quantity
     }))
 
-    // const response = await fetch('/api/tg-react-app/register-user', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'X-Forwarded-Proto': 'https',
-    //     'X-Forwarded-Ssl': 'on',
-    //     'HTTPS': 'YES',
-    //     'X-Requested-With': 'XMLHttpRequest',
-    //   },
-    //   body: JSON.stringify(OrderData),
-    //   signal: controller.signal
-    // });
-
-    // clearTimeout(timeoutId);
-
     console.log(OrderData)
 
-    closeFooter()
-    setIsOrdering(true)
-
-    try {
-      const result = await popup.open({
-        title: 'Заказ оформлен',
-        message: 'В чат придет инструкция по оплате',
-        buttons: [{
-          id: 'ok',
-          type: 'default',
-          text: 'Понятно!'
-        }
-
-        ]
-      })
-      if (result === 'ok') {
-        miniApp.close()
-        clearCart()
-        setIsOrdering(false)
-      }
-     
-    } catch (error) {
-      console.error(error)
-
-    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
     
+    try {
+      const response = await fetch('/api/tg-react-app/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Forwarded-Proto': 'https',
+          'X-Forwarded-Ssl': 'on',
+          'HTTPS': 'YES',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify(OrderData),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      }
+      const result = await response.json();
+
+      if (result.STATUS === 'SUCCESS') {
+        try {
+          const result = await popup.open({
+            title: 'Заказ оформлен',
+            message: 'В чат придет инструкция по оплате',
+            buttons: [{
+              id: 'ok',
+              type: 'default',
+              text: 'Понятно!'
+            }
+
+            ]
+          })
+          if (result === 'ok') {
+            miniApp.close()
+            clearCart()
+            setIsOrdering(false)
+          }
+
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      setIsOrdering(false)
+    }
+
   }
 
 
