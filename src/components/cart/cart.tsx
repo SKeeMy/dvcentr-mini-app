@@ -61,8 +61,10 @@ export const Cart = () => {
 
 
   const handleCreateOrder = async () => {
-    OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
-    OrderData.ClientBitrixId = apiUserData.bitrix_id
+    // OrderData.ConsigneeMobilePhone = apiUserData.personal_phone
+    // OrderData.ClientBitrixId = apiUserData.bitrix_id
+    OrderData.ConsigneeMobilePhone = '79025067430' 
+    OrderData.ClientBitrixId = '351'
 
     closeFooter()
     setIsOrdering(true)
