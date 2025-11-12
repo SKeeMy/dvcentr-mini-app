@@ -90,7 +90,7 @@ export const useAuthStore = create<AuthState>()(
               'X-Forwarded-Ssl': 'on',
               'HTTPS': 'YES',
               'X-Requested-With': 'XMLHttpRequest',
-              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN ?? '3C7D5B2F9A1E4D6C8B2A5F7E3D1C9B2A'}`
+              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN ?? '3C7D5B2F9A1E4D6C8B2A5F7E3D1C9B2A['}`
             },
             body: JSON.stringify({ phone })
           })
