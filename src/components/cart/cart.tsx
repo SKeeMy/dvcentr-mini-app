@@ -41,7 +41,7 @@ export const Cart = () => {
     DateShip: '',
     TransTime: '',
     ClientBitrixId: '', //
-    MethodDelivery: '',
+    MethodDelivery: 'СВ',
     Geo: {
       Address: '',
       ZoneDlv: '',
@@ -96,6 +96,7 @@ export const Cart = () => {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
+        alert('Возникла ошибка, попробуйте еще раз')
         throw new Error(`HTTP error! status: ${response.status}`);
 
       }
@@ -126,6 +127,7 @@ export const Cart = () => {
       }
     } catch (error) {
       console.log(error)
+      alert('Возникла ошибка, попробуйте еще раз')
       setIsOrdering(false)
     }
 
