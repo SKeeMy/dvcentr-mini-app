@@ -11,13 +11,13 @@ export type CartState = {
   items: CartItem[]
   currentProduct: IProductProps | null
   addToCart: (product: IProductProps) => void
-  removeFromCart: (productId: number) => void
-  updateQuantity: (productId: number, quantity: number) => void
+  removeFromCart: (productId: string) => void
+  updateQuantity: (productId: string, quantity: number) => void
   clearCart: () => void
   getTotalPrice: () => number
   getTotalItems: () => number
-  getItemQuantity: (productId: number) => number
-  isInCart: (productId: number) => boolean
+  getItemQuantity: (productId: string) => number
+  isInCart: (productId: string) => boolean
 
   selectProduct: (product: IProductProps) => void
   
@@ -46,12 +46,12 @@ export const useCartStore = create<CartState>()(
         }
       },
 
-      removeFromCart: (productId: number) => {
+      removeFromCart: (productId: string) => {
         const { items } = get()
         set({ items: items.filter(item => item.product.id !== productId) })
       },
 
-      updateQuantity: (productId: number, quantity: number) => {
+      updateQuantity: (productId: string, quantity: number) => {
         const { items } = get()
 
         if (quantity <= 0) {
@@ -79,12 +79,12 @@ export const useCartStore = create<CartState>()(
         return items.reduce((total, item) => total + item.quantity, 0)
       },
 
-      getItemQuantity: (productId: number) => {
+      getItemQuantity: (productId: string) => {
         const { items } = get()
         return items.find(item => item.product.id === productId)?.quantity || 0
       },
 
-      isInCart: (productId: number) => {
+      isInCart: (productId: string) => {
         const { items } = get()
         return items.some(item => item.product.id === productId)
       },

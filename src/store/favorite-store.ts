@@ -6,10 +6,10 @@ export type FavoriteState = {
   favorites: IProductProps[]
   currentProduct: IProductProps | null
   addToFavorites: (product: IProductProps) => void
-  removeFromFavorites: (productId: number) => void
+  removeFromFavorites: (productId: string) => void
   clearFavorites: () => void
   getTotalFavorites: () => number
-  isInFavorites: (productId: number) => boolean
+  isInFavorites: (productId: string) => boolean
   selectProduct: (product: IProductProps) => void
 }
 
@@ -29,7 +29,7 @@ export const useFavoriteStore = create<FavoriteState>()(
         }
       },
 
-      removeFromFavorites: (productId: number) => {
+      removeFromFavorites: (productId: string) => {
         const { favorites } = get()
         set({ favorites: favorites.filter(product => product.id !== productId) })
       },
@@ -41,7 +41,7 @@ export const useFavoriteStore = create<FavoriteState>()(
         return favorites.length
       },
 
-      isInFavorites: (productId: number) => {
+      isInFavorites: (productId: string) => {
         const { favorites } = get()
         return favorites.some(product => product.id === productId)
       },

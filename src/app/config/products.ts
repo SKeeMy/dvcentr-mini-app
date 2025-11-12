@@ -2,7 +2,7 @@ import { IProductProps } from "../types";
 
 export const catalog_products: IProductProps[] = [
   {
-    id: 1,
+    id: '32.40.39.290.0003',
     title: 'Игрушка "Бетономешалка с добрым сердцем"',
     description: 'Игрушка мягкая "Бетономешалка с добрым сердцем"',
     image: '/images/catalog-toys.png',
@@ -123,7 +123,7 @@ export const catalog_products: IProductProps[] = [
     }
   },
   {
-    id: 2,
+    id: '32.40.39.290.0002',
     title: 'Игрушка "Бетономешалка с добрым сердцем (голос)"',
     description: 'Игрушка мягкая "Бетономешалка с добрым сердцем" с голосовым модулем',
     image: '/images/catalog-toys.png',
@@ -267,7 +267,7 @@ export const catalog_products: IProductProps[] = [
     }
   },
   {
-    id: 3,
+    id: '15.12.12.192.0004',
     title: 'Сумка-шоппер складная "Геометрия"',
     description: 'Сумка-шоппер складная "Геометрия"',
     image: '/images/catalog-bags.png',
@@ -348,7 +348,7 @@ export const catalog_products: IProductProps[] = [
     }
   },
   {
-    id: 4,
+    id: '15.12.12.192.0003',
     title: 'Сумка-шоппер складная "Тигриные узоры"',
     description: 'Сумка-шоппер складная "Тигриные узоры"',
     image: '/images/catalog-bags-2.png',

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import s from './product.module.scss'
 import { useCartStore } from '@/store/cart-store'
 import { useState } from 'react'
-export const ProductCounter = ({ productId }: { productId: number }) => {
+export const ProductCounter = ({ productId }: { productId: string }) => {
   const [count, setCount] = useState<number>(1);
   const { updateQuantity } = useCartStore()
 
