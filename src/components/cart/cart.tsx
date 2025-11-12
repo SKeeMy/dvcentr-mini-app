@@ -103,6 +103,7 @@ export const Cart = () => {
       const result = await response.json();
 
       if (result.STATUS === 'SUCCESS') {
+        setIsOrdering(false)
         try {
           const result = await popup.open({
             title: 'Заказ оформлен',
@@ -118,12 +119,15 @@ export const Cart = () => {
           if (result === 'ok') {
             miniApp.close()
             clearCart()
-            setIsOrdering(false)
+            
           }
 
         } catch (error) {
           console.error(error)
         }
+      } else {
+        alert('Возникла ошибка, попробуйте еще раз')
+        setIsOrdering(false)
       }
     } catch (error) {
       console.log(error)
