@@ -20,19 +20,23 @@
     animation: loading 1.5s infinite;
     transition: ease .3s;
     pointer-events: none;
+
     &.hidden {
-        opacity: 0;
+      opacity: 0;
     }
   }
+
   &.disabled {
     pointer-events: none;
   }
+
   .image {
     object-fit: contain;
     z-index: 3;
+
     &.show_image {
       position: fixed !important;
-      top: calc(50% + 20px ) !important;
+      top: calc(50% + 20px) !important;
       transform: translateY(-50%) translateX(-50%) !important;
       left: 50% !important;
       width: 90% !important;
@@ -41,33 +45,35 @@
       box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
       z-index: 90;
     }
-    
+
   }
 
   @keyframes loading {
     0% {
       background-position: 200% 0;
     }
-  
+
     100% {
       background-position: -200% 0;
     }
   }
-  
- 
+
+
   .close {
     position: fixed;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     background-color: var(--primary-orange);
+
     svg {
-     
+
       path {
         stroke-width: 3px;
         fill: white;
       }
     }
+
     z-index: 91;
     right: 40px;
     top: 120px;
@@ -83,19 +89,32 @@
   from {
     filter: blur(100px)
   }
+
   to {
     filter: blur(0)
   }
 }
 
 .markers {
-	margin: 0 0 20px 24px;
-	padding: 0;
-	list-style-type: "⚡ ";
+  margin: 0 0 20px 24px;
+  padding: 0;
+  list-style-type: "⚡ ";
 }
+
+.markers_button {
+  margin: 0 0 20px 24px;
+  padding: 0;
+  list-style-type: "📌 ";
+
+  li {
+    margin: 7px 0;
+    font-size: 14px;
+  }
+}
+
 .markers li {
-	margin: 7px 0;
-	font-size: 14px;
+  margin: 7px 0;
+  font-size: 14px;
 }
 
 .description {
