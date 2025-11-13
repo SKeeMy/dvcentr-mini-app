@@ -132,7 +132,7 @@ export const Footer = () => {
     // Здесь логика открытия игры
     console.log('Open game')
   }
-
+  if (pathname === '/game') return null
   return (
     <footer className={clsx(s.footer, isOpen && s.open)}>
       <div className={s.footer_content}>

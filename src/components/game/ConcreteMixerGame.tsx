@@ -1,7 +1,9 @@
 // components/mini-game/concrete-mixer-game.tsx
+import { useAppBackButton } from '@/app/hooks/useAppBackButton'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import s from './concrete-mixer-game.module.scss'
-
+import { init, viewport, backButton, isTMA, swipeBehavior } from '@telegram-apps/sdk';
+import { useRouter } from 'next/navigation';
 interface Obstacle {
   id: number
   type: 'cone' | 'barrier' | 'hole'
@@ -18,6 +20,27 @@ interface GameState {
 }
 
 export const ConcreteMixerGame: React.FC = () => {
+  const router = useRouter();
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    router.push('/');
+  });
+  useEffect(() => {
+    async function initializeCatalog() {
+      try {
+        if (await isTMA()) {
+          showButton();
+        }
+      } catch (error) {
+        console.error('Ошибка инициализации каталога:', error);
+      }
+    }
+
+    initializeCatalog();
+
+    return () => {
+      hideButton();
+    };
+  }, [showButton, hideButton, isVisible]);
   const [gameState, setGameState] = useState<GameState>({
     isPlaying: false,
     score: 0,

@@ -23,7 +23,7 @@ export const Header: FC<HeaderProps> = ({ header_type }) => {
       fetchUserData(user?.phone)
     }
   }, [pathname, isOpen])
-  // if (pathname === '/') return null
+  if (pathname === '/game') return null
   if (header_type === 'catalog') {
     return (
       <header className={s.catalog}>
