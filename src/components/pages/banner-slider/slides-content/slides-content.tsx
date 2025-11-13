@@ -36,11 +36,11 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
         </Box>
         <Box>
           <h3>Выберите товар. Нажмите на кнопку «в корзину»</h3>
-          <p className={s.description}>⭐️ Заинтересованный вами товар, можно добавить в раздел «Избранное», нажав на значок «сердечко».</p>
           {RenderImage({
             src: '/images/slides-content/howtobuy/2.png',
             alt: 'Как купить'
           })}
+          <p className={s.description}>⭐️ Заинтересованный вами товар, можно добавить в раздел «Избранное», нажав на значок «сердечко».</p>
         </Box>
         <Box>
           <h3>Оформление заказа</h3>
@@ -62,21 +62,17 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
         <Box>
           <h3>Оплата заказа</h3>
           <ul className={s.markers}>
-            <li>В чат <strong>DVCENTR.RU.ИНФО</strong> будет отправлена вся информация по заказу</li>
+            <li>В чат <strong>DVCENTR.RU.ИНФО</strong> будет отправлена вся информация по заказу.</li>
             <li>Нажмите на кнопку «Оплатить».</li>
             <li>Выберите удобный для Вас способ оплаты. Подтвердите операцию с помощью кода из SMS от вашего банка. </li>
-          </ul>
-          {RenderImage({
-            src: '/images/slides-content/howtobuy/4.jpg',
-            alt: 'Как купить'
-          })}
-          <ul className={s.markers}>
-            <li>По готовности заказа к выдачи, Вам поступит SMS с кодом</li>
           </ul>
           {RenderImage({
               src: '/images/slides-content/howtobuy/5.png',
               alt: 'Как купить',
             })}
+             <ul className={s.markers}>
+            <li>По готовности заказа к выдачи, Вам поступит SMS с кодом</li>
+          </ul>
         </Box>
         <Box>
           <h3 className={s.title}>Желаем вам приятных покупок и <br />
