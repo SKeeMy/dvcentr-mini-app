@@ -22,7 +22,6 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
 
   }
 
-  // 
 
   if (content === 'howToBuy') {
     return (
@@ -95,7 +94,7 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
               disabled: true
             })}
             <li>Нажмите на кнопку "Оплатить" для перехода по ссылке на страницу оплаты</li>
-            <li>Через платежную систему ЮКасса выполните оплату зака</li>
+            <li>Через платежную систему ЮКасса выполните оплату заказа</li>
           </ul>
         </Box>
         <Box>
