@@ -76,7 +76,6 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
           {RenderImage({
               src: '/images/slides-content/howtobuy/5.png',
               alt: 'Как купить',
-              disabled: true
             })}
         </Box>
         <Box>
