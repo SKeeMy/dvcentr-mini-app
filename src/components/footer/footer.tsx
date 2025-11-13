@@ -41,7 +41,7 @@ const QRContent = () => <div>Контент для QR</div>
 const FavoritesContent = () => <Favorite />
 const ProfileContent = () => <UserProfile />
 const GetOrdersContent = () => <GetOrder />
-
+const GetRemains = () => <GetRemains />
 const RegistrationContent = () => <UserRegistration />
 
 export const Footer = () => {
@@ -84,6 +84,8 @@ export const Footer = () => {
         return <RegistrationContent />
       case 'orders':
         return <GetOrdersContent />
+      case 'remains':
+        return <GetRemains />
       default:
         return null
     }
