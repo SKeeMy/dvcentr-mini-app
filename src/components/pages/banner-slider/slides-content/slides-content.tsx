@@ -1,5 +1,6 @@
 import { Box } from '@/components/shared/box/box'
 import { Close } from '@/components/shared/icons/close'
+import { Spinner } from '@/components/ui/spinner/spinner'
 import clsx from 'clsx'
 import Image from 'next/image'
 import React, { useState } from 'react'
@@ -9,10 +10,12 @@ export const SlidesContent = ({ content }: { content: 'howToBuy' }) => {
 
   const RenderImage = ({ src, alt, disabled }: { src: string, alt: string, disabled?: boolean }) => {
     const [isShow, setShow] = useState<boolean>(false)
+    const [isLoaded, setLoaded] = useState<boolean>(false)
     return <>
       {isShow && <div className={s.image_overlay}></div>}
       <div onClick={() => setShow(!isShow)} className={clsx(s.image_wrapper, disabled && s.disabled)}>
-        <Image quality={50} className={clsx(s.image, isShow && s.show_image,)} src={src} alt={alt} loading='lazy' fill />
+        <Image onLoadingComplete={() => setLoaded(true)} quality={50} className={clsx(s.image, isShow && s.show_image,)} src={src} alt={alt} loading='lazy' fill />
+        <span className={clsx(s.skeleton_loading, isLoaded && s.hidden)}></span>
         {isShow && <button onClick={() => setShow(false)} className={s.close}><Close /></button>}
       </div>
     </>

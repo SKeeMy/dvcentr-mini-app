@@ -78,7 +78,6 @@ export const Cart = () => {
       Qty: item.quantity
     }))
 
-    console.log(OrderData)
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 120000);

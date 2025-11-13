@@ -56,14 +56,12 @@ export const Product: FC<IProductProps> = (props) => {
     e.stopPropagation()
     addToCart(product)
     openCartFooter('cart')
-    console.log('Добавить в корзину:', { id, title, price })
   }
 
   const handleProductClick = () => {
     openCartFooter('product')
     selectProduct(product)
 
-    console.log('Открыть детали товара:', { id, title })
   }
 
   if (!title || !image) {

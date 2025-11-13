@@ -12,14 +12,12 @@ export const BannerSlide: FC<IBannerSlideProps> = (props) => {
   const [isVisible, setIsVisible] = useState(false);
   const { setCurrentSlide, currentSlide } = useSlideStore()
   const { openFooter } = useFooterStore()
-  console.log(sticker_image);
 
   const handleClickSlide = () => {
     setCurrentSlide(props)
     openFooter('slide')
   }
 
-  console.log(currentSlide)
 
   return (
     <div  className={s.slide}>

@@ -80,7 +80,6 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           // const phone = '79089672757'
-          console.log('📞 Отправка запроса к API с номером:', phone)
 
           const response = await fetch('/api/tg-react-app/check-user', {
             method: 'POST',
@@ -100,14 +99,12 @@ export const useAuthStore = create<AuthState>()(
           }
 
           const result: ApiResponse = await response.json()
-          console.log('✅ API ответ получен:', result)
 
           if (result.status === '1') {
             set({
               apiUserData: result.data,
               apiError: null
             })
-            console.log('📊 Данные пользователя сохранены:', result.data)
           } else {
             set({
               apiError: result.message,

@@ -53,7 +53,6 @@ export const UserRegistration = () => {
   const onSubmit = async (data: RegistrationForm) => {
     setSubmiting(true)
     try {
-      console.log('Registration data:', data)
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
@@ -99,7 +98,6 @@ export const UserRegistration = () => {
   }
 
   const agreeToTerms = watch('agreeToTerms')
-  console.log(user?.phone)
   return (
     <Container className={s.container}>
       <div className={s.registration}>

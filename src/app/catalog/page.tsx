@@ -19,17 +19,14 @@ export default function Catalog() {
       closeFooter()
     } else {
       router.push('/');
-      console.log('Back button clicked, navigating to home');
 
     }
   });
-  console.log('test');
   useEffect(() => {
     async function initializeCatalog() {
       try {
         if (await isTMA()) {
           showButton();
-          console.log('Back button shown, visible:', isVisible);
         }
       } catch (error) {
         console.error('Ошибка инициализации каталога:', error);
