@@ -141,7 +141,7 @@ export default function Home() {
               <div className='profile-stats-loading'></div>
             </div> :
 
-              !apiUserData ? <div className="actions-container">
+              apiUserData ? <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
                 <PrimaryButton onClick={() => openFooter('remains')} buttonText='Мои остатки' />
