@@ -68,3 +68,11 @@
     position: relative; // Убедитесь, что z-index работает
   }
 }
+
+.description {
+  top: 10px;
+  margin-right: 10px;
+  max-width: 140px;
+  font-size: 12px;
+  padding: 15px 10px;
+}

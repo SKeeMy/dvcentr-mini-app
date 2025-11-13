@@ -4,4 +4,5 @@ export interface IBannerSlideProps {
   stricker_pos?: 'left' | 'right' | 'center'
   background_image?: string | null
   text: string | null
+  description?: string | React.ReactNode
 }

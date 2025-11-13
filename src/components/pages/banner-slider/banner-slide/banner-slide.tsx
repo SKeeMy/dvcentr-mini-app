@@ -4,13 +4,25 @@ import { FC } from 'react'
 import { IBannerSlideProps } from './banner-slide.interface'
 import clsx from 'clsx'
 import Image from 'next/image';
+import { useSlideStore } from '@/store/slide-store'
+import { PrimaryButton } from '@/components/shared/buttons/primary-button/primary-button'
+import { useFooterStore } from '@/store/footer-strore'
 export const BannerSlide: FC<IBannerSlideProps> = (props) => {
-  const { background_image, sticker_image, stricker_pos = null, text = null } = props;
+  const { background_image, sticker_image, stricker_pos = null, text = null, description } = props;
   const [isVisible, setIsVisible] = useState(false);
+  const { setCurrentSlide, currentSlide } = useSlideStore()
+  const { openFooter } = useFooterStore()
   console.log(sticker_image);
 
+  const handleClickSlide = () => {
+    setCurrentSlide(props)
+    openFooter('slide')
+  }
+
+  console.log(currentSlide)
+
   return (
-    <div className={s.slide}>
+    <div  className={s.slide}>
       {/* Фоновая картинка - с ограничением размера */}
       {background_image && (
         <Image
@@ -48,6 +60,8 @@ export const BannerSlide: FC<IBannerSlideProps> = (props) => {
 
         />
       )}
+
+      {description && <PrimaryButton onClick={handleClickSlide} className={s.description} buttonText='Подробнее' />}
 
       {/* Текст */}
       {text && <h3>{text}</h3>}

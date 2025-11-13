@@ -88,17 +88,14 @@ export default function Home() {
         }
 
         const result = await response.json();
-        console.log('2. API ответ получен');
         setData(result);
       } catch (err) {
         console.error('❌ Ошибка в sendPhoneRequest:', err);
         setError(err.message);
       } finally {
         setLoading(false);
-        console.log('✅ sendPhoneRequest завершен');
       }
     } else {
-      console.log('📊 Данные уже загружены, открываем popup');
       openFooter('orders');
     }
   };

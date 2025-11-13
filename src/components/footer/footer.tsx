@@ -27,6 +27,7 @@ import { UserRegistration } from '../user-registration/user-registration'
 import { GetOrder } from '../get-order/get-order'
 import { qrScanner } from '@telegram-apps/sdk'
 import { GetRemains } from '../get-remains/get-remains'
+import { SlideDescription } from '../pages/banner-slider/banner-slide/slide-description'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -86,6 +87,8 @@ export const Footer = () => {
         return <GetOrdersContent />
       case 'remains':
         return <GetRemainsContent />
+      case 'slide': 
+        return <SlideDescription />
       default:
         return null
     }

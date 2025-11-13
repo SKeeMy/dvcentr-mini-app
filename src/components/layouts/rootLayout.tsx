@@ -45,26 +45,17 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
           console.error('Something went wrong mounting the viewport', e)
         }
 
-        // Отключаем вертикальные свайпы и логируем
         if (swipeBehavior.isSupported) {
-          console.log('Swipe behavior is supported');
 
-          // Монтируем если доступно
           if (swipeBehavior.mount.isAvailable()) {
             await swipeBehavior.mount();
           }
 
-          // Логируем состояние до отключения
-          console.log('Initial vertical swipes state:', swipeBehavior.isVerticalEnabled);
 
-          // Отключаем вертикальные свайпы
           if (swipeBehavior.disableVertical.isAvailable()) {
             swipeBehavior.disableVertical();
-            console.log('Vertical swipes disabled successfully');
           }
 
-          // Логируем состояние после отключения
-          console.log('Final vertical swipes state:', swipeBehavior.isVerticalEnabled);
         }
 
         initData.restore();
@@ -83,7 +74,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
-      <AppProvider>
+      {/* <AppProvider> */}
         <Ordering />
         <Header header_type='catalog' />
         {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
@@ -91,7 +82,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         {/* </AnimatePresence> */}
 
         <Footer />
-      </AppProvider>
+      {/* </AppProvider> */}
     </body>
   )
 }

@@ -1,7 +1,7 @@
 import { IProductProps } from '@/app/types'
 import { create } from 'zustand'
 
-export type FooterContentType = 'cart' | 'qr' | 'favorites' | 'profile' | 'product' | 'registration' | 'orders' | 'remains' | null
+export type FooterContentType = 'cart' | 'qr' | 'favorites' | 'profile' | 'product' | 'registration' | 'orders' | 'remains' | 'slide' | null
 
 export type FooterState = {
   isOpen: boolean
