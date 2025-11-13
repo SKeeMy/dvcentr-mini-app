@@ -167,6 +167,7 @@
   left: 20%; // Фиксированная позиция слева
   width: 120px;
   height: 100px;
+  object-fit: contain;
 z-index: 20;
   transition: transform 0.3s ease;
   

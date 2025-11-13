@@ -246,23 +246,8 @@ export const ConcreteMixerGame: React.FC = () => {
         ))}
 
         {/* Бетономешалка */}
-        {/* <img src={'/images/game.png'} /> */}
-        <div className={`${s.concreteMixer} ${gameState.isJumping ? s.jumping : ''}`}>
-          <div className={s.chassis}>
-            <div className={s.wheel} />
-            <div className={s.wheel} style={{ right: '10%' }} />
-          </div>
-          <div 
-            className={s.mixer} 
-            style={{ transform: `rotate(${mixerRotation}deg)` }}
-          >
-            <div className={s.mixerDetail} />
-            <div className={s.concrete} />
-          </div>
-          <div className={s.cabin}>
-            <div className={s.window} />
-          </div>
-        </div>
+        <img className={`${s.concreteMixer} ${gameState.isJumping ? s.jumping : ''}`} src={'/images/game.png'} />
+     
 
         {/* Дорога */}
         <div 
