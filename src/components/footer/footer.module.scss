@@ -160,7 +160,7 @@
       height: 24px;
       flex: 0 0 auto;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      
+
       path {
         stroke: var(--primary-orange) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -170,7 +170,7 @@
 
   .functions_button {
     position: relative;
-    
+
     .button_text {
       font-weight: 500;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -183,7 +183,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       .plus_icon,
       .close_icon {
         position: absolute;
@@ -191,18 +191,18 @@
         left: 50%;
         transform: translate(-50%, -50%);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        
+
         path {
           stroke: white;
           stroke-width: 1.2px;
         }
       }
-      
+
       .plus_icon {
         opacity: 1;
         transform: translate(-50%, -50%) rotate(0deg);
       }
-      
+
       .close_icon {
         opacity: 0;
         transform: translate(-50%, -50%) rotate(-90deg);
@@ -218,7 +218,7 @@
           opacity: 0;
           transform: translate(-50%, -50%) rotate(90deg);
         }
-        
+
         .close_icon {
           opacity: 1;
           transform: translate(-50%, -50%) rotate(0deg);
@@ -235,7 +235,7 @@
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-        
+
         &.functions_button_active {
           box-shadow: 0 6px 20px rgba(255, 68, 68, 0.4);
         }
@@ -259,7 +259,7 @@
     transform: translateY(30px) scale(0.8);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    
+
     &.show_adds {
       transform: translateY(0) scale(1);
       opacity: 1;
@@ -279,27 +279,28 @@
     border-radius: 12px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: #666;
-    
+    text-decoration: none;
+
     &:active {
       background: rgba(255, 107, 53, 0.1);
       transform: scale(0.95);
     }
-    
+
     span {
       font-size: 8px;
       font-weight: 500;
-      color:  rgb(171, 171, 171);
+      color: rgb(171, 171, 171);
     }
-    
+
     svg {
       width: 20px;
       height: 20px;
-      
+
       path {
         stroke: var(--primary-orange);
       }
     }
-    
+
     // Анимация при наведении (для десктопа)
     @media (hover: hover) {
       &:hover {
@@ -325,6 +326,7 @@
     &:nth-child(1) {
       animation: slideInUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
     }
+
     &:nth-child(2) {
       animation: slideInUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
     }
@@ -336,9 +338,9 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
