@@ -27,7 +27,7 @@
   &_items {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 25px;
   }
 
   &_cart {
@@ -138,7 +138,7 @@
     color: rgb(171, 171, 171);
     justify-content: center;
     align-items: center;
-    // border: 2px solid rgb(255, 255, 255);
+    border: 1px solid transparent;
     border-radius: 14px;
     width: 40px;
     height: 40px;
@@ -148,6 +148,27 @@
     text-decoration: none;
     flex-direction: column;
     transition: ease .2s;
+
+    .footer_adds {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: absolute;
+      border-radius: 30px;
+      position: absolute;
+      top: -130px;
+      background-color: #ffffff36;
+      padding: 10px 3px;
+      transition: ease .3s;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(30px);
+      &.show_adds {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
     &:active {
       opacity: 0.5;
     }

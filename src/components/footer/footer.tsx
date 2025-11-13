@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { Container } from '../container/container'
 import { Cart } from '../shared/icons/cart'
 import s from './footer.module.scss'
@@ -28,6 +28,8 @@ import { GetOrder } from '../get-order/get-order'
 import { qrScanner } from '@telegram-apps/sdk'
 import { GetRemains } from '../get-remains/get-remains'
 import { SlideDescription } from '../pages/banner-slider/banner-slide/slide-description'
+import { Gamepad } from '../shared/icons/gamepad'
+import { Plus } from '../shared/icons/plus'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -48,7 +50,7 @@ const RegistrationContent = () => <UserRegistration />
 export const Footer = () => {
   const { items } = useCartStore()
   const { isOpen, contentType, openFooter, closeFooter } = useFooterStore()
-
+  const [isShowAdds, setShowAdds] = useState<boolean>(false)
   useBodyLock(isOpen)
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export const Footer = () => {
         return <GetOrdersContent />
       case 'remains':
         return <GetRemainsContent />
-      case 'slide': 
+      case 'slide':
         return <SlideDescription />
       default:
         return null
@@ -124,6 +126,8 @@ export const Footer = () => {
     }
   }
 
+  
+
   return (
     <footer className={clsx(s.footer, isOpen && s.open)}>
       <div className={s.footer_content}>
@@ -133,13 +137,29 @@ export const Footer = () => {
             <span>Главная</span>
           </Link>
 
-          <button
-            className={s.footer_item}
-            onClick={handlerOpenScanner}
-          >
-            <QRIcon />
-            <span>Скан QR</span>
+          <button style={isShowAdds ? {borderColor: 'white'} : {}} onClick={() => setShowAdds(!isShowAdds)} className={s.footer_item}>
+            <Plus />
+            <span>Функции</span>
+
+            <span className={clsx(s.footer_adds, isShowAdds && s.show_adds)}>
+              <span
+                className={s.footer_item}
+                onClick={handlerOpenScanner}
+              >
+                <QRIcon />
+                <span>Скан QR</span>
+              </span>
+              <span
+                className={s.footer_item}
+                onClick={handlerOpenScanner}
+              >
+                <Gamepad />
+                <span>Игра</span>
+              </span>
+            </span>
+
           </button>
+
 
           <button
             onClick={() => openFooter('cart')}
