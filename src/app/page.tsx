@@ -155,6 +155,7 @@ export default function Home() {
         </div>
 
         <PrimaryButton href={'/catalog'} buttonText='Каталог' />
+        <PrimaryButton href={'/game'} buttonText='Каталог' />
         
 
 
