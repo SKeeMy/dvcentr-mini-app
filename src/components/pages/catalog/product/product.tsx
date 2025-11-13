@@ -1,5 +1,5 @@
 import { IProductProps } from '@/app/types'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useCartStore } from '@/store/cart-store'
 import s from './product.module.scss'
 import clsx from 'clsx'
@@ -75,9 +75,49 @@ export const Product: FC<IProductProps> = (props) => {
     removeFromCart(id)
   }
 
+  const [translateX, setTranslateX] = useState(0)
+  const [isRemoving, setIsRemoving] = useState(false)
+  const isSwiping = useRef(false)
+  const touchStartX = useRef(0)
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    isSwiping.current = true
+  }
+  
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isSwiping.current) return
+    
+    const currentX = e.touches[0].clientX
+    const diff = touchStartX.current - currentX
+    if (diff > 0) {
+      const resistance = 0.7
+      setTranslateX(Math.min(diff * resistance, 120))
+    }
+  }
+  
+  const handleTouchEnd = () => {
+    isSwiping.current = false
+    
+    if (translateX > 80) {
+      setIsRemoving(true)
+      setTimeout(() => {
+        handleRemoveItemFromCart({ stopPropagation: () => {} } as React.MouseEvent)
+      }, 300)
+    } else {
+      setTranslateX(0)
+    }
+  }
+
   if (product_type === 'cart') {
     return (
-      <div className={clsx(s.product, className, s.product_cart)}>
+      <div style={{
+        transform: `translateX(-${translateX}px)`,
+        transition: isRemoving ? 'all 0.3s ease' : 'transform 0.2s ease'
+      }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd} className={clsx(s.product, className, s.product_cart,  isRemoving && s.removing)}>
         <div className={s.product_cart_left}>
           <div>
 
@@ -111,10 +151,7 @@ export const Product: FC<IProductProps> = (props) => {
   }
   return (
     <div className={clsx(s.product, className)} onClick={handleProductClick}>
-      {product_type !== 'favorite' ?<button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}><Heart /></button> : 
-      <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}>
-        <Close/>
-      </button>}
+
       <div className={s.imageContainer}>
         <Image
           src={image}
@@ -138,14 +175,21 @@ export const Product: FC<IProductProps> = (props) => {
         )} */}
         <div className={s.bottom_card_wraper}>
           <div className={s.price}>{formatPrice(price)}</div>
+          <div className={s.buttons}>
 
-          <button
-            className={`${s.addButton} ${isInCart ? s.inCart : ''}`}
-            onClick={handleAddToCart}
-            disabled={!price}
-          >
-            {isInCart ? `✓︎ ` : '🛒'}
-          </button>
+            {product_type !== 'favorite' ? <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite)} onClick={toggleFavorite}><Heart /></button> :
+              <button className={clsx(s.product_favorite_btn, isFavorite && s.favorite, s.favorite_remove)} onClick={toggleFavorite}>
+                <Close />
+              </button>}
+            <button
+              className={`${s.addButton} ${isInCart ? s.inCart : ''}`}
+              onClick={handleAddToCart}
+              disabled={!price}
+            >
+              {isInCart ? `✓︎ ` : '🛒'}
+            </button>
+          </div>
+
         </div>
       </div>
     </div>

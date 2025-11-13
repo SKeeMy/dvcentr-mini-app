@@ -10,6 +10,9 @@ import { useAuthStore } from '@/store/auth-store'
 import { useFooterStore } from '@/store/footer-strore'
 import { popup, miniApp } from '@telegram-apps/sdk'
 import { useOrdersStore } from '@/store/orders-store'
+import { Box } from '../shared/box/box'
+import { usePathname } from 'next/navigation'
+import { PrimaryButton } from '../shared/buttons/primary-button/primary-button'
 
 const Product = dynamic(() => import('../pages/catalog/product/product').then(mod => mod.Product), {
   ssr: false,
@@ -27,7 +30,7 @@ export const Cart = () => {
   const { apiUserData } = useAuthStore()
   const { openFooter, closeFooter } = useFooterStore()
   const { setIsOrdering } = useOrdersStore()
-
+  const pathname = usePathname()
   const handleOpenRegistration = () => {
     closeFooter()
     setTimeout(() => {
@@ -148,6 +151,19 @@ export const Cart = () => {
     else return <button onClick={handleCreateOrder} className={s.order_link}>Оформить заказ на
       <TotalPrice price={totalPrice} />
     </button>
+  }
+
+  if (pathname === '/catalog' && items.length === 0) {
+    return <Box>
+      <h3 className={s.title}>Здесь пока пусто. <br /> Добавьте товар в корзину</h3>
+    </Box>
+  }
+
+  if (items.length === 0) {
+    return <Box>
+      <h3 className={s.title}>Здесь пока пусто. <br /> Перейдите в каталог</h3>
+      <PrimaryButton onClick={closeFooter} buttonText='Каталог' href='/catalog' />
+    </Box>
   }
 
   return (

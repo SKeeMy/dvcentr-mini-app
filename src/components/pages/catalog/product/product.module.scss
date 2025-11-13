@@ -1,13 +1,24 @@
 .product {
-  background: #f5f1ed;
+  background: #efefef;
   border-radius: 10px;
   // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   cursor: pointer;
   // border: 1px solid #f0f0f0;
   position: relative;
+  transition: ease .2s;
 
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.removing {
+    transform: translateX(-100%);
+    opacity: 0;
+
+  }
 }
+
 
 .product_cart {
   display: flex;
@@ -126,7 +137,7 @@
 }
 
 .price {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
   color: #1a1a1a;
   // margin-bottom: 8px;
@@ -331,24 +342,55 @@
 }
 
 .product_favorite_btn {
-  position: absolute;
-  top: 10px;
+  // position: absolute;
+  // top: 10px;
+  background: var(--primary-gradient);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   right: 10px;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   z-index: 9999;
+  transition: ease .5s;
+
   svg {
+    width: 18px;
+    height: 18px;
+
     path {
-      stroke: var(--primary-orange);
+      stroke: white;
+      transition: ease .3s;
     }
   }
+
   &.favorite {
+    transform: rotateZ(360deg);
+
     svg {
-      width: 23px;
-      height: 23px;
+
       path {
         fill: red;
       }
     }
   }
+}
+
+.buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.favorite_remove {
+  svg {
+    stroke: white;
+
+    path {
+      fill: white !important;
+
+    }
+  }
+
+  path {}
 }

@@ -138,16 +138,30 @@
     color: rgb(171, 171, 171);
     justify-content: center;
     align-items: center;
-    border: 2px solid rgb(255, 255, 255);
+    // border: 2px solid rgb(255, 255, 255);
     border-radius: 14px;
     width: 40px;
     height: 40px;
     position: relative;
+    display: flex;
+    gap: 5px;
+    text-decoration: none;
+    flex-direction: column;
+    transition: ease .2s;
+    &:active {
+      opacity: 0.5;
+    }
+    span {
+      font-size: 9px;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
 
     svg {
       width: 24px;
       height: 24px;
-
+      flex: 0 0 auto;
       path {
         stroke: var(--primary-orange);
       }

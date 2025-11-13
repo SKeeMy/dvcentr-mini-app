@@ -125,6 +125,7 @@ export const Footer = () => {
         <div className={clsx(s.footer_items)}>
           <Link href={'/'} className={s.footer_item}>
             <Home />
+            <span>Главная</span>
           </Link>
 
           <button
@@ -132,14 +133,16 @@ export const Footer = () => {
             onClick={handlerOpenScanner}
           >
             <QRIcon />
+            <span>Скан QR</span>
           </button>
 
           <button
-            onClick={() => items.length > 0 && openFooter('cart')}
+            onClick={() => openFooter('cart')}
             className={s.footer_item}
           >
             <Cart />
             <CartCounter />
+            <span>Корзина</span>
           </button>
 
           <button
@@ -148,6 +151,7 @@ export const Footer = () => {
           >
             <FavoriteCounter />
             <Heart />
+            <span>Избранное</span>
           </button>
 
           <button
@@ -155,6 +159,7 @@ export const Footer = () => {
             onClick={() => openFooter('profile')}
           >
             <Profile />
+            <span>Профиль</span>
           </button>
         </div>
 

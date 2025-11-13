@@ -42,7 +42,7 @@ export const FooterPopup = ({ children }: { children: React.ReactNode }) => {
     <Sheet
       isOpen={isOpen}
       onClose={closeFooter}
-      detent="content"
+      detent={contentType === 'cart' ? 'default' : 'content'}
       snapPoints={[0, 1]}
       initialSnap={1}
       tweenConfig={{ ease: 'easeOut', duration: 0.3 }}
