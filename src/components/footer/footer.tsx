@@ -26,7 +26,7 @@ import { Favorite } from '../favorite/favorite'
 import { UserRegistration } from '../user-registration/user-registration'
 import { GetOrder } from '../get-order/get-order'
 import { qrScanner } from '@telegram-apps/sdk'
-
+import { GetRemains } from '../get-remains/get-remains'
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -41,7 +41,7 @@ const QRContent = () => <div>Контент для QR</div>
 const FavoritesContent = () => <Favorite />
 const ProfileContent = () => <UserProfile />
 const GetOrdersContent = () => <GetOrder />
-const GetRemains = () => <GetRemains />
+const GetRemainsContent = () => <GetRemains />
 const RegistrationContent = () => <UserRegistration />
 
 export const Footer = () => {
@@ -85,7 +85,7 @@ export const Footer = () => {
       case 'orders':
         return <GetOrdersContent />
       case 'remains':
-        return <GetRemains />
+        return <GetRemainsContent />
       default:
         return null
     }
@@ -98,7 +98,7 @@ export const Footer = () => {
     if (qrScanner.open.isAvailable()) {
       try {
         qrScanner.isOpened(); // false
-        let promise = qrScanner.open({ text: 'Scan any QR' });
+        let promise = qrScanner.open({ text: 'Отсканируйте QR-код' });
         qrScanner.isOpened(); // true
         await promise;
         qrScanner.isOpened(); // false
