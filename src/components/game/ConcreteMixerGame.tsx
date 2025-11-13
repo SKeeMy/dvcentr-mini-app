@@ -22,25 +22,26 @@ interface GameState {
 export const ConcreteMixerGame: React.FC = () => {
   const router = useRouter();
   const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    showButton()
     router.push('/');
   });
-  useEffect(() => {
-    async function initializeCatalog() {
-      try {
-        if (await isTMA()) {
-          showButton();
-        }
-      } catch (error) {
-        console.error('Ошибка инициализации каталога:', error);
-      }
-    }
+  // useEffect(() => {
+  //   async function initializeCatalog() {
+  //     try {
+  //       if (await isTMA()) {
+  //         showButton();
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка инициализации каталога:', error);
+  //     }
+  //   }
 
-    initializeCatalog();
+  //   initializeCatalog();
 
-    return () => {
-      hideButton();
-    };
-  }, [showButton, hideButton, isVisible]);
+  //   return () => {
+  //     hideButton();
+  //   };
+  // }, [showButton, hideButton, isVisible]);
   const [gameState, setGameState] = useState<GameState>({
     isPlaying: false,
     score: 0,
