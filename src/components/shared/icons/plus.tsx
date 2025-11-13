@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const Plus = () => {
+export const Plus = ({className}: {className: string}) => {
   return (
-    <svg width="800px" height="800px" viewBox="0 0 32 32" version="1.1">
+    <svg className={className} width="800px" height="800px" viewBox="0 0 32 32" version="1.1">
 
       <title>plus</title>
       <desc>Created with Sketch Beta.</desc>

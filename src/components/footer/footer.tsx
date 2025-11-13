@@ -30,6 +30,8 @@ import { GetRemains } from '../get-remains/get-remains'
 import { SlideDescription } from '../pages/banner-slider/banner-slide/slide-description'
 import { Gamepad } from '../shared/icons/gamepad'
 import { Plus } from '../shared/icons/plus'
+import { Close } from '../shared/icons/close'
+
 const CartCounter = dynamic(() => import('../cart/cart-counter'), {
   ssr: false,
   loading: () => null
@@ -69,7 +71,17 @@ export const Footer = () => {
   }, [isOpen])
 
   const pathname = usePathname()
-  // if (pathname === '/') return null
+
+  const toggleAddsMenu = () => {
+    setShowAdds(!isShowAdds)
+    if (hapticFeedback.impactOccurred.isAvailable()) {
+      hapticFeedback.impactOccurred('light')
+    }
+  }
+
+  const closeAddsMenu = () => {
+    setShowAdds(false)
+  }
 
   const renderContent = () => {
     switch (contentType) {
@@ -96,28 +108,17 @@ export const Footer = () => {
     }
   }
 
-
   const handlerOpenScanner = async () => {
-    // openFooter('qr')
-
+    closeAddsMenu()
     if (qrScanner.open.isAvailable()) {
       try {
-        qrScanner.isOpened(); // false
+        qrScanner.isOpened();
         let promise = qrScanner.open({ text: 'Отсканируйте QR-код' });
-        qrScanner.isOpened(); // true
+        qrScanner.isOpened();
         await promise;
-        qrScanner.isOpened(); // false
-
-        // qrScanner.isOpened(); // false
-        // promise = qrScanner.open({
-        //   text: 'Scan some specific QR',
-        //   capture(qr) {
-        //     return qr === 'some-specific-qr';
-        //   },
-        // });
-        qrScanner.isOpened(); // true
+        qrScanner.isOpened();
         await promise;
-        qrScanner.isOpened(); // false
+        qrScanner.isOpened();
       } catch (error) {
         console.error('QR Scanner error:', error);
       }
@@ -126,7 +127,11 @@ export const Footer = () => {
     }
   }
 
-  
+  const openGame = () => {
+    closeAddsMenu()
+    // Здесь логика открытия игры
+    console.log('Open game')
+  }
 
   return (
     <footer className={clsx(s.footer, isOpen && s.open)}>
@@ -137,29 +142,41 @@ export const Footer = () => {
             <span>Главная</span>
           </Link>
 
-          <button style={isShowAdds ? {borderColor: 'white'} : {}} onClick={() => setShowAdds(!isShowAdds)} className={s.footer_item}>
-            <Plus />
-            <span>Функции</span>
+          {/* Кнопка Функции/Закрыть с анимацией */}
+          <div
+            onClick={toggleAddsMenu}
+            className={clsx(
+              s.footer_item, 
+              s.functions_button,
+              isShowAdds && s.functions_button_active
+            )}
+          >
+            <div className={s.button_icon}>
+              <Plus className={s.plus_icon} />
+              <Close className={s.close_icon} />
+            </div>
+            <span className={s.button_text}>
+              {isShowAdds ? 'Закрыть' : 'Функции'}
+            </span>
 
-            <span className={clsx(s.footer_adds, isShowAdds && s.show_adds)}>
-              <span
-                className={s.footer_item}
+            {/* Дополнительное меню */}
+            <div className={clsx(s.footer_adds, isShowAdds && s.show_adds)}>
+              <button
+                className={s.footer_add_item}
                 onClick={handlerOpenScanner}
               >
                 <QRIcon />
                 <span>Скан QR</span>
-              </span>
-              <span
-                className={s.footer_item}
-                onClick={handlerOpenScanner}
+              </button>
+              <Link href={'/game'}
+                className={s.footer_add_item}
+                onClick={openGame}
               >
                 <Gamepad />
                 <span>Игра</span>
-              </span>
-            </span>
-
-          </button>
-
+              </Link>
+            </div>
+          </div>
 
           <button
             onClick={() => openFooter('cart')}

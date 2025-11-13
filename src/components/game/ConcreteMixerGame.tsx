@@ -246,6 +246,7 @@ export const ConcreteMixerGame: React.FC = () => {
         ))}
 
         {/* Бетономешалка */}
+        {/* <img src={'/images/game.png'} /> */}
         <div className={`${s.concreteMixer} ${gameState.isJumping ? s.jumping : ''}`}>
           <div className={s.chassis}>
             <div className={s.wheel} />

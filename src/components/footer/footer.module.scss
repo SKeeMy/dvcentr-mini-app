@@ -1,19 +1,14 @@
 .footer {
-  // position: fixed;
   margin-top: auto;
   z-index: 11;
-  // box-shadow: 0 -2px 8px #00000026;
   background-color: transparent;
   height: 95px;
   width: 100vw;
-  // margin: 0 auto;
   bottom: 0;
   left: 0;
   padding: 15px 0;
   padding-bottom: 20px;
   padding-bottom: 0;
-
-  // border-radius: 32px 32px 0 0;
   overflow: visible;
   transition: height 300ms cubic-bezier(0.33, 1, 0.68, 1);
 
@@ -66,7 +61,6 @@
     pointer-events: none;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    // transform: translateY(100%);
     left: 0;
     bottom: -100%;
     position: fixed;
@@ -105,7 +99,6 @@
         height: 10px;
         border-radius: 0 0 16px 16px;
         background: var(--primary-orange);
-
       }
     }
 
@@ -132,10 +125,11 @@
     // height: 90%;
   }
 
+  // Основной стиль для всех кнопок
   &_item {
     display: flex;
     font-size: 12px;
-    color: rgb(171, 171, 171);
+    color: rgb(171, 171, 171) !important;
     justify-content: center;
     align-items: center;
     border: 1px solid transparent;
@@ -144,47 +138,173 @@
     height: 40px;
     position: relative;
     display: flex;
-    gap: 5px;
+    gap: 3px;
     text-decoration: none;
     flex-direction: column;
-    transition: ease .2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
 
-    .footer_adds {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      position: absolute;
-      border-radius: 30px;
-      position: absolute;
-      top: -130px;
-      background-color: #ffffff36;
-      padding: 10px 3px;
-      transition: ease .3s;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(30px);
-      &.show_adds {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: all;
-      }
-    }
     &:active {
       opacity: 0.5;
     }
+
     span {
       font-size: 9px;
       flex: 0 0 auto;
       white-space: nowrap;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
 
     svg {
       width: 24px;
       height: 24px;
       flex: 0 0 auto;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      path {
+        stroke: var(--primary-orange) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+  }
+
+  .functions_button {
+    position: relative;
+    
+    .button_text {
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .button_icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .plus_icon,
+      .close_icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        path {
+          stroke: white;
+          stroke-width: 1.2px;
+        }
+      }
+      
+      .plus_icon {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      
+      .close_icon {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-90deg);
+      }
+    }
+
+    // Анимации при активном состоянии
+    &.functions_button_active {
+      transform: scale(1.05);
+
+      .button_icon {
+        .plus_icon {
+          opacity: 0;
+          transform: translate(-50%, -50%) rotate(90deg);
+        }
+        
+        .close_icon {
+          opacity: 1;
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+      }
+
+      .button_text {
+        transform: translateY(-1px);
+      }
+    }
+
+    // Анимация при наведении (для десктопа)
+    @media (hover: hover) {
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        
+        &.functions_button_active {
+          box-shadow: 0 6px 20px rgba(255, 68, 68, 0.4);
+        }
+      }
+    }
+  }
+
+  // Дополнительное меню
+  .footer_adds {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: absolute;
+    border-radius: 20px;
+    top: -143px;
+    background: #2b2b2b;
+    padding: 12px 8px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px) scale(0.8);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    &.show_adds {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+
+  // Элементы дополнительного меню
+  .footer_add_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #666;
+    
+    &:active {
+      background: rgba(255, 107, 53, 0.1);
+      transform: scale(0.95);
+    }
+    
+    span {
+      font-size: 8px;
+      font-weight: 500;
+      color:  rgb(171, 171, 171);
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+      
       path {
         stroke: var(--primary-orange);
+      }
+    }
+    
+    // Анимация при наведении (для десктопа)
+    @media (hover: hover) {
+      &:hover {
+        background: rgba(255, 107, 53, 0.15);
+        transform: translateY(-1px);
       }
     }
   }
@@ -193,9 +313,32 @@
 .sheet_container {
   max-height: 85% !important;
   min-height: 50% !important;
-  // justify-content: space-between;
 }
 
 .sheet_container_full {
   min-height: 85% !important;
 }
+
+// Анимация появления элементов меню с задержкой
+.footer_adds.show_adds {
+  .footer_add_item {
+    &:nth-child(1) {
+      animation: slideInUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    }
+    &:nth-child(2) {
+      animation: slideInUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
