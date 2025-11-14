@@ -6,7 +6,7 @@
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: 'Arial', sans-serif;
-  padding: 20px;
+  padding: 0 !important;
 }
 
 .gameWrapper {
@@ -14,9 +14,7 @@
   width: 100%;
   max-width: 600px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  border-radius: 15px;
   overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
 .gameCanvas {
@@ -36,7 +34,8 @@
   border-radius: 25px;
   border: 2px solid #ffeaa7;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  
+  position: absolute;
+  top: 50px;
   .scoreText {
     color: #2d3436;
     font-size: 1.3rem;
