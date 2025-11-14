@@ -1,299 +1,289 @@
-// components/mini-game/concrete-mixer-game.tsx
-import { useAppBackButton } from '@/app/hooks/useAppBackButton'
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import s from './concrete-mixer-game.module.scss'
-import { init, viewport, backButton, isTMA, swipeBehavior } from '@telegram-apps/sdk';
-import { useRouter } from 'next/navigation';
-interface Obstacle {
-  id: number
-  type: 'cone' | 'barrier' | 'hole'
-  position: number // позиция от правого края (100 = справа, 0 = слева)
-  passed: boolean
-}
-
-interface GameState {
-  isPlaying: boolean
-  score: number
-  speed: number
-  isJumping: boolean
-  gameOver: boolean
-}
 
 export const ConcreteMixerGame: React.FC = () => {
-  const router = useRouter();
-  const { showButton, hideButton } = useAppBackButton(() => {
-    router.push('/');
-  });
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const requestRef = useRef<number | null>(null)
+  const carImageRef = useRef<HTMLImageElement | null>(null)
+  const [gameOver, setGameOver] = useState(false)
+  const [score, setScore] = useState(0)
+  const [carLoaded, setCarLoaded] = useState(false)
 
-  // Инициализация кнопки назад - ТОЛЬКО ПРИ МОНТИРОВАНИИ
-  useEffect(() => {
-    const initBackButton = async () => {
-      try {
-        if (await isTMA()) {
-          showButton();
-        }
-      } catch (error) {
-        console.error('Ошибка инициализации кнопки назад:', error);
-      }
-    };
+  const groundYRef = useRef(0)
 
-    initBackButton();
-
-    return () => {
-      hideButton();
-    };
-  }, []); 
-  
-  const [gameState, setGameState] = useState<GameState>({
-    isPlaying: false,
-    score: 0,
-    speed: 5,
+  const carRef = useRef({
+    x: 75,
+    y: 0,
+    width: 60,
+    height: 40,
+    velocityY: 1,
+    jumpForce: 15,
     isJumping: false,
-    gameOver: false
   })
 
-  const [obstacles, setObstacles] = useState<Obstacle[]>([])
-  const [mixerRotation, setMixerRotation] = useState(0)
-  const gameLoopRef = useRef<number | null>(null)
-  const obstacleIdRef = useRef(0)
-  const roadPositionRef = useRef(0)
-  const lastObstacleTimeRef = useRef(0)
+  const obstaclesRef = useRef<
+    { x: number; y: number; width: number; height: number }[]
+  >([])
+  const obstacleSpawnTimerRef = useRef(0)
 
-  // Создание препятствий (появляются справа)
-  const createObstacle = useCallback(() => {
-    const types: Obstacle['type'][] = ['cone', 'barrier', 'hole']
-    const type = types[Math.floor(Math.random() * types.length)]
-    
-    setObstacles(prev => [...prev, {
-      id: obstacleIdRef.current++,
-      type,
-      position: 100, // Начинаем справа (100% от правого края)
-      passed: false
-    }])
+  const gravity = 0.7
+  const baseGameSpeed = 4
+
+  // Загрузка изображения машинки
+  useEffect(() => {
+    const carImage = new Image()
+    carImage.src = '/images/game.png'
+    carImage.onload = () => {
+      carImageRef.current = carImage
+      setCarLoaded(true)
+    }
+    carImage.onerror = () => {
+      console.error('Failed to load car image')
+      setCarLoaded(true) // Продолжаем без картинки
+    }
   }, [])
 
-  // Прыжок
-  const jump = useCallback(() => {
-    if (!gameState.isJumping && gameState.isPlaying && !gameState.gameOver) {
-      setGameState(prev => ({ ...prev, isJumping: true }))
-      setTimeout(() => {
-        setGameState(prev => ({ ...prev, isJumping: false }))
-      }, 600)
-    }
-  }, [gameState.isJumping, gameState.isPlaying, gameState.gameOver])
+  const gameLoop = () => {
+    const difficulty = Math.min(1 + score * 0.01, 3)
+    const gameSpeed = baseGameSpeed * difficulty
 
-  // Обработка касаний/кликов
-  const handleTap = useCallback(() => {
-    if (gameState.gameOver) {
-      startGame()
-    } else if (!gameState.isPlaying) {
-      startGame()
-    } else {
-      jump()
-    }
-  }, [gameState.isPlaying, gameState.gameOver, jump])
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-  // Запуск игры
-  const startGame = () => {
-    setGameState({
-      isPlaying: true,
-      score: 0,
-      speed: 5,
-      isJumping: false,
-      gameOver: false
-    })
-    setObstacles([])
-    obstacleIdRef.current = 0
-    roadPositionRef.current = 0
-    lastObstacleTimeRef.current = Date.now()
+    const groundY = groundYRef.current
     
-    // Останавливаем предыдущий игровой цикл если был
-    if (gameLoopRef.current) {
-      cancelAnimationFrame(gameLoopRef.current)
+    // Очистка canvas с плавным переходом
+    ctx.fillStyle = 'rgba(220, 38, 38, 0.1)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    const car = carRef.current
+    car.y += car.velocityY
+    car.velocityY += gravity
+
+    if (car.y > groundY - car.height) {
+      car.y = groundY - car.height
+      car.velocityY = 0
+      car.isJumping = false
+    }
+
+    // Рисуем машинку
+    if (carLoaded && carImageRef.current) {
+      // Анимация подпрыгивания на неровностях
+      const bounceOffset = car.isJumping ? 0 : Math.sin(Date.now() * 0.01) * 1.5
+      
+      ctx.drawImage(
+        carImageRef.current, 
+        car.x - car.width/2, 
+        car.y - car.height/2 + bounceOffset, 
+        car.width, 
+        car.height
+      )
+    } else {
+      // Фолбэк если картинка не загрузилась
+      ctx.fillStyle = '#34D399'
+      ctx.fillRect(car.x - car.width/2, car.y - car.height/2, car.width, car.height)
+    }
+
+    // Спавн препятствий
+    obstacleSpawnTimerRef.current += 1
+    if (obstacleSpawnTimerRef.current > 60 / difficulty) {
+      const obstacleHeight = Math.random() * 30 + 20
+      obstaclesRef.current.push({
+        x: canvas.width,
+        y: groundY - obstacleHeight,
+        width: Math.random() * 20 + 20,
+        height: obstacleHeight,
+      })
+      obstacleSpawnTimerRef.current = 0
+    }
+
+    // Обработка препятствий
+    for (let i = obstaclesRef.current.length - 1; i >= 0; i--) {
+      const obstacle = obstaclesRef.current[i]
+      obstacle.x -= gameSpeed
+
+      // Анимированные препятствия
+      ctx.fillStyle = '#1a95a5'
+      const pulse = Math.sin(Date.now() * 0.005 + i) * 2
+      ctx.fillRect(obstacle.x, obstacle.y + pulse, obstacle.width, obstacle.height)
+
+      // Коллизия
+      const carLeft = car.x - car.width/2
+      const carRight = car.x + car.width/2
+      const carTop = car.y - car.height/2
+      const carBottom = car.y + car.height/2
+
+      const obstacleLeft = obstacle.x
+      const obstacleRight = obstacle.x + obstacle.width
+      const obstacleTop = obstacle.y
+      const obstacleBottom = obstacle.y + obstacle.height
+
+      if (
+        carRight > obstacleLeft &&
+        carLeft < obstacleRight &&
+        carBottom > obstacleTop &&
+        carTop < obstacleBottom
+      ) {
+        setGameOver(true)
+        if (requestRef.current) {
+          cancelAnimationFrame(requestRef.current)
+        }
+        return
+      }
+
+      if (obstacle.x + obstacle.width < 0) {
+        obstaclesRef.current.splice(i, 1)
+        setScore((prev) => prev + 1)
+      }
+    }
+
+    // Рисуем дорогу
+    ctx.beginPath()
+    ctx.moveTo(0, groundY)
+    ctx.lineTo(canvas.width, groundY)
+    ctx.strokeStyle = '#9CA3AF'
+    ctx.lineWidth = 2
+    ctx.stroke()
+
+    // Разметка на дороге (анимированная)
+    const dashOffset = (Date.now() * 0.01) % 40
+    ctx.setLineDash([20, 20])
+    ctx.beginPath()
+    ctx.moveTo(dashOffset, groundY - 1)
+    ctx.lineTo(canvas.width, groundY - 1)
+    ctx.strokeStyle = '#FFFFFF'
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.setLineDash([])
+
+    requestRef.current = requestAnimationFrame(gameLoop)
+  }
+
+  const handleJump = () => {
+    const car = carRef.current
+    if (!car.isJumping) {
+      car.velocityY = -car.jumpForce
+      car.isJumping = true
     }
   }
 
-  // Проверка столкновений
-  const checkCollision = useCallback((obstacle: Obstacle) => {
-    // Бетономешалка находится на 20% слева
-    // Препятствие сталкивается когда его позиция достигает 20%
-    const collisionPosition = 20
-    
-    // Столкновение если препятствие в зоне 15-25% и игрок не прыгает
-    return (
-      obstacle.position <= collisionPosition + 5 && 
-      obstacle.position >= collisionPosition - 5 &&
-      !gameState.isJumping
-    )
-  }, [gameState.isJumping])
+  const resetGame = () => {
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-  // Игровой цикл
-  useEffect(() => {
-    if (!gameState.isPlaying || gameState.gameOver) {
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current)
-        gameLoopRef.current = null
-      }
-      return
+    carRef.current = {
+      x: 75,
+      y: groundYRef.current - 40,
+      width: 60,
+      height: 40,
+      velocityY: 0,
+      jumpForce: 15,
+      isJumping: false,
     }
+    obstaclesRef.current = []
+    obstacleSpawnTimerRef.current = 0
+    setScore(0)
+    setGameOver(false)
+    requestRef.current = requestAnimationFrame(gameLoop)
+  }
 
-    let lastTime = Date.now()
-    
-    const gameLoop = () => {
-      const currentTime = Date.now()
-      const deltaTime = currentTime - lastTime
-      lastTime = currentTime
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (canvas) {
+      canvas.width = window.innerWidth > 600 ? 600 : window.innerWidth - 40
+      canvas.height = 300
+      groundYRef.current = canvas.height - 20
+      carRef.current.y = groundYRef.current - carRef.current.height
 
-      // Обновляем счет только если игра активна
-      setGameState(prev => ({ 
-        ...prev, 
-        score: prev.score + 1,
-        speed: Math.min(8, 5 + Math.floor(prev.score / 500)) // Еще медленнее увеличиваем скорость
-      }))
+      const handleKeyDown = (e: KeyboardEvent) =>
+        e.code === 'Space' && handleJump()
+      const handleTouchStart = () => handleJump()
 
-      // Вращение бетономешалки
-      setMixerRotation(prev => prev + 6)
+      window.addEventListener('keydown', handleKeyDown)
+      window.addEventListener('touchstart', handleTouchStart)
 
-      // Движение дороги
-      roadPositionRef.current = (roadPositionRef.current - gameState.speed) % 100
+      if (carLoaded && !gameOver) {
+        requestRef.current = requestAnimationFrame(gameLoop)
+      }
 
-      // Обновление позиций препятствий (двигаем слева направо - УМЕНЬШАЕМ position)
-      // ЗАМЕДЛЯЕМ В 3 РАЗА: speed * 0.23 вместо speed * 0.7
-      setObstacles(prev => {
-        let hasCollision = false
-        
-        const updated = prev.map(obs => ({
-          ...obs,
-          position: obs.position - gameState.speed * 0.23 // ЗАМЕДЛЕНО В 3 РАЗА
-        })).filter(obs => {
-          // Удаляем когда ушли за левый край (position < 0)
-          if (obs.position < -10) return false
-          
-          // Проверка столкновений
-          if (!obs.passed && checkCollision(obs)) {
-            hasCollision = true
-            return false
-          }
-          
-          // Отмечаем пройденные
-          if (!obs.passed && obs.position < 15) {
-            obs.passed = true
-          }
-          
-          return true
-        })
-
-        // Если было столкновение - завершаем игру
-        if (hasCollision) {
-          setGameState(prev => ({ ...prev, gameOver: true, isPlaying: false }))
-          return updated
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown)
+        window.removeEventListener('touchstart', handleTouchStart)
+        if (requestRef.current) {
+          cancelAnimationFrame(requestRef.current)
         }
-
-        return updated
-      })
-
-      // Создание новых препятствий с БОЛЬШИМ интервалом
-      const now = Date.now()
-      const obstacleInterval = Math.max(1500, 3000 - gameState.speed * 100) // Еще реже препятствия
-      if (now - lastObstacleTimeRef.current > obstacleInterval) {
-        createObstacle()
-        lastObstacleTimeRef.current = now
-      }
-
-      gameLoopRef.current = requestAnimationFrame(gameLoop)
-    }
-
-    gameLoopRef.current = requestAnimationFrame(gameLoop)
-
-    return () => {
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current)
       }
     }
-  }, [gameState.isPlaying, gameState.gameOver, gameState.speed, createObstacle, checkCollision])
+  }, [carLoaded, gameOver])
 
-  // Обработка клавиш для десктопа
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w') {
-        e.preventDefault()
-        handleTap()
-      }
-    }
+  const getScoreClass = (score: number) => {
+    if (score < 5) return s.scorePoor
+    if (score < 10) return s.scoreGood
+    if (score < 20) return s.scoreGreat
+    return s.scoreExcellent
+  }
 
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [handleTap])
+  const getPerformanceClass = (score: number) => {
+    if (score < 5) return s.performancePoor
+    if (score < 10) return s.performanceGood
+    if (score < 20) return s.performanceGreat
+    return s.performanceExcellent
+  }
+
+  const getPerformanceText = (score: number) => {
+    if (score < 5) return 'You Need More Practice! 🙃'
+    if (score < 10) return 'Good Job! 🥳'
+    if (score < 20) return 'Great! 😎'
+    return 'Excellent Performance! 🤩'
+  }
 
   return (
-    <div className={s.gameContainer} onClick={handleTap}>
-      {/* Стартовый экран */}
-      {!gameState.isPlaying && !gameState.gameOver && (
-        <div className={s.startScreen}>
-          <div className={s.title}>БЕТОНОМЕШАЛКА</div>
-          <div className={s.instructions}>
-            <p>💡 Тапайте по экрану чтобы прыгать</p>
-            <p>⏱️ Уворачивайтесь от препятствий</p>
-            <p>🎯 Препятствия едут МЕДЛЕННО</p>
-            <p>🚀 У вас много времени!</p>
+    <div className={s.gameContainer}>
+      <div className={s.gameWrapper}>
+        <canvas 
+          ref={canvasRef} 
+          className={`${s.gameCanvas} ${gameOver ? s.gameOver : ''}`}
+        />
+        
+        {!carLoaded && (
+          <div className={s.loadingOverlay}>
+            <p className={s.loadingText}>Loading car...</p>
           </div>
-          <div className={s.startButton}>ТАПНИТЕ ЧТОБЫ НАЧАТЬ</div>
-        </div>
-      )}
-
-      {/* Экран Game Over */}
-      {gameState.gameOver && (
-        <div className={s.gameOverScreen}>
-          <div className={s.gameOverTitle}>ИГРА ОКОНЧЕНА</div>
-          <div className={s.finalScore}>Счет: {gameState.score}</div>
-          <div className={s.restartButton}>ТАПНИТЕ ДЛЯ РЕСТАРТА</div>
-        </div>
-      )}
-
-      {/* Игровая зона */}
-      <div className={s.gameArea}>
-        {/* Небо */}
-        <div className={s.sky}>
-          <div className={s.cloud} style={{ left: '10%' }} />
-          <div className={s.cloud} style={{ left: '50%' }} />
-          <div className={s.cloud} style={{ left: '80%' }} />
-        </div>
-
-        {/* Счет */}
-        <div className={s.scoreDisplay}>СЧЕТ: {gameState.score}</div>
-
-        {/* Препятствия (двигаются слева направо ОЧЕНЬ МЕДЛЕННО) */}
-        {obstacles.map(obstacle => (
-          <div
-            key={obstacle.id}
-            className={`${s.obstacle} ${s[obstacle.type]}`}
-            style={{ left: `${obstacle.position}%` }}
-          />
-        ))}
-
-        {/* Бетономешалка */}
-        <img className={`${s.concreteMixer} ${gameState.isJumping ? s.jumping : ''}`} src={'/images/game.png'} />
-     
-
-        {/* Дорога */}
-        <div 
-          className={s.road}
-          style={{ backgroundPositionX: `${roadPositionRef.current}px` }}
-        >
-          <div className={s.roadLine} />
-          <div className={s.roadLine} style={{ left: '33%' }} />
-          <div className={s.roadLine} style={{ left: '66%' }} />
-        </div>
-
-        {/* Земля */}
-        <div className={s.ground} />
+        )}
+        
+        {gameOver && (
+          <div className={s.gameOverOverlay}>
+            <p className={s.finalScore}>
+              Final Score:{' '}
+              <span className={`${s.scoreValue} ${getScoreClass(score)}`}>
+                {score}
+              </span>
+            </p>
+            <p className={`${s.performanceText} ${getPerformanceClass(score)}`}>
+              {getPerformanceText(score)}
+            </p>    
+            <h2 className={s.gameOverTitle}>Game Over</h2>
+            <button
+              onClick={resetGame}
+              className={s.restartButton}
+            >
+              Restart
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Подсказка управления */}
-      <div className={s.controlsHint}>
-        {gameState.isPlaying && !gameState.gameOver && 'ТАПНИТЕ ДЛЯ ПРЫЖКА'}
-        {gameState.gameOver && 'ТАПНИТЕ ДЛЯ РЕСТАРТА'}
-      </div>
+      {/* <div className={s.scoreDisplay}>
+        <p className={s.scoreText}>Score: {score}</p>
+      </div> */}
+
+      {/* <div className={s.instructions}>
+        <p className={s.instructionText}>
+          Press SPACE or tap to jump over obstacles!
+        </p>
+      </div> */}
     </div>
   )
 }

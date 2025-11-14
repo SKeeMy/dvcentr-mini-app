@@ -74,7 +74,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
-      <AppProvider>
+      {/* <AppProvider> */}
         <Ordering />
         <Header header_type='catalog' />
         {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
@@ -82,7 +82,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         {/* </AnimatePresence> */}
 
         <Footer />
-      </AppProvider>
+      {/* </AppProvider> */}
     </body>
   )
 }
