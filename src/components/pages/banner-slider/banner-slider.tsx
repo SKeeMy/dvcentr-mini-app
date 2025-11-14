@@ -18,7 +18,7 @@ export const BannerSlider = () => {
     {
       id: 3,
       text: 'Как оформить заказ?',
-      background_image: '/images/ykassa.jpg',
+      background_image: '/images/banner_1.png',
       sticker_image: null,
       description: <SlidesContent content='howToBuy' />
 
