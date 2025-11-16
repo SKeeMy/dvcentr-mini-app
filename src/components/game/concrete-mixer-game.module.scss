@@ -223,3 +223,69 @@
     }
   }
 }
+
+.startOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.startContent {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 90%;
+}
+
+.gameTitle {
+  color: white;
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gameInstructions {
+  color: white;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.controlsInfo {
+  color: #ffeb3b;
+  font-size: 1em;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+.startButton {
+  background: linear-gradient(45deg, #FF6B6B, #FFE66D);
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+  color: white;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+}

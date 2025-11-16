@@ -9,9 +9,11 @@ export const ConcreteMixerGame: React.FC = () => {
   const [score, setScore] = useState(0)
   const [carLoaded, setCarLoaded] = useState(false)
   const [gameTime, setGameTime] = useState(0)
-  const [showDebug, setShowDebug] = useState(false) // Добавляем переключатель дебага
-
+  const [showDebug, setShowDebug] = useState(false)
+  const [currentLevel, setCurrentLevel] = useState(1)
   const groundYRef = useRef(0)
+  // Добавляем ref для времени игры, чтобы использовать в игровом цикле
+  const gameTimeRef = useRef(0)
 
   const carRef = useRef({
     x: 75,
@@ -19,7 +21,7 @@ export const ConcreteMixerGame: React.FC = () => {
     width: 80,
     height: 50,
     velocityY: 1,
-    jumpForce: 12.5,
+    jumpForce: 15.5,
     isJumping: false,
   })
 
@@ -36,6 +38,68 @@ export const ConcreteMixerGame: React.FC = () => {
 
   const gravity = 0.8
   const baseGameSpeed = 6
+
+  // Система сложности
+  const getDifficultySettings = (time: number) => {
+    console.log('Getting difficulty for time:', time); // Добавим лог для отладки
+    
+    if (time < 10) {
+      return { 
+        level: 1,
+        spawnRate: 120, 
+        obstacleChance: 0.5, 
+        airObstacleChance: 0.1, 
+        coinChance: 0.4, 
+        speedMultiplier: 1.0,
+        doubleObstacleChance: 0.0,
+        maxObjects: 3
+      }
+    } else if (time < 20) {
+      return { 
+        level: 2,
+        spawnRate: 90, 
+        obstacleChance: 0.4, 
+        airObstacleChance: 0.3, 
+        coinChance: 0.3, 
+        speedMultiplier: 1.3,
+        doubleObstacleChance: 0.2,
+        maxObjects: 4
+      }
+    } else if (time < 35) {
+      return { 
+        level: 3,
+        spawnRate: 70, 
+        obstacleChance: 0.4, 
+        airObstacleChance: 0.4, 
+        coinChance: 0.2, 
+        speedMultiplier: 1.6,
+        doubleObstacleChance: 0.4,
+        maxObjects: 5
+      }
+    } else if (time < 50) {
+      return { 
+        level: 4,
+        spawnRate: 50, 
+        obstacleChance: 0.3, 
+        airObstacleChance: 0.5, 
+        coinChance: 0.2, 
+        speedMultiplier: 1.9,
+        doubleObstacleChance: 0.6,
+        maxObjects: 6
+      }
+    } else {
+      return { 
+        level: 5,
+        spawnRate: 30, 
+        obstacleChance: 0.2, 
+        airObstacleChance: 0.6, 
+        coinChance: 0.2, 
+        speedMultiplier: 2.2,
+        doubleObstacleChance: 0.8,
+        maxObjects: 8
+      }
+    }
+  }
 
   // Загрузка изображения машинки
   useEffect(() => {
@@ -65,16 +129,107 @@ export const ConcreteMixerGame: React.FC = () => {
     }
   }
 
-  const calculateDifficulty = () => {
-    const timeFactor = Math.min(gameTime / 20, 4)
-    const scoreFactor = Math.min(score / 80, 3)
-    return 1 + timeFactor + scoreFactor
+  const spawnObject = (canvas: HTMLCanvasElement, difficulty: any) => {
+    // Ограничиваем максимальное количество объектов
+    if (objectsRef.current.length >= difficulty.maxObjects) {
+      return
+    }
+
+    const groundY = groundYRef.current
+    const random = Math.random()
+    
+    let objectType: 'obstacle' | 'coin' | 'airObstacle'
+    
+    if (random < difficulty.obstacleChance) {
+      objectType = 'obstacle'
+    } else if (random < difficulty.obstacleChance + difficulty.airObstacleChance) {
+      objectType = 'airObstacle'
+    } else {
+      objectType = 'coin'
+    }
+    
+    console.log(`Spawning ${objectType} at level ${difficulty.level}`); // Лог спавна
+    
+    // Спавн препятствий на земле
+    if (objectType === 'obstacle') {
+      const baseHeight = 30
+      const extraHeight = gameTimeRef.current > 20 ? Math.random() * 30 + 15 : 0
+      const obstacleHeight = baseHeight + extraHeight
+      
+      objectsRef.current.push({
+        x: canvas.width,
+        y: groundY - obstacleHeight,
+        width: Math.random() * 30 + 30,
+        height: obstacleHeight,
+        type: 'obstacle'
+      })
+      
+      // Шанс спавна двойного препятствия
+      if (Math.random() < difficulty.doubleObstacleChance && objectsRef.current.length < difficulty.maxObjects - 1) {
+        objectsRef.current.push({
+          x: canvas.width + 60,
+          y: groundY - (obstacleHeight * 0.7),
+          width: Math.random() * 25 + 25,
+          height: obstacleHeight * 0.7,
+          type: 'obstacle'
+        })
+        console.log('Spawned double obstacle');
+      }
+    } 
+    // Спавн воздушных препятствий
+    else if (objectType === 'airObstacle') {
+      const heights = [80, 100, 120, 140, 160, 180]
+      const selectedHeight = heights[Math.floor(Math.random() * heights.length)]
+      const obstacleY = groundY - selectedHeight
+      
+      objectsRef.current.push({
+        x: canvas.width,
+        y: obstacleY,
+        width: Math.random() * 25 + 25,
+        height: 20,
+        type: 'airObstacle'
+      })
+      
+      // Шанс спавна двойного воздушного препятствия
+      if (Math.random() < difficulty.doubleObstacleChance && objectsRef.current.length < difficulty.maxObjects - 1) {
+        const secondHeight = heights[Math.floor(Math.random() * heights.length)]
+        const secondY = groundY - secondHeight
+        
+        objectsRef.current.push({
+          x: canvas.width + 40,
+          y: secondY,
+          width: Math.random() * 25 + 25,
+          height: 20,
+          type: 'airObstacle'
+        })
+        console.log('Spawned double air obstacle');
+      }
+    } 
+    // Спавн монет
+    else {
+      const positions = [
+        groundY - 150,
+        groundY - 100,
+        groundY - 60,
+        groundY - 180,
+        groundY - 200,
+        groundY - 80
+      ]
+      const coinY = positions[Math.floor(Math.random() * positions.length)]
+      
+      objectsRef.current.push({
+        x: canvas.width,
+        y: coinY,
+        width: 20,
+        height: 20,
+        type: 'coin'
+      })
+    }
   }
 
-  const drawDebugInfo = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, groundY: number, difficulty: number) => {
+  const drawDebugInfo = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, groundY: number, difficulty: any) => {
     if (!showDebug) return
     
-    // Сохраняем текущие настройки
     ctx.save()
     
     // Рисуем границы canvas
@@ -116,22 +271,26 @@ export const ConcreteMixerGame: React.FC = () => {
       ctx.strokeRect(object.x, object.y, object.width, object.height)
     })
     
-    // Отображаем информацию
+    // Отображаем информацию о сложности
     ctx.fillStyle = '#FFFFFF'
     ctx.font = '12px Arial'
-    ctx.fillText(`Машинка: x=${car.x.toFixed(1)}, y=${car.y.toFixed(1)}`, 10, 20)
-    ctx.fillText(`Размер: ${car.width}x${car.height}`, 10, 35)
-    ctx.fillText(`Дорога: y=${groundY}`, 10, 50)
-    ctx.fillText(`Сложность: ${difficulty.toFixed(2)}`, 10, 65)
-    ctx.fillText(`Объектов: ${objectsRef.current.length}`, 10, 80)
+    ctx.fillText(`Уровень: ${difficulty.level}`, 10, 20)
+    ctx.fillText(`Время в цикле: ${gameTimeRef.current}сек`, 10, 35)
+    ctx.fillText(`Сложность: ${difficulty.speedMultiplier.toFixed(2)}`, 10, 50)
+    ctx.fillText(`Скорость: ${(baseGameSpeed * difficulty.speedMultiplier).toFixed(1)}`, 10, 65)
+    ctx.fillText(`Спавн: ${difficulty.spawnRate}`, 10, 80)
+    ctx.fillText(`Объектов: ${objectsRef.current.length}/${difficulty.maxObjects}`, 10, 95)
+    ctx.fillText(`Препятствия: ${(difficulty.obstacleChance * 100).toFixed(0)}%`, 10, 110)
+    ctx.fillText(`Воздушные: ${(difficulty.airObstacleChance * 100).toFixed(0)}%`, 10, 125)
+    ctx.fillText(`Двойные: ${(difficulty.doubleObstacleChance * 100).toFixed(0)}%`, 10, 140)
     
-    // Восстанавливаем настройки
     ctx.restore()
   }
 
   const gameLoop = () => {
-    const difficulty = calculateDifficulty()
-    const gameSpeed = baseGameSpeed * difficulty
+    // Используем gameTimeRef.current вместо gameTime
+    const difficulty = getDifficultySettings(gameTimeRef.current)
+    const gameSpeed = baseGameSpeed * difficulty.speedMultiplier
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -139,6 +298,12 @@ export const ConcreteMixerGame: React.FC = () => {
     if (!ctx) return
 
     const groundY = groundYRef.current
+    
+    // Обновляем уровень для отображения в UI
+    if (difficulty.level !== currentLevel) {
+      console.log(`Level changed from ${currentLevel} to ${difficulty.level}`);
+      setCurrentLevel(difficulty.level)
+    }
     
     // Очистка canvas с красивым фоном
     const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
@@ -176,109 +341,8 @@ export const ConcreteMixerGame: React.FC = () => {
 
     // Спавн объектов
     objectSpawnTimerRef.current += 1
-    const baseSpawnRate = 90
-    const spawnRate = baseSpawnRate / (difficulty * 0.8)
-    
-    if (objectSpawnTimerRef.current > spawnRate) {
-      const random = Math.random()
-      let objectType: 'obstacle' | 'coin' | 'airObstacle'
-      
-      let obstacleChance = 0.35
-      let airObstacleChance = 0.35
-      let coinChance = 0.3
-      
-      if (gameTime > 15) {
-        airObstacleChance = 0.45
-        coinChance = 0.2
-      }
-      if (gameTime > 30) {
-        airObstacleChance = 0.55
-        obstacleChance = 0.25
-        coinChance = 0.2
-      }
-      if (gameTime > 45) {
-        airObstacleChance = 0.65
-        obstacleChance = 0.2
-        coinChance = 0.15
-      }
-      
-      if (random < obstacleChance) {
-        objectType = 'obstacle'
-      } else if (random < obstacleChance + airObstacleChance) {
-        objectType = 'airObstacle'
-      } else {
-        objectType = 'coin'
-      }
-      
-      if (objectType === 'obstacle') {
-        const baseHeight = 30
-        const extraHeight = gameTime > 20 ? Math.random() * 30 + 15 : 0
-        const obstacleHeight = baseHeight + extraHeight
-        
-        objectsRef.current.push({
-          x: canvas.width,
-          y: groundY - obstacleHeight,
-          width: Math.random() * 30 + 30,
-          height: obstacleHeight,
-          type: 'obstacle'
-        })
-      } else if (objectType === 'airObstacle') {
-        const heights = [80, 100, 120, 140]
-        const selectedHeight = heights[Math.floor(Math.random() * heights.length)]
-        const heightReduction = gameTime > 20 ? Math.random() * 50 + 30 : 0
-        const obstacleY = groundY - (selectedHeight - Math.min(heightReduction, 70))
-        
-        if (Math.random() < 0.3 && gameTime > 25) {
-          const secondHeight = heights[Math.floor(Math.random() * heights.length)]
-          const secondY = groundY - (secondHeight - Math.min(heightReduction, 70))
-          
-          objectsRef.current.push({
-            x: canvas.width + 40,
-            y: secondY,
-            width: Math.random() * 25 + 25,
-            height: 20,
-            type: 'airObstacle'
-          })
-        }
-        
-        objectsRef.current.push({
-          x: canvas.width,
-          y: obstacleY,
-          width: Math.random() * 25 + 25,
-          height: 20,
-          type: 'airObstacle'
-        })
-      } else {
-        const positions = [
-          groundY - 150,
-          groundY - 100,
-          groundY - 60,
-          groundY - 180
-        ]
-        const coinY = positions[Math.floor(Math.random() * positions.length)]
-        
-        if (Math.random() < 0.4 && gameTime > 20) {
-          const obstacleHeight = Math.random() * 40 + 80
-          const obstacleY = groundY - obstacleHeight
-          const coinOffset = Math.random() < 0.5 ? -35 : 35
-          
-          objectsRef.current.push({
-            x: canvas.width + coinOffset,
-            y: obstacleY,
-            width: 20,
-            height: 20,
-            type: 'coin'
-          })
-        } else {
-          objectsRef.current.push({
-            x: canvas.width,
-            y: coinY,
-            width: 20,
-            height: 20,
-            type: 'coin'
-          })
-        }
-      }
+    if (objectSpawnTimerRef.current > difficulty.spawnRate) {
+      spawnObject(canvas, difficulty)
       objectSpawnTimerRef.current = 0
     }
 
@@ -299,7 +363,7 @@ export const ConcreteMixerGame: React.FC = () => {
         ctx.fillStyle = '#DC143C'
         ctx.fillRect(object.x, object.y, object.width, object.height)
         
-        const blinkSpeed = difficulty > 3 ? 0.05 : 0.03
+        const blinkSpeed = difficulty.speedMultiplier > 2 ? 0.08 : 0.05
         const blink = Math.sin(Date.now() * blinkSpeed) > 0 ? '#FF0000' : '#B22222'
         ctx.strokeStyle = blink
         ctx.lineWidth = 3
@@ -358,7 +422,7 @@ export const ConcreteMixerGame: React.FC = () => {
     ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY)
     
     // Разметка на дороге
-    const dashSpeed = difficulty > 2 ? 0.05 : 0.03
+    const dashSpeed = difficulty.speedMultiplier > 2 ? 0.08 : 0.05
     const dashOffset = (Date.now() * dashSpeed) % 60
     ctx.setLineDash([50, 50])
     ctx.beginPath()
@@ -369,7 +433,7 @@ export const ConcreteMixerGame: React.FC = () => {
     ctx.stroke()
     ctx.setLineDash([])
 
-    // Рисуем дебаг-информацию ПОСЛЕ всего остального
+    // Рисуем дебаг-информацию
     drawDebugInfo(ctx, canvas, groundY, difficulty)
 
     requestRef.current = requestAnimationFrame(gameLoop)
@@ -399,23 +463,33 @@ export const ConcreteMixerGame: React.FC = () => {
       width: 80,
       height: 50,
       velocityY: 0,
-      jumpForce: 12.5,
+      jumpForce: 15.5,
       isJumping: false,
     }
     objectsRef.current = []
     objectSpawnTimerRef.current = 0
     setScore(0)
     setGameTime(0)
+    gameTimeRef.current = 0
+    setCurrentLevel(1)
     setGameOver(false)
+    
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current)
+    }
     requestRef.current = requestAnimationFrame(gameLoop)
   }
 
-  // Таймер игры
+  // Таймер игры - ОБНОВЛЯЕМ gameTimeRef
   useEffect(() => {
     let timer: NodeJS.Timeout
     if (!gameOver && carLoaded) {
       timer = setInterval(() => {
-        setGameTime(prev => prev + 1)
+        setGameTime(prev => {
+          const newTime = prev + 1
+          gameTimeRef.current = newTime // Обновляем ref синхронно
+          return newTime
+        })
       }, 1000)
     }
     return () => {
@@ -436,7 +510,6 @@ export const ConcreteMixerGame: React.FC = () => {
         if (e.code === 'Space') {
           handleJump()
         }
-        // Добавляем горячую клавишу для дебага
         if (e.code === 'KeyD') {
           setShowDebug(prev => !prev)
         }
@@ -501,7 +574,7 @@ export const ConcreteMixerGame: React.FC = () => {
         {gameOver && (
           <div className={s.gameOverOverlay}>
             <p className={s.finalScore}>
-              Время: {gameTime} сек.
+              Время: {gameTime} сек. | Уровень: {currentLevel}
             </p>
             <p className={s.finalScore}>
               Конечный счет:{' '}
@@ -524,7 +597,13 @@ export const ConcreteMixerGame: React.FC = () => {
       </div>
 
       <div className={s.scoreDisplay}>
-        <p className={s.scoreText}>Мешки: {score} | Время: {gameTime} сек.</p>
+        <p className={s.scoreText}>
+          Мешки: {score} | Время: {gameTime} сек.
+          {showDebug && ` | Скорость: ${(baseGameSpeed * getDifficultySettings(gameTime).speedMultiplier).toFixed(1)}`}
+        </p>
+        <p style={{textAlign: 'center'}} className={s.scoreText}>
+          Уровень: {currentLevel}
+        </p>
         {/* <button 
           onClick={toggleDebug}
           className={s.debugButton}
@@ -535,7 +614,8 @@ export const ConcreteMixerGame: React.FC = () => {
             color: 'white',
             border: 'none',
             borderRadius: '3px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontSize: '12px'
           }}
         >
           Дебаг: {showDebug ? 'ВКЛ' : 'ВЫКЛ'}
