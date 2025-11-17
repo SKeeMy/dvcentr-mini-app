@@ -4,7 +4,7 @@ export const StartGame = ({setGameStarted}: {setGameStarted: (val: boolean) => v
   return (
     <div className={s.startOverlay}>
         <div className={s.startContent}>
-          <h1 className={s.gameTitle}>Бетономешалка</h1>
+          <h1 className={s.gameTitle}>Цементовозик</h1>
           <p className={s.gameInstructions}>
             Прыгай через препятствия и собирай мешки с цементом!
           </p>
