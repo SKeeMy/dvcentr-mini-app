@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/auth-store'
 import { PrimaryButton } from '@/components/shared/buttons/primary-button/primary-button'
 import { useFooterStore } from '@/store/footer-strore'
 import { useOrdersStore } from '@/store/orders-store'
+import { useRemainsStore } from '@/store/remains-store'
 
 interface UserData {
   id: number
@@ -34,7 +35,7 @@ export default function Home() {
   const {openFooter} = useFooterStore()
 
   const { setLoading, setData, data} = useOrdersStore()
-
+  const { setLoading: setLoadingRemains, setData: setDataRemains, data: dataRemains } = useRemainsStore()
 
   useEffect(() => {
     console.log('📱 Home component mounted');
@@ -100,7 +101,54 @@ export default function Home() {
     }
   };
 
-
+  const sendRemainsRequest = async () => {
+    console.log('📦 Вызов sendRemainsRequest...');
+    openFooter('remains')
+    setError(null);
+  
+    if (dataRemains === null) {
+      setLoadingRemains(true);
+  
+      try {
+        const bitrixId = apiUserData?.bitrix_id ?? '';
+  
+        if (!bitrixId) {
+          throw new Error('Не удалось получить номер телефона');
+        }
+  
+        console.log('1. Отправляем запрос к API остатков с номером:', bitrixId);
+  
+        const response = await fetch('/api/tg-react-app/get-user-remain', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Forwarded-Proto': 'https',
+            'X-Forwarded-Ssl': 'on',
+            'HTTPS': 'YES',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN ?? '3C7D5B2F9A1E4D6C8B2A5F7E3D1C9B2A'}`
+          },
+          body: JSON.stringify({
+            bitrix_id: bitrixId
+          })
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const result = await response.json();
+        setDataRemains(result);
+      } catch (err) {
+        console.error('❌ Ошибка в sendRemainsRequest:', err);
+        setError(err.message);
+      } finally {
+        setLoadingRemains(false);
+      }
+    } else {
+      openFooter('remains');
+    }
+  };
 
 
   return (
@@ -141,7 +189,7 @@ export default function Home() {
               apiUserData ? <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
-                <PrimaryButton onClick={() => openFooter('remains')} buttonText='Мои остатки' />
+                <PrimaryButton onClick={sendRemainsRequest} buttonText='Мои остатки' />
               </div> : <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('registration')} buttonText='Зарегистрироваться' />
                 <p className="reg-description">
