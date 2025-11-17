@@ -180,6 +180,7 @@ export default function Home() {
               </div>
             }
           </div>
+          <PrimaryButton href={'/catalog'} >Наш мерч</PrimaryButton>
 
           <div className="profile-stats">
             {userLoading ? <div className='profile-stats-loading-wrapper'>
@@ -212,7 +213,6 @@ export default function Home() {
           </div>
         </div>
 
-        <PrimaryButton href={'/catalog'} >Наш мерч</PrimaryButton>
 
 
 

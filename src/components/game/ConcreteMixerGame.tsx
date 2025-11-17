@@ -142,7 +142,7 @@ export const ConcreteMixerGame: React.FC = () => {
         doubleObstacleChance: 0.0,
         maxObjects: 3
       }
-    } else if (time < 20) {
+    } else if (time < 120) {
       return {
         level: 2,
         spawnRate: 90,
@@ -153,7 +153,7 @@ export const ConcreteMixerGame: React.FC = () => {
         doubleObstacleChance: 0.2,
         maxObjects: 4
       }
-    } else if (time < 35) {
+    } else if (time < 180) {
       return {
         level: 3,
         spawnRate: 70,
@@ -164,7 +164,7 @@ export const ConcreteMixerGame: React.FC = () => {
         doubleObstacleChance: 0.4,
         maxObjects: 5
       }
-    } else if (time < 50) {
+    } else if (time < 240) {
       return {
         level: 4,
         spawnRate: 50,
@@ -177,14 +177,14 @@ export const ConcreteMixerGame: React.FC = () => {
       }
     } else {
       return {
-        level: 5,
-        spawnRate: 30,
-        obstacleChance: 0.2,
-        airObstacleChance: 0.6,
+        level: 4,
+        spawnRate: 50,
+        obstacleChance: 0.3,
+        airObstacleChance: 0.5,
         coinChance: 0.2,
-        speedMultiplier: 2.2,
-        doubleObstacleChance: 0.8,
-        maxObjects: 8
+        speedMultiplier: 1.9,
+        doubleObstacleChance: 0.6,
+        maxObjects: 6
       }
     }
   }
