@@ -744,9 +744,9 @@ export const ConcreteMixerGame: React.FC = () => {
           Мешки: {score} | Время: {gameTime} сек.
           {showDebug && ` | Скорость: ${(baseGameSpeed * getDifficultySettings(gameTime).speedMultiplier).toFixed(1)}`}
         </p>
-        <p style={{ textAlign: 'center' }} className={s.scoreText}>
+        {/* <p style={{ textAlign: 'center' }} className={s.scoreText}>
           Уровень: {currentLevel}
-        </p>
+        </p> */}
         
         {/* Кнопка управления звуком */}
         {/* <div className={s.soundControls}>
