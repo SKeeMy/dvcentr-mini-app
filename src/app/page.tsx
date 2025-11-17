@@ -118,7 +118,7 @@ export default function Home() {
   
         console.log('1. Отправляем запрос к API остатков с номером:', bitrixId);
   
-        const response = await fetch('/api/tg-react-app/get-user-remain', {
+        const response = await fetch('/api/tg-react-app/get-user-remains', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
