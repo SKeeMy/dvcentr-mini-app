@@ -7,14 +7,10 @@ export interface IRemainData {
   UnitId: string;
 }
 
-export interface IApiRemainsData {
-  Data: IRemainData[];
-}
-
 export interface IApiRemainsResponse {
   STATUS: string;
   MESSAGE: string;
-  DATA: IApiRemainsData;
+  DATA: IRemainData[]; 
 }
 
 export interface IRemainsProps {

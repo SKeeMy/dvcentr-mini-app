@@ -11,7 +11,8 @@ export const GetRemains = () => {
   return (
     <div className='popup_inner'>
       <h3 style={{textAlign: 'center'}}>Мои остатки</h3>
-      {data && data.DATA.Data.map((remain, index) => (
+      
+      {data && data.DATA.map((remain, index) => (
         <Remains
           key={`${remain.ItemId}-${remain.Company}-${index}`}
           remainData={remain}
