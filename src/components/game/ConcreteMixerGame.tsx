@@ -24,6 +24,11 @@ export const ConcreteMixerGame: React.FC = () => {
   const coinSoundRef = useRef<HTMLAudioElement | null>(null)
   const crashSoundRef = useRef<HTMLAudioElement | null>(null)
 
+  // Оптимизация FPS
+  const lastTimeRef = useRef(0)
+  const fps = 60
+  const frameInterval = 1000 / fps
+
   const carRef = useRef({
     x: 75,
     y: 0,
@@ -48,30 +53,75 @@ export const ConcreteMixerGame: React.FC = () => {
   const gravity = 0.8
   const baseGameSpeed = 6
 
-  // Инициализация звуков
+  // Определение мобильного устройства
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }
+
+  // Оптимизированная инициализация звуков
   const initAudio = () => {
-    backgroundMusicRef.current = new Audio('/sounds/main_theme.mp3')
-    jumpSoundRef.current = new Audio('/sounds/jump.mp3')
-    coinSoundRef.current = new Audio('/sounds/coin.mp3')
-    crashSoundRef.current = new Audio('/sounds/crush.mp3')
-    
-    // Настраиваем фоновую музыку
-    if (backgroundMusicRef.current) {
-      backgroundMusicRef.current.loop = true
-      backgroundMusicRef.current.volume = 0.3
-    }
-    
-    // Настраиваем звуковые эффекты
-    [jumpSoundRef.current, coinSoundRef.current, crashSoundRef.current].forEach(sound => {
-      if (sound) {
-        sound.volume = 0.5
+    try {
+      // Создаем элементы audio с предзагрузкой
+      backgroundMusicRef.current = new Audio()
+      jumpSoundRef.current = new Audio()
+      coinSoundRef.current = new Audio()
+      crashSoundRef.current = new Audio()
+      
+      // Настраиваем фоновую музыку
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.src = '/sounds/main_theme.mp3'
+        backgroundMusicRef.current.loop = true
+        backgroundMusicRef.current.volume = 0.2
+        backgroundMusicRef.current.preload = 'auto'
       }
-    })
+      
+      // Настраиваем звуковые эффекты
+      const soundEffects = [
+        { ref: jumpSoundRef, src: '/sounds/jump.mp3' },
+        { ref: coinSoundRef, src: '/sounds/coin.mp3' },
+        { ref: crashSoundRef, src: '/sounds/crush.mp3' }
+      ]
+      
+      soundEffects.forEach(({ ref, src }) => {
+        if (ref.current) {
+          ref.current.src = src
+          ref.current.volume = 0.3
+          ref.current.preload = 'auto'
+        }
+      })
+
+      // Предзагружаем звуки
+      setTimeout(() => {
+        soundEffects.forEach(({ ref }) => {
+          if (ref.current) {
+            ref.current.load()
+          }
+        })
+        if (backgroundMusicRef.current) {
+          backgroundMusicRef.current.load()
+        }
+      }, 1000)
+      
+    } catch (error) {
+      console.log('Audio initialization failed:', error)
+    }
   }
 
   const playBackgroundMusic = () => {
     if (musicEnabled && backgroundMusicRef.current) {
-      backgroundMusicRef.current.play().catch(e => console.log('Audio play failed:', e))
+      try {
+        const playPromise = backgroundMusicRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.log('Background music play failed, retrying...')
+            setTimeout(() => {
+              backgroundMusicRef.current?.play().catch(() => {})
+            }, 1000)
+          })
+        }
+      } catch (error) {
+        console.log('Background music error:', error)
+      }
     }
   }
 
@@ -84,22 +134,43 @@ export const ConcreteMixerGame: React.FC = () => {
 
   const playJumpSound = () => {
     if (soundEnabled && jumpSoundRef.current) {
-      jumpSoundRef.current.currentTime = 0
-      jumpSoundRef.current.play().catch(e => console.log('Jump sound failed'))
+      try {
+        jumpSoundRef.current.currentTime = 0
+        const playPromise = jumpSoundRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {})
+        }
+      } catch (error) {
+        // Игнорируем ошибки воспроизведения на мобильных
+      }
     }
   }
 
   const playCoinSound = () => {
     if (soundEnabled && coinSoundRef.current) {
-      coinSoundRef.current.currentTime = 0
-      coinSoundRef.current.play().catch(e => console.log('Coin sound failed'))
+      try {
+        coinSoundRef.current.currentTime = 0
+        const playPromise = coinSoundRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {})
+        }
+      } catch (error) {
+        // Игнорируем ошибки
+      }
     }
   }
 
   const playCrashSound = () => {
     if (soundEnabled && crashSoundRef.current) {
-      crashSoundRef.current.currentTime = 0
-      crashSoundRef.current.play().catch(e => console.log('Crash sound failed'))
+      try {
+        crashSoundRef.current.currentTime = 0
+        const playPromise = crashSoundRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {})
+        }
+      } catch (error) {
+        // Игнорируем ошибки
+      }
     }
   }
 
@@ -208,17 +279,25 @@ export const ConcreteMixerGame: React.FC = () => {
 
   // Инициализация звуков при загрузке компонента
   useEffect(() => {
-    initAudio()
-    
-    // Автозапуск музыки при загрузке (если включено)
-    if (musicEnabled) {
-      // Небольшая задержка для корректного воспроизведения
-      setTimeout(() => {
-        playBackgroundMusic()
-      }, 500)
+    const initSounds = () => {
+      initAudio()
+      
+      if (musicEnabled) {
+        const isMobile = isMobileDevice()
+        setTimeout(() => {
+          playBackgroundMusic()
+        }, isMobile ? 2000 : 500)
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      initSounds()
+    } else {
+      window.addEventListener('load', initSounds)
     }
     
     return () => {
+      window.removeEventListener('load', initSounds)
       stopBackgroundMusic()
     }
   }, [])
@@ -326,6 +405,9 @@ export const ConcreteMixerGame: React.FC = () => {
   const drawDebugInfo = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, groundY: number, difficulty: any) => {
     if (!showDebug) return
 
+    // Пропускаем дебаг на мобильных для производительности
+    if (isMobileDevice()) return
+
     ctx.save()
 
     ctx.strokeStyle = '#00FF00'
@@ -378,7 +460,15 @@ export const ConcreteMixerGame: React.FC = () => {
     ctx.restore()
   }
 
-  const gameLoop = () => {
+  const gameLoop = (timestamp: number) => {
+    // Ограничиваем FPS для мобильных устройств
+    const deltaTime = timestamp - lastTimeRef.current
+    if (deltaTime < frameInterval) {
+      requestRef.current = requestAnimationFrame(gameLoop)
+      return
+    }
+    lastTimeRef.current = timestamp - (deltaTime % frameInterval)
+
     const difficulty = getDifficultySettings(gameTimeRef.current)
     const gameSpeed = baseGameSpeed * difficulty.speedMultiplier
 
@@ -451,26 +541,9 @@ export const ConcreteMixerGame: React.FC = () => {
         ctx.lineWidth = 3
         ctx.strokeRect(object.x, object.y, object.width, object.height)
       } else {
+        // Упрощенная отрисовка монет для мобильных
         if (coinLoaded && coinImageRef.current) {
-          const rotation = Date.now() * 0.01
-
-          ctx.save()
-          ctx.translate(object.x + object.width / 2, object.y + object.height / 2)
-          ctx.rotate(rotation)
-
-          ctx.drawImage(
-            coinImageRef.current,
-            -object.width / 2,
-            -object.height / 2,
-            object.width,
-            object.height
-          )
-
-          ctx.restore()
-
-          const glow = Math.sin(Date.now() * 0.01) * 0.3 + 0.7
-          ctx.shadowColor = '#FFD700'
-          ctx.shadowBlur = 10 * glow
+          // Убираем сложные эффекты для мобильных
           ctx.drawImage(
             coinImageRef.current,
             object.x,
@@ -478,17 +551,11 @@ export const ConcreteMixerGame: React.FC = () => {
             object.width,
             object.height
           )
-          ctx.shadowBlur = 0
         } else {
+          // Простой круг вместо сложной анимации
           ctx.fillStyle = '#FFD700'
           ctx.beginPath()
-          ctx.arc(object.x + object.width / 2, object.y + object.height / 2, object.width / 2, 0, Math.PI * 2)
-          ctx.fill()
-
-          const pulse = Math.sin(Date.now() * 0.01) * 0.3 + 0.7
-          ctx.fillStyle = `rgba(255, 255, 255, ${pulse})`
-          ctx.beginPath()
-          ctx.arc(object.x + object.width / 3, object.y + object.height / 3, object.width / 6, 0, Math.PI * 2)
+          ctx.arc(object.x + object.width/2, object.y + object.height/2, object.width/2, 0, Math.PI * 2)
           ctx.fill()
         }
       }
@@ -533,10 +600,12 @@ export const ConcreteMixerGame: React.FC = () => {
     ctx.fillStyle = '#2F4F4F'
     ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY)
 
-    const dashSpeed = difficulty.speedMultiplier > 2 ? 0.08 : 0.05
+    // Разметка на дороге - упрощенная для мобильных
+    const isMobile = isMobileDevice()
+    const dashSpeed = isMobile ? 0.04 : 0.08
     const dashOffset = (Date.now() * dashSpeed) % 100
-    const dashLength = 50
-    const gapLength = 50
+    const dashLength = isMobile ? 30 : 40
+    const gapLength = isMobile ? 30 : 40
 
     ctx.setLineDash([dashLength, gapLength])
     ctx.lineDashOffset = -dashOffset
@@ -544,7 +613,7 @@ export const ConcreteMixerGame: React.FC = () => {
     ctx.moveTo(0, groundY + 15)
     ctx.lineTo(canvas.width, groundY + 15)
     ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 4
+    ctx.lineWidth = isMobile ? 2 : 3
     ctx.stroke()
     ctx.setLineDash([])
 
@@ -599,6 +668,7 @@ export const ConcreteMixerGame: React.FC = () => {
     if (requestRef.current) {
       cancelAnimationFrame(requestRef.current)
     }
+    lastTimeRef.current = performance.now()
     requestRef.current = requestAnimationFrame(gameLoop)
   }
 
@@ -644,6 +714,7 @@ export const ConcreteMixerGame: React.FC = () => {
       window.addEventListener('touchstart', handleTouchStart)
 
       if (carLoaded && coinLoaded && !gameOver) {
+        lastTimeRef.current = performance.now()
         requestRef.current = requestAnimationFrame(gameLoop)
       }
 
@@ -730,7 +801,7 @@ export const ConcreteMixerGame: React.FC = () => {
         </p>
         
         {/* Кнопки управления звуком */}
-        <div className={s.soundControls}>
+        {/* <div className={s.soundControls}>
           <button 
             onClick={toggleMusic}
             className={`${s.soundButton} ${musicEnabled ? s.soundOn : s.soundOff}`}
@@ -743,7 +814,7 @@ export const ConcreteMixerGame: React.FC = () => {
           >
             Звуки: {soundEnabled ? 'ВКЛ' : 'ВЫКЛ'}
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
