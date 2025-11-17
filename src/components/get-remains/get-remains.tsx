@@ -9,27 +9,39 @@ export const GetRemains = () => {
   const { user } = useAuthStore()
   const { data, isLoading } = useRemainsStore()
 
+  const hasData = data && data.DATA && data.DATA.length > 0
+  const isEmptyData = data && data.DATA && data.DATA.length === 0
+
   return (
     <div className='popup_inner'>
       <h3 style={{textAlign: 'center'}}>Мои остатки</h3>
       
-      {data && data.DATA.map((remain, index) => (
+      {hasData && data.DATA.map((remain, index) => (
         <Remains
           key={`${remain.ItemId}-${remain.Company}-${index}`}
           remainData={remain}
           loading={isLoading}
         />
       ))}
-      {!data && <Box>
+      
+      {isEmptyData && (
+        <Box>
           <h3>У вас нет остатков</h3>
-        </Box>}
+        </Box>
+      )}
 
-      {data === null && isLoading &&
+      {data === null && isLoading && (
         <Remains
           remainData={null}
           loading={isLoading}
         />
-      }
+      )}
+
+      {!data && !isLoading && (
+        <Box>
+          <h3>У вас нет остатков</h3>
+        </Box>
+      )}
     </div>
   )
 }
