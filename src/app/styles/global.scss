@@ -337,6 +337,7 @@ body {
     font-weight: 700;
     margin-bottom: 4px;
     color: #2c3e50;
+    text-align: center;
   }
 
   .user-username {
@@ -897,4 +898,16 @@ body {
   border-radius: 16px;
   background: #cecece;
   animation: pulse 1.5s ease-in-out infinite;
+}
+
+.button_tg {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.actions-container button, a {
+  margin-bottom: 5px !important;
+  max-height: 50px;
 }

@@ -16,6 +16,7 @@ import { PrimaryButton } from '@/components/shared/buttons/primary-button/primar
 import { useFooterStore } from '@/store/footer-strore'
 import { useOrdersStore } from '@/store/orders-store'
 import { useRemainsStore } from '@/store/remains-store'
+import { Telegram } from '@/components/shared/icons/telegram'
 
 interface UserData {
   id: number
@@ -32,14 +33,14 @@ export default function Home() {
   const { user, apiUserData, userLoading, fetchUserData } = useAuthStore()
   const [error, setError] = useState<string | null>(null);
 
-  const {openFooter} = useFooterStore()
+  const { openFooter } = useFooterStore()
 
-  const { setLoading, setData, data} = useOrdersStore()
+  const { setLoading, setData, data } = useOrdersStore()
   const { setLoading: setLoadingRemains, setData: setDataRemains, data: dataRemains } = useRemainsStore()
 
   useEffect(() => {
     console.log('📱 Home component mounted');
-    
+
     if (user?.phone) {
       console.log('✅ Using existing phone:', user.phone);
       fetchUserData(user.phone);
@@ -105,19 +106,19 @@ export default function Home() {
     console.log('📦 Вызов sendRemainsRequest...');
     openFooter('remains')
     setError(null);
-  
+
     if (dataRemains === null) {
       setLoadingRemains(true);
-  
+
       try {
         const bitrixId = apiUserData?.bitrix_id ?? '';
-  
+
         if (!bitrixId) {
           throw new Error('Не удалось получить номер телефона');
         }
-  
+
         console.log('1. Отправляем запрос к API остатков с номером:', bitrixId);
-  
+
         const response = await fetch('/api/tg-react-app/get-user-remains', {
           method: 'POST',
           headers: {
@@ -132,11 +133,11 @@ export default function Home() {
             bitrix_id: bitrixId
           })
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         const result = await response.json();
         setDataRemains(result);
       } catch (err) {
@@ -154,7 +155,7 @@ export default function Home() {
   return (
     <Section name={null}>
       <div className="app-container">
-        
+
 
         <BannerSlider />
 
@@ -187,12 +188,20 @@ export default function Home() {
             </div> :
 
               apiUserData ? <div className="actions-container">
-                <PrimaryButton href='https://t.me/dvcentr_bot' buttonText='Напишите нам' />
-                <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
-                <PrimaryButton onClick={sendRemainsRequest} buttonText='Мои остатки' />
-                <PrimaryButton onClick={sendRemainsRequest} buttonText='Мои остатки' />
+                <PrimaryButton onClick={sendPhoneRequest}>
+                  Доступно по доверенности
+                </PrimaryButton>
+                <PrimaryButton onClick={sendRemainsRequest}>
+                  Мои остатки
+                </PrimaryButton>
+                <PrimaryButton className='button_tg' href='https://t.me/dvcentr_bot'>
+                  Напишите нам <Telegram />
+                </PrimaryButton>
+                <PrimaryButton target={'_blank'} className='button_tg' href='https://dvcentr.ru/'>
+                  Наш сайт
+                </PrimaryButton>
               </div> : <div className="actions-container">
-                <PrimaryButton onClick={() => openFooter('registration')} buttonText='Зарегистрироваться' />
+                <PrimaryButton onClick={() => openFooter('registration')} >Зарегистрироваться</PrimaryButton>
                 <p className="reg-description">
                   Для доступа ко всем функциям пройдите быструю регистрацию
                 </p>
@@ -203,8 +212,8 @@ export default function Home() {
           </div>
         </div>
 
-        <PrimaryButton href={'/catalog'} buttonText='Каталог' />
-        
+        <PrimaryButton href={'/catalog'} >Наш мерч</PrimaryButton>
+
 
 
 

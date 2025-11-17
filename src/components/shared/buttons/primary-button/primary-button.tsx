@@ -1,8 +1,8 @@
-import { FC, ButtonHTMLAttributes, AnchorHTMLAttributes } from 'react'
+import { FC, ButtonHTMLAttributes, AnchorHTMLAttributes, Children } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 interface BaseProps {
-    buttonText: string
+    children: React.ReactNode
     href?: string  
 }
 
@@ -17,12 +17,12 @@ type LinkProps = BaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & {
 type PrimaryButtonProps = ButtonProps | LinkProps
 
 export const PrimaryButton: FC<PrimaryButtonProps> = ({
-  buttonText, 
+
   href, 
   ...rest
 }) => {
   if (href) {
-      const { className, style, ...linkProps } = rest as AnchorHTMLAttributes<HTMLAnchorElement>
+      const { className, style, children, ...linkProps } = rest as AnchorHTMLAttributes<HTMLAnchorElement>
       return (
           <Link 
               href={href}
@@ -30,19 +30,19 @@ export const PrimaryButton: FC<PrimaryButtonProps> = ({
               style={style}
               {...linkProps}
           >
-              {buttonText}
+              {children}
           </Link>
       )
   }
 
-  const { className, style, ...buttonProps } = rest as ButtonHTMLAttributes<HTMLButtonElement>
+  const { className, style, children, ...buttonProps } = rest as ButtonHTMLAttributes<HTMLButtonElement>
   return (
       <button 
           className={clsx('action-button primary', className)}
           style={style}
           {...buttonProps}
       >
-          {buttonText}
+          {children}
       </button>
   )
 }

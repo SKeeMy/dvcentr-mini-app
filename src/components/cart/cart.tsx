@@ -161,7 +161,7 @@ export const Cart = () => {
   if (items.length === 0) {
     return <Box>
       <h3 className={s.title}>Здесь пока пусто. <br /> Перейдите в каталог</h3>
-      <PrimaryButton onClick={closeFooter} buttonText='Каталог' href='/catalog' />
+      <PrimaryButton onClick={closeFooter} href='/catalog' >Каталог</PrimaryButton>
     </Box>
   }
 

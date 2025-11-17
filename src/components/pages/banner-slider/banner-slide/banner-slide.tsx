@@ -59,7 +59,7 @@ export const BannerSlide: FC<IBannerSlideProps> = (props) => {
         />
       )}
 
-      {description && <PrimaryButton onClick={handleClickSlide} className={s.description} buttonText='Подробнее' />}
+      {description && <PrimaryButton onClick={handleClickSlide} className={s.description} >Подробнее</PrimaryButton>}
 
       {/* Текст */}
       {text && <h3>{text}</h3>}

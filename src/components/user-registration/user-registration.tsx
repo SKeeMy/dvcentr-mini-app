@@ -176,11 +176,9 @@ export const UserRegistration = () => {
           </div>
 
           <PrimaryButton
-            buttonText={isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
             type="submit"
             className={s.submitButton}
-          // disabled={!agreeToTerms || isSubmitting}
-          />
+          >{isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}</PrimaryButton>
         </form>
       </div>
     </Container>

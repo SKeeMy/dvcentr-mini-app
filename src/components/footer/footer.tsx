@@ -141,12 +141,17 @@ export const Footer = () => {
             <Home />
             <span>Главная</span>
           </Link>
-
-          {/* Кнопка Функции/Закрыть с анимацией */}
-          <div
+          <Link href={'/game'}
+            className={s.footer_item}
+            onClick={openGame}
+          >
+            <Gamepad />
+            <span>Игра</span>
+          </Link>
+          {/* <div
             onClick={toggleAddsMenu}
             className={clsx(
-              s.footer_item, 
+              s.footer_item,
               s.functions_button,
               isShowAdds && s.functions_button_active
             )}
@@ -159,7 +164,6 @@ export const Footer = () => {
               {isShowAdds ? 'Закрыть' : 'Функции'}
             </span>
 
-            {/* Дополнительное меню */}
             <div className={clsx(s.footer_adds, isShowAdds && s.show_adds)}>
               <button
                 className={s.footer_add_item}
@@ -176,7 +180,7 @@ export const Footer = () => {
                 <span>Игра</span>
               </Link>
             </div>
-          </div>
+          </div> */}
 
           <button
             onClick={() => openFooter('cart')}
