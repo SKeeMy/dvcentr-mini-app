@@ -13,13 +13,13 @@ export const ConcreteMixerGame: React.FC = () => {
   const [gameTime, setGameTime] = useState(0)
   const [showDebug, setShowDebug] = useState(false)
   const [currentLevel, setCurrentLevel] = useState(1)
-  const [musicEnabled, setMusicEnabled] = useState(true)
+  // const [musicEnabled, setMusicEnabled] = useState(true)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const groundYRef = useRef(0)
   const gameTimeRef = useRef(0)
 
   // Refs для звуков
-  const backgroundMusicRef = useRef<HTMLAudioElement | null>(null)
+  // const backgroundMusicRef = useRef<HTMLAudioElement | null>(null)
   const jumpSoundRef = useRef<HTMLAudioElement | null>(null)
   const coinSoundRef = useRef<HTMLAudioElement | null>(null)
   const crashSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -62,18 +62,18 @@ export const ConcreteMixerGame: React.FC = () => {
   const initAudio = () => {
     try {
       // Создаем элементы audio с предзагрузкой
-      backgroundMusicRef.current = new Audio()
+      // backgroundMusicRef.current = new Audio()
       jumpSoundRef.current = new Audio()
       coinSoundRef.current = new Audio()
       crashSoundRef.current = new Audio()
       
       // Настраиваем фоновую музыку
-      if (backgroundMusicRef.current) {
-        backgroundMusicRef.current.src = '/sounds/main_theme.mp3'
-        backgroundMusicRef.current.loop = true
-        backgroundMusicRef.current.volume = 0.2
-        backgroundMusicRef.current.preload = 'auto'
-      }
+      // if (backgroundMusicRef.current) {
+      //   backgroundMusicRef.current.src = '/sounds/main_theme.mp3'
+      //   backgroundMusicRef.current.loop = true
+      //   backgroundMusicRef.current.volume = 0.2
+      //   backgroundMusicRef.current.preload = 'auto'
+      // }
       
       // Настраиваем звуковые эффекты
       const soundEffects = [
@@ -97,9 +97,9 @@ export const ConcreteMixerGame: React.FC = () => {
             ref.current.load()
           }
         })
-        if (backgroundMusicRef.current) {
-          backgroundMusicRef.current.load()
-        }
+        // if (backgroundMusicRef.current) {
+        //   backgroundMusicRef.current.load()
+        // }
       }, 1000)
       
     } catch (error) {
@@ -107,30 +107,30 @@ export const ConcreteMixerGame: React.FC = () => {
     }
   }
 
-  const playBackgroundMusic = () => {
-    if (musicEnabled && backgroundMusicRef.current) {
-      try {
-        const playPromise = backgroundMusicRef.current.play()
-        if (playPromise !== undefined) {
-          playPromise.catch(e => {
-            console.log('Background music play failed, retrying...')
-            setTimeout(() => {
-              backgroundMusicRef.current?.play().catch(() => {})
-            }, 1000)
-          })
-        }
-      } catch (error) {
-        console.log('Background music error:', error)
-      }
-    }
-  }
+  // const playBackgroundMusic = () => {
+  //   if (musicEnabled && backgroundMusicRef.current) {
+  //     try {
+  //       const playPromise = backgroundMusicRef.current.play()
+  //       if (playPromise !== undefined) {
+  //         playPromise.catch(e => {
+  //           console.log('Background music play failed, retrying...')
+  //           setTimeout(() => {
+  //             backgroundMusicRef.current?.play().catch(() => {})
+  //           }, 1000)
+  //         })
+  //       }
+  //     } catch (error) {
+  //       console.log('Background music error:', error)
+  //     }
+  //   }
+  // }
 
-  const stopBackgroundMusic = () => {
-    if (backgroundMusicRef.current) {
-      backgroundMusicRef.current.pause()
-      backgroundMusicRef.current.currentTime = 0
-    }
-  }
+  // const stopBackgroundMusic = () => {
+  //   if (backgroundMusicRef.current) {
+  //     backgroundMusicRef.current.pause()
+  //     backgroundMusicRef.current.currentTime = 0
+  //   }
+  // }
 
   const playJumpSound = () => {
     if (soundEnabled && jumpSoundRef.current) {
@@ -174,16 +174,16 @@ export const ConcreteMixerGame: React.FC = () => {
     }
   }
 
-  const toggleMusic = () => {
-    setMusicEnabled(prev => {
-      if (!prev) {
-        playBackgroundMusic()
-      } else {
-        stopBackgroundMusic()
-      }
-      return !prev
-    })
-  }
+  // const toggleMusic = () => {
+  //   setMusicEnabled(prev => {
+  //     if (!prev) {
+  //       playBackgroundMusic()
+  //     } else {
+  //       stopBackgroundMusic()
+  //     }
+  //     return !prev
+  //   })
+  // }
 
   const toggleSound = () => {
     setSoundEnabled(prev => !prev)
@@ -282,12 +282,12 @@ export const ConcreteMixerGame: React.FC = () => {
     const initSounds = () => {
       initAudio()
       
-      if (musicEnabled) {
-        const isMobile = isMobileDevice()
-        setTimeout(() => {
-          playBackgroundMusic()
-        }, isMobile ? 2000 : 500)
-      }
+      // if (musicEnabled) {
+      //   const isMobile = isMobileDevice()
+      //   setTimeout(() => {
+      //     playBackgroundMusic()
+      //   }, isMobile ? 2000 : 500)
+      // }
     }
 
     if (document.readyState === 'complete') {
@@ -298,7 +298,7 @@ export const ConcreteMixerGame: React.FC = () => {
     
     return () => {
       window.removeEventListener('load', initSounds)
-      stopBackgroundMusic()
+      // stopBackgroundMusic()
     }
   }, [])
 
@@ -659,11 +659,11 @@ export const ConcreteMixerGame: React.FC = () => {
     setGameOver(false)
 
     // Перезапускаем музыку при рестарте
-    if (musicEnabled) {
-      setTimeout(() => {
-        playBackgroundMusic()
-      }, 100)
-    }
+    // if (musicEnabled) {
+    //   setTimeout(() => {
+    //     playBackgroundMusic()
+    //   }, 100)
+    // }
 
     if (requestRef.current) {
       cancelAnimationFrame(requestRef.current)
