@@ -187,8 +187,9 @@ export default function Home() {
             </div> :
 
               apiUserData ? <div className="actions-container">
-                <PrimaryButton onClick={() => openFooter('profile')} buttonText='Мой профиль' />
+                <PrimaryButton href='https://t.me/dvcentr_bot' buttonText='Напишите нам' />
                 <PrimaryButton onClick={sendPhoneRequest} buttonText='Доступно по доверенности' />
+                <PrimaryButton onClick={sendRemainsRequest} buttonText='Мои остатки' />
                 <PrimaryButton onClick={sendRemainsRequest} buttonText='Мои остатки' />
               </div> : <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('registration')} buttonText='Зарегистрироваться' />

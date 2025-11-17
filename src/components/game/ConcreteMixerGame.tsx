@@ -18,7 +18,7 @@ export const ConcreteMixerGame: React.FC = () => {
   const carRef = useRef({
     x: 75,
     y: 0,
-    width: 80,
+    width: 130,
     height: 50,
     velocityY: 1,
     jumpForce: 15.5,
@@ -460,7 +460,7 @@ export const ConcreteMixerGame: React.FC = () => {
     carRef.current = {
       x: 75,
       y: groundYRef.current - carRef.current.height,
-      width: 80,
+      width: 130,
       height: 50,
       velocityY: 0,
       jumpForce: 15.5,
