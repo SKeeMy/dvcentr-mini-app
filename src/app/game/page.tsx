@@ -2,7 +2,7 @@
 import { ConcreteMixerGame } from "@/components/game/ConcreteMixerGame"
 import { useEffect, useState } from "react"
 import { StartGame } from "@/components/game/start-game"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { isTMA } from "@telegram-apps/sdk"
 import { useAppBackButton } from "../hooks/useAppBackButton"
 
