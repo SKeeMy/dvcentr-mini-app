@@ -166,13 +166,14 @@ export const UserRegistration = () => {
             />
 
 
-            <Checkbox<RegistrationForm>
-              label="Я согласен на обработку персональных данных"
+             */}
+             <Checkbox<RegistrationForm>
+              label={`Я подтверждаю свою дееспособность, а также даю согласие на <a target="_blank" href="https://dvcentr.ru/privacypolicy/">обработку моих персональных данных</a>`}
               name="agreeToTerms"
               register={register}
               error={errors.agreeToTerms?.message}
               required={true}
-            /> */}
+            />
           </div>
 
           <PrimaryButton

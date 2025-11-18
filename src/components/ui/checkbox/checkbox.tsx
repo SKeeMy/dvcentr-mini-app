@@ -28,7 +28,7 @@ export const Checkbox = <T extends FieldValues>({
           })}
         />
         <span className={s.checkmark}></span>
-        <span className={s.checkboxText}>{label}</span>
+        <span dangerouslySetInnerHTML={{__html: label}} className={s.checkboxText}></span>
       </label>
       {error && <span className={s.error}>{error}</span>}
     </div>

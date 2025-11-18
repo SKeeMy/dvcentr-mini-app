@@ -202,6 +202,12 @@ export default function Home() {
                 </PrimaryButton>
               </div> : <div className="actions-container">
                 <PrimaryButton onClick={() => openFooter('registration')} >Зарегистрироваться</PrimaryButton>
+                <PrimaryButton className='button_tg' href='https://t.me/dvcentr_bot'>
+                  Напишите нам <Telegram />
+                </PrimaryButton>
+                <PrimaryButton target={'_blank'} className='button_tg' href='https://dvcentr.ru/'>
+                  Наш сайт
+                </PrimaryButton>
                 <p className="reg-description">
                   Для доступа ко всем функциям пройдите быструю регистрацию
                 </p>
@@ -212,7 +218,7 @@ export default function Home() {
           </div>
         </div>
 
-        <PrimaryButton href={'/catalog'} >Наш мерч</PrimaryButton>
+        <PrimaryButton href={'/catalog'}>Наш мерч</PrimaryButton>
 
 
 

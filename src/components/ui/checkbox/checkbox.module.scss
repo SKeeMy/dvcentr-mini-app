@@ -54,6 +54,11 @@
   font-size: 14px;
   color: #333;
   line-height: 1.4;
+
+  a {
+    text-decoration-skip-ink: none;
+    color: var(--primary-orange);
+  }
 }
 
 .error {

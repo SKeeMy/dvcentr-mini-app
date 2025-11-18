@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { ProductSkeleton } from '../pages/catalog/product/product-skeleton'
 import s from './cart.module.scss'
 import { useCartStore } from '@/store/cart-store'
@@ -13,7 +13,9 @@ import { useOrdersStore } from '@/store/orders-store'
 import { Box } from '../shared/box/box'
 import { usePathname } from 'next/navigation'
 import { PrimaryButton } from '../shared/buttons/primary-button/primary-button'
-
+import AnimateHeight from 'react-animate-height'
+import { Arrow } from '../shared/icons/arrow'
+import clsx from 'clsx'
 const Product = dynamic(() => import('../pages/catalog/product/product').then(mod => mod.Product), {
   ssr: false,
   loading: () => <ProductSkeleton />
@@ -30,6 +32,27 @@ export const Cart = () => {
   const { apiUserData } = useAuthStore()
   const { openFooter, closeFooter } = useFooterStore()
   const { setIsOrdering } = useOrdersStore()
+
+
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState(0);
+
+  const toggleHeight = () => {
+    if (height === 0) {
+      setHeight(contentRef.current.scrollHeight + 20);
+    } else {
+      setHeight(0);
+    }
+  };
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(contentRef.current.scrollHeight + 20)
+    }
+  }, [])
+
+
+  
   const pathname = usePathname()
   const handleOpenRegistration = () => {
     closeFooter()
@@ -71,7 +94,7 @@ export const Cart = () => {
 
     closeFooter()
     setIsOrdering(true)
-    
+
     OrderData.OrderList = items.map(item => ({
       axCode: item.product.id,
       AmountOneWithTax: item.product.price,
@@ -123,7 +146,7 @@ export const Cart = () => {
           if (result === 'ok') {
             miniApp.close()
             clearCart()
-            
+
           }
 
         } catch (error) {
@@ -174,6 +197,12 @@ export const Cart = () => {
       </div>
 
       <div className={s.order}>
+        <span onClick={toggleHeight} className={clsx(s.order_arrow, height !== 0 && s.open)}><Arrow /></span>
+        <div style={{height: height}}  ref={contentRef} className={clsx(s.notification, height !== 0 && s.open)}>
+            <span>Забрать оплаченный заказ можно по адресу:</span>
+            <span><strong> г. Владивосток, ул. Русская, 65, 3 этаж, оф. 4</strong></span>
+            <span>Перед покупкой, просим ознакомиться с <br /><strong><Link className={s.notification_link} target={'_blank'} href={"https://dvcentr.ru/oferta/?main=0&additional=2"}>Договором оферты</Link></strong> </span>
+        </div>
         {renderButton()}
 
       </div>

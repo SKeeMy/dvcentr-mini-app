@@ -14,31 +14,31 @@ import { useFooterStore } from "@/store/footer-strore";
 export default function Catalog() {
   const router = useRouter();
   const { isOpen, closeFooter } = useFooterStore()
-  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
-    if (isOpen) {
-      closeFooter()
-    } else {
-      router.push('/');
+  // const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+  //   if (isOpen) {
+  //     closeFooter()
+  //   } else {
+  //     router.push('/');
 
-    }
-  });
-  useEffect(() => {
-    async function initializeCatalog() {
-      try {
-        if (await isTMA()) {
-          showButton();
-        }
-      } catch (error) {
-        console.error('Ошибка инициализации каталога:', error);
-      }
-    }
+  //   }
+  // });
+  // useEffect(() => {
+  //   async function initializeCatalog() {
+  //     try {
+  //       if (await isTMA()) {
+  //         showButton();
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка инициализации каталога:', error);
+  //     }
+  //   }
 
-    initializeCatalog();
+  //   initializeCatalog();
 
-    return () => {
-      hideButton();
-    };
-  }, [showButton, hideButton, isVisible]);
+  //   return () => {
+  //     hideButton();
+  //   };
+  // }, [showButton, hideButton, isVisible]);
 
 
 
