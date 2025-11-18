@@ -23,21 +23,23 @@ export const BannerSlider = () => {
       description: <SlidesContent content='howToBuy' />
 
     },
-    {
-      id: 1,
-      text: 'Мини-приложение от DVCENTR👋',
-      background_image: '/images/i.webp',
-      sticker_image: '/images/ecs.png',
-      stricker_pos: 'right'
-    },
-
+    
     {
       id: 2,
       text: 'Фирменный мерч в наличии!',
-      background_image: '/images/banner.jpg',
-      sticker_image: '/images/toy-sticker.png',
-      stricker_pos: 'center'
-    }
+      background_image: '/images/banner.png',
+      sticker_image: null
+      // sticker_image: '/images/toy-sticker.png',
+      // stricker_pos: 'center'
+    },
+    // {
+    //   id: 1,
+    //   text: 'Мини-приложение от DVCENTR👋',
+    //   background_image: '/images/i.webp',
+    //   sticker_image: '/images/ecs.png',
+    //   stricker_pos: 'right'
+    // },
+
 
   ]
 

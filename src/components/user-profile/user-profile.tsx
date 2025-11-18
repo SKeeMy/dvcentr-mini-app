@@ -12,12 +12,12 @@ export const UserProfile = () => {
   const { openFooter } = useFooterStore()
   if (userLoading) {
     return (
-        <div className={s.wrapper_skeleton}>
+      <div className={s.wrapper_skeleton}>
 
-          <div className={s.user_profile_card_box_loading}></div>
-          <div className={s.user_profile_card_box_loading}></div>
+        <div className={s.user_profile_card_box_loading}></div>
+        <div className={s.user_profile_card_box_loading}></div>
 
-        </div>
+      </div>
     )
 
 
@@ -56,8 +56,7 @@ export const UserProfile = () => {
           {apiUserData?.email && <div className={s.user_profile_card_row}>
             <span className={s.user_profile_card_row_label}>Электронная почта</span>
             <span className={s.user_profile_card_row_value}>{apiUserData?.email}</span>
-            {apiUserData?.email_approved == "1" ? <span style={{ color: 'green' }} className={s.user_profile_card_row_label}>Подтвержден</span> :
-              <span style={{ color: 'red' }} className={s.user_profile_card_row_label}>Не подтвержден</span>}
+            {apiUserData?.email_approved == "1" && <span style={{ color: 'green' }} className={s.user_profile_card_row_label}>Подтвержден</span>}
           </div>}
 
         </div>

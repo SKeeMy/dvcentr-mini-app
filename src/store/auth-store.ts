@@ -20,6 +20,7 @@ interface ApiUserData {
   email_approved: string
   personal_phone: string
   personal_phone_approved: string
+  url_auth: string
 }
 
 interface ApiResponse {
