@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import s from './concrete-mixer-game.module.scss'
+import { ButtonStats } from './game-raiting/button-stats/button-stats'
 
-export const ConcreteMixerGame: React.FC = () => {
+export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: boolean) => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const requestRef = useRef<number | null>(null)
   const carImageRef = useRef<HTMLImageElement | null>(null)
@@ -79,7 +80,7 @@ export const ConcreteMixerGame: React.FC = () => {
         try {
           const response = await fetch(url)
           if (!response.ok) throw new Error(`Failed to load ${url}`)
-          
+
           const arrayBuffer = await response.arrayBuffer()
           const audioBuffer = await audioContextRef.current.decodeAudioData(arrayBuffer)
           soundBuffersRef.current[name] = audioBuffer
@@ -107,14 +108,14 @@ export const ConcreteMixerGame: React.FC = () => {
     try {
       const source = audioContextRef.current.createBufferSource()
       const gainNode = audioContextRef.current.createGain()
-      
+
       source.buffer = buffer
       gainNode.gain.value = 0.3 // Громкость
-      
+
       source.connect(gainNode)
       gainNode.connect(audioContextRef.current.destination)
       source.start(0)
-      
+
       // Очистка после воспроизведения
       source.onended = () => {
         source.disconnect()
@@ -510,7 +511,7 @@ export const ConcreteMixerGame: React.FC = () => {
           // Простой круг вместо сложной анимации
           ctx.fillStyle = '#FFD700'
           ctx.beginPath()
-          ctx.arc(object.x + object.width/2, object.y + object.height/2, object.width/2, 0, Math.PI * 2)
+          ctx.arc(object.x + object.width / 2, object.y + object.height / 2, object.width / 2, 0, Math.PI * 2)
           ctx.fill()
         }
       }
@@ -735,6 +736,8 @@ export const ConcreteMixerGame: React.FC = () => {
             >
               Перезапустить
             </button>
+
+            <ButtonStats type='end' setStatsShow={setStatsShow} />
           </div>
         )}
       </div>
@@ -747,7 +750,7 @@ export const ConcreteMixerGame: React.FC = () => {
         {/* <p style={{ textAlign: 'center' }} className={s.scoreText}>
           Уровень: {currentLevel}
         </p> */}
-        
+
         {/* Кнопка управления звуком */}
         {/* <div className={s.soundControls}>
           <button 
