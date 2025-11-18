@@ -18,7 +18,7 @@ export const BannerSlider = () => {
     {
       id: 3,
       text: 'Как оформить заказ?',
-      background_image: '/images/banner_1.png',
+      background_image: '/images/banner.png',
       sticker_image: null,
       description: <SlidesContent content='howToBuy' />
 
@@ -27,7 +27,7 @@ export const BannerSlider = () => {
     {
       id: 2,
       text: 'Фирменный мерч в наличии!',
-      background_image: '/images/banner.png',
+      background_image: '/images/banner_2.jpg',
       sticker_image: null
       // sticker_image: '/images/toy-sticker.png',
       // stricker_pos: 'center'
