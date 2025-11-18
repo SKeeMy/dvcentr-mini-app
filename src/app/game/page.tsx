@@ -9,28 +9,29 @@ import { useAppBackButton } from "../hooks/useAppBackButton"
 export default function GameSection() {
   const [gameStarted, setGameStarted] = useState<boolean>(false)
   const router = useRouter();
-  const { showButton, hideButton } = useAppBackButton(() => {
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
     router.push('/');
   });
+ 
 
-  // Инициализация кнопки назад - ТОЛЬКО ПРИ МОНТИРОВАНИИ
   useEffect(() => {
-    const initBackButton = async () => {
+    async function initializeGame() {
       try {
         if (await isTMA()) {
           showButton();
         }
       } catch (error) {
-        console.error('Ошибка инициализации кнопки назад:', error);
+        console.error('Ошибка инициализации каталога:', error);
       }
-    };
+    }
 
-    initBackButton();
+    initializeGame();
 
     return () => {
       hideButton();
     };
-  }, []); 
+  }, [showButton, hideButton, isVisible]);
+
   return (
     <div style={{ height: '100vh', maxHeight: '700px' }}>
       {gameStarted ?
