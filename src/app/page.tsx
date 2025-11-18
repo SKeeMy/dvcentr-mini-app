@@ -37,7 +37,6 @@ export default function Home() {
 
   const { setLoading, setData, data } = useOrdersStore()
   const { setLoading: setLoadingRemains, setData: setDataRemains, data: dataRemains } = useRemainsStore()
-
   useEffect(() => {
     console.log('📱 Home component mounted');
 
@@ -49,7 +48,11 @@ export default function Home() {
     }
   }, [user?.phone]);
 
-
+  const handleAuthUser = () => {
+    setTimeout(() => {
+      fetchUserData(user.phone);
+    }, 10000);
+  }
 
   const sendPhoneRequest = async () => {
     console.log('📞 Вызов sendPhoneRequest...');
@@ -197,7 +200,7 @@ export default function Home() {
                 <PrimaryButton className='button_tg' href='https://t.me/dvcentr_bot'>
                   Напишите нам <Telegram />
                 </PrimaryButton>
-                <PrimaryButton target={'_blank'} href={apiUserData.url_auth} >
+                <PrimaryButton onClick={handleAuthUser} target={'_blank'} href={apiUserData.url_auth} >
                   Наш сайт
                 </PrimaryButton>
               </div> : <div className="actions-container">
