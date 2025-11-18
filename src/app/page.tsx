@@ -197,7 +197,7 @@ export default function Home() {
                 <PrimaryButton className='button_tg' href='https://t.me/dvcentr_bot'>
                   Напишите нам <Telegram />
                 </PrimaryButton>
-                <PrimaryButton target={'_blank'} className='button_tg' href='https://dvcentr.ru/'>
+                <PrimaryButton target={'_blank'} href={apiUserData.url_auth} >
                   Наш сайт
                 </PrimaryButton>
               </div> : <div className="actions-container">
@@ -205,7 +205,7 @@ export default function Home() {
                 <PrimaryButton className='button_tg' href='https://t.me/dvcentr_bot'>
                   Напишите нам <Telegram />
                 </PrimaryButton>
-                <PrimaryButton target={'_blank'} className='button_tg' href={apiUserData.url_auth}>
+                <PrimaryButton target={'_blank'} href='https://dvcentr.ru/'>
                   Наш сайт
                 </PrimaryButton>
                 <p className="reg-description">
