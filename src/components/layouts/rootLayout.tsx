@@ -11,6 +11,7 @@ import { AppProvider } from './providers/app-provider'
 import Transition from './transtion'
 import { AnimatePresence } from 'framer-motion'
 import { Ordering } from '../ordering/ordering'
+import NextTopLoader from 'nextjs-toploader'
 export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
@@ -74,6 +75,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
+      <NextTopLoader color='#f89633' />
       <AppProvider>
         <Ordering />
         <Header header_type='catalog' />
