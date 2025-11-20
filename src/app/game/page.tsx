@@ -36,7 +36,7 @@ export default function GameSection() {
 
   return (
     <div style={{ height: '100vh', maxHeight: '700px' }}>
-      <RaitingModal isStatsShow={isStatsShow} setStatsShow={setStatsShow} />
+      <RaitingModal  />
       {gameStarted ?
         <ConcreteMixerGame setStatsShow={setStatsShow}  /> : <StartGame setStatsShow={setStatsShow}  setGameStarted={setGameStarted} />
       }

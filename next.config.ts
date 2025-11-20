@@ -30,6 +30,14 @@ const nextConfig: NextConfig = {
         source: '/api/tg-react-app/get-user-remains',
         destination: `${serverUrl}/api/tg-react-app/get-user-remains/`,
       },
+      {
+        source: '/api/tg-react-app/update-user-game-score',
+        destination: `${serverUrl}/api/tg-react-app/update-user-game-score/`,
+      },
+      {
+        source: '/api/tg-react-app/get-raiting',
+        destination: `${serverUrl}/api/tg-react-app/get-raiting/`,
+      },
 
     ];
   },

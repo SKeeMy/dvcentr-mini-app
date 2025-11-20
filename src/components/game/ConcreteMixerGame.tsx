@@ -1,4 +1,8 @@
+import { useAuthStore } from '@/store/auth-store'
+import { useFooterStore } from '@/store/footer-strore'
+import { useGameStore } from '@/store/game-store'
 import React, { useState, useEffect, useRef } from 'react'
+import { Spinner } from '../ui/spinner/spinner'
 import s from './concrete-mixer-game.module.scss'
 import { ButtonStats } from './game-raiting/button-stats/button-stats'
 
@@ -8,7 +12,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
   const carImageRef = useRef<HTMLImageElement | null>(null)
   const coinImageRef = useRef<HTMLImageElement | null>(null)
   const [gameOver, setGameOver] = useState(false)
-  const [score, setScore] = useState(0)
+  const [score, setScore] = useState<number>(0)
   const [carLoaded, setCarLoaded] = useState(false)
   const [coinLoaded, setCoinLoaded] = useState(false)
   const [gameTime, setGameTime] = useState(0)
@@ -17,6 +21,11 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
   const [soundEnabled, setSoundEnabled] = useState(true)
   const groundYRef = useRef(0)
   const gameTimeRef = useRef(0)
+
+  const { sendResult, isSendingResult } = useGameStore()
+  const { user, apiUserData } = useAuthStore()
+  const { openFooter } = useFooterStore()
+
 
   // Web Audio API
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -701,6 +710,16 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
 
   const allImagesLoaded = carLoaded && coinLoaded
 
+
+  useEffect(() => {
+    if (apiUserData === null && gameOver === true) {
+      openFooter('registration')
+    }
+    if (user?.phone && apiUserData && gameOver === true) {
+      sendResult(user.phone, score, apiUserData.bitrix_id)
+    }
+  }, [gameOver])
+
   return (
     <div className={s.gameContainer}>
       <div className={s.gameWrapper}>
@@ -730,14 +749,19 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
               {getPerformanceText(score)}
             </p>
             <h2 className={s.gameOverTitle}>Конец игры</h2>
-            <button
-              onClick={resetGame}
-              className={s.restartButton}
-            >
-              Перезапустить
-            </button>
+            {!isSendingResult && <>
+              <button
+                onClick={resetGame}
+                className={s.restartButton}
+              >
+                Перезапустить
+              </button>
 
-            <ButtonStats type='end' setStatsShow={setStatsShow} />
+              <ButtonStats type='end' setStatsShow={setStatsShow} />
+            </>}
+
+           {isSendingResult &&  <Spinner className={s.spinner} />}
+
           </div>
         )}
       </div>

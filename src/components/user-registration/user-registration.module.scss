@@ -75,3 +75,15 @@
   position: absolute;
   transform: scale(2.5);
 }
+
+.notification {
+  background-color: #ebebeb;
+  border-radius: 12px;
+  padding: 10px ;
+  margin-bottom: 12px;
+  text-align: center;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-orange);
+}

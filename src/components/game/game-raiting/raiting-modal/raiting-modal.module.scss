@@ -208,3 +208,125 @@
     height: 20px;
   }
 }
+
+
+//skeleton
+.skeleton {
+  &_player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border-left: 4px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &_info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &_position {
+    width: 25px;
+    height: 14px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    border-radius: 4px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  &_medal {
+    width: 30px;
+    height: 20px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    border-radius: 6px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  &_name {
+    width: 120px;
+    height: 16px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    border-radius: 6px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  &_score {
+    width: 80px;
+    height: 24px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    border-radius: 20px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+// Адаптивность для скелетона
+@media (max-width: 480px) {
+  .skeleton {
+    &_name {
+      width: 100px;
+      height: 14px;
+    }
+
+    &_score {
+      width: 70px;
+      height: 20px;
+    }
+  }
+}
+
+
+
+// Стили для скелетона футера
+.skeleton {
+  &_footer_item {
+    height: 14px;
+    width: 100px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    border-radius: 6px;
+    animation: skeleton-loading 1.5s infinite;
+  }
+}
+
+// Адаптивность для скелетона футера
+@media (max-width: 480px) {
+  .skeleton {
+    &_footer_item {
+      width: 100%;
+      height: 12px;
+    }
+  }
+  
+  .modal_footer {
+    flex-direction: column;
+    gap: 8px;
+    
+    div {
+      text-align: center;
+    }
+  }
+}
+
+.empty_state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  text-align: center;
+  
+  p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+    margin: 0;
+  }
+}

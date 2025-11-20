@@ -132,9 +132,9 @@ export const Footer = () => {
     // Здесь логика открытия игры
     console.log('Open game')
   }
-  if (pathname === '/game') return null
+  // if (pathname === '/game') return null
   return (
-    <footer className={clsx(s.footer, isOpen && s.open)}>
+    <footer className={clsx(s.footer, isOpen && s.open, pathname === '/game' && s.footer_game)}>
       <div className={s.footer_content}>
         <div className={clsx(s.footer_items)}>
           <Link href={'/'} className={s.footer_item}>

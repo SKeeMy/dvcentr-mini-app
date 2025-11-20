@@ -344,3 +344,11 @@
     transform: translateY(0);
   }
 }
+
+.footer_game {
+  opacity: 0;
+  pointer-events: none;
+  bottom: 0;
+  position: fixed;
+  left: 0;
+}

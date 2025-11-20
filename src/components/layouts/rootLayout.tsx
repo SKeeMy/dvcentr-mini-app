@@ -69,14 +69,14 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
 
-  const pathname = usePathname()
+const pathname = usePathname()
   const onExitComplete = () => {
     window.scrollTo({ top: 0 })
   }
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
       <NextTopLoader color='#f89633' />
-      <AppProvider>
+      {/* <AppProvider> */}
         <Ordering />
         <Header header_type='catalog' />
         {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
@@ -84,7 +84,7 @@ export const RootLayout: FC<PropsWithChildren> = ({ children }) => {
         {/* </AnimatePresence> */}
 
         <Footer />
-      </AppProvider>
+      {/* </AppProvider> */}
     </body>
   )
 }

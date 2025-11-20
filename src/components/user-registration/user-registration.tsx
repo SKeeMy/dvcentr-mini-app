@@ -10,6 +10,7 @@ import clsx from 'clsx'
 import { useFooterStore } from '@/store/footer-strore'
 import { Spinner } from '../ui/spinner/spinner'
 import { userInfo } from 'os'
+import { usePathname } from 'next/navigation'
 
 interface RegistrationForm {
   dadata_patronymic: string
@@ -43,6 +44,8 @@ export const UserRegistration = () => {
     mode: 'onBlur',
 
   })
+  const pathname = usePathname()
+
 
   React.useEffect(() => {
     if (user?.phone) {
@@ -79,7 +82,11 @@ export const UserRegistration = () => {
 
       const result = await response.json();
       if (result.MESSAGE === 'LINK_PHYS_SUCCESS' || result.MESSAGE === 'FISIC_SUCCESS') {
-        alert('Аккаунт зарегистрирован!')
+        if (pathname === '/game') {
+          alert('Аккаунт зарегистрирован! Начните играть!')
+        } else {
+          alert('Аккаунт зарегистрирован!')
+        }
         fetchUserData(data.USER_PHONE_NUMBER)
         openFooter('profile')
         reset()
@@ -101,7 +108,8 @@ export const UserRegistration = () => {
   return (
     <Container className={s.container}>
       <div className={s.registration}>
-        <h3 className={s.title}>Регистрация</h3>
+        <h3 className={s.title}> Регистрация</h3>
+        {pathname === '/game' && <p className={s.notification}>Пройдите регистрации, чтобы попасть в рейтинг</p>}
         {isSubmiting && <Spinner className={s.loader} />}
         <form onSubmit={handleSubmit(onSubmit)} className={clsx(s.form, isSubmiting && s.disabled)}>
           <div className={s.formRow}>
@@ -139,7 +147,7 @@ export const UserRegistration = () => {
             error={errors.USER_PHONE_NUMBER?.message}
             required={true}
             placeholder="+7 (XXX) XXX-XX-XX"
-            // disabled={true}
+          // disabled={true}
           />}
 
           <Input<RegistrationForm>
@@ -167,7 +175,7 @@ export const UserRegistration = () => {
 
 
              */}
-             <Checkbox<RegistrationForm>
+            <Checkbox<RegistrationForm>
               label={`Я подтверждаю свою дееспособность, а также даю согласие на <a target="_blank" href="https://dvcentr.ru/privacypolicy/">обработку моих персональных данных</a>`}
               name="agreeToTerms"
               register={register}
