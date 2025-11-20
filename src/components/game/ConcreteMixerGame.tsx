@@ -22,7 +22,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
   const groundYRef = useRef(0)
   const gameTimeRef = useRef(0)
 
-  const { sendResult, isSendingResult } = useGameStore()
+  const { sendResult, isSendingResult, currentResult } = useGameStore()
   const { user, apiUserData } = useAuthStore()
   const { openFooter } = useFooterStore()
 
@@ -737,14 +737,14 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         {gameOver && (
           <div className={s.gameOverOverlay}>
             <p className={s.finalScore}>
-              Время: {gameTime} сек. | Уровень: {currentLevel}
+              Время: {gameTime} сек.
             </p>
             <p className={s.finalScore}>
               Конечный счет:{' '}
               <span className={`${s.scoreValue} ${getScoreClass(score)}`}>
                 {score}
               </span>
-              <span className={s.new_record}>Новый рекорд🔥</span>
+              {currentResult == 1 && <span className={s.new_record}>Новый рекорд🔥</span>}
             </p>
             <p className={`${s.performanceText} ${getPerformanceClass(score)}`}>
               {getPerformanceText(score)}
@@ -761,31 +761,31 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
               <ButtonStats type='end' setStatsShow={setStatsShow} />
             </>}
 
-           {isSendingResult &&  <Spinner className={s.spinner} />}
+            {isSendingResult && <Spinner className={s.spinner} />}
 
           </div>
         )}
       </div>
 
-      <div className={s.scoreDisplay}>
+      {!gameOver && <div className={s.scoreDisplay}>
         <p className={s.scoreText}>
           Мешки: {score} | Время: {gameTime} сек.
           {showDebug && ` | Скорость: ${(baseGameSpeed * getDifficultySettings(gameTime).speedMultiplier).toFixed(1)}`}
         </p>
         {/* <p style={{ textAlign: 'center' }} className={s.scoreText}>
-          Уровень: {currentLevel}
-        </p> */}
+      Уровень: {currentLevel}
+    </p> */}
 
         {/* Кнопка управления звуком */}
         {/* <div className={s.soundControls}>
-          <button 
-            onClick={toggleSound}
-            className={`${s.soundButton} ${soundEnabled ? s.soundOn : s.soundOff}`}
-          >
-            Звуки: {soundEnabled ? 'ВКЛ' : 'ВЫКЛ'}
-          </button>
-        </div> */}
-      </div>
+      <button 
+        onClick={toggleSound}
+        className={`${s.soundButton} ${soundEnabled ? s.soundOn : s.soundOff}`}
+      >
+        Звуки: {soundEnabled ? 'ВКЛ' : 'ВЫКЛ'}
+      </button>
+    </div> */}
+      </div>}
     </div>
   )
 }
