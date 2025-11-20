@@ -76,7 +76,7 @@ const pathname = usePathname()
   return (
     <body className={clsx(golosTextFont.variable, steppeFont.variable, 'body_content')}>
       <NextTopLoader color='#f89633' />
-      {/* <AppProvider> */}
+      <AppProvider>
         <Ordering />
         <Header header_type='catalog' />
         {/* <AnimatePresence initial={false} onExitComplete={onExitComplete} mode="wait"> */}
@@ -84,7 +84,7 @@ const pathname = usePathname()
         {/* </AnimatePresence> */}
 
         <Footer />
-      {/* </AppProvider> */}
+      </AppProvider>
     </body>
   )
 }

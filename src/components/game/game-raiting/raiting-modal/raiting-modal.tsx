@@ -12,7 +12,7 @@ export interface Player {
 
 export const RaitingModal = () => {
 
-  const { showRaiting, setShowRaiting, isLoadingRaiting, players, currentResult } = useGameStore()
+  const { showRaiting, setShowRaiting, isLoadingRaiting, players, currentResult, count_players } = useGameStore()
 
 
   // const players: Player[] = [
@@ -86,7 +86,6 @@ export const RaitingModal = () => {
       <div className={s.modal_header}>
         <h2 className={s.modal_title}>🏆 Топ игроков сезона</h2>
         {players !== null && players?.length > 0 ? <div className={s.modal_subtitle}>Лучшие результаты мини-игры</div > : <div className={s.modal_subtitle}>Пока здесь пусто</div >}
-        {currentResult == 1 && <p className={s.modal_subtitle}>У вас новый рекорд!</p>}
       </div>
 
       <div className={s.modal_content}>
@@ -111,7 +110,7 @@ export const RaitingModal = () => {
           <SkeletonFooter />
         ) : (
           players !== null && players?.length > 0 ? <div className={s.modal_footer}>
-            <div className={s.total_players}>Всего игроков: 20</div>
+            <div className={s.total_players}>Всего игроков: {count_players}</div>
             <div className={s.highest_score}>
               Максимум: {Math.max(...players.map(p => p.score))} очков
             </div>

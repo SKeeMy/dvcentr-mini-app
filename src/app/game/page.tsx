@@ -11,28 +11,28 @@ export default function GameSection() {
   const [gameStarted, setGameStarted] = useState<boolean>(false)
   const [isStatsShow, setStatsShow] = useState<boolean>(false)
   const router = useRouter();
-  // const { showButton, hideButton, isVisible } = useAppBackButton(() => {
-  //   router.push('/');
-  // });
+  const { showButton, hideButton, isVisible } = useAppBackButton(() => {
+    router.push('/');
+  });
  
 
-  // useEffect(() => {
-  //   async function initializeGame() {
-  //     try {
-  //       if (await isTMA()) {
-  //         showButton();
-  //       }
-  //     } catch (error) {
-  //       console.error('Ошибка инициализации каталога:', error);
-  //     }
-  //   }
+  useEffect(() => {
+    async function initializeGame() {
+      try {
+        if (await isTMA()) {
+          showButton();
+        }
+      } catch (error) {
+        console.error('Ошибка инициализации каталога:', error);
+      }
+    }
 
-  //   initializeGame();
+    initializeGame();
 
-  //   return () => {
-  //     hideButton();
-  //   };
-  // }, [showButton, hideButton, isVisible]);
+    return () => {
+      hideButton();
+    };
+  }, [showButton, hideButton, isVisible]);
 
   return (
     <div style={{ height: '100vh', maxHeight: '700px' }}>

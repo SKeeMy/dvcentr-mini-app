@@ -744,6 +744,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
               <span className={`${s.scoreValue} ${getScoreClass(score)}`}>
                 {score}
               </span>
+              <span className={s.new_record}>Новый рекорд🔥</span>
             </p>
             <p className={`${s.performanceText} ${getPerformanceClass(score)}`}>
               {getPerformanceText(score)}
