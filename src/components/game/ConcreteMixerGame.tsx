@@ -715,7 +715,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
     if (apiUserData === null && gameOver === true) {
       openFooter('registration')
     }
-    if (user?.phone && apiUserData && gameOver === true) {
+    if (user?.phone && apiUserData && gameOver === true && score > 4) {
       sendResult(user.phone, score, apiUserData.bitrix_id)
     }
   }, [gameOver])
