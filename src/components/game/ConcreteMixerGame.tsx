@@ -170,7 +170,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         obstacleChance: 0.4,
         airObstacleChance: 0.4,
         coinChance: 0.2,
-        speedMultiplier: 1.6,
+        speedMultiplier: 1.5,
         doubleObstacleChance: 0.4,
         maxObjects: 5
       }
@@ -181,7 +181,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         obstacleChance: 0.3,
         airObstacleChance: 0.5,
         coinChance: 0.2,
-        speedMultiplier: 1.9,
+        speedMultiplier: 1.7,
         doubleObstacleChance: 0.6,
         maxObjects: 6
       }
@@ -192,7 +192,7 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         obstacleChance: 0.3,
         airObstacleChance: 0.5,
         coinChance: 0.2,
-        speedMultiplier: 1.9,
+        speedMultiplier: 1.7,
         doubleObstacleChance: 0.6,
         maxObjects: 6
       }
