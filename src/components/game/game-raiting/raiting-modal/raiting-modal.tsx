@@ -44,10 +44,10 @@ export const RaitingModal = () => {
 
   const PlayerItem = ({ player, isCurrent }: { player: Player, isCurrent?: boolean }) => {
     return (
-      <div 
-        className={clsx(s.player, isCurrent && s.current_player)} 
-        style={{ 
-          borderLeft: `4px solid ${getPositionColor(player.position)}` 
+      <div
+        className={clsx(s.player, isCurrent && s.current_player)}
+        style={{
+          borderLeft: `4px solid ${getPositionColor(player.position)}`
         }}
       >
         <div className={s.player_info}>
@@ -106,18 +106,20 @@ export const RaitingModal = () => {
           ) : players && players.length > 0 ? (
             <>
               {players.map(player => (
-                <PlayerItem isCurrent={current_player ?  (player.id === current_player.id) : false} key={player.id} player={player} />
+                <PlayerItem isCurrent={current_player ? (player.id === current_player.id) : false} key={player.id} player={player} />
               ))}
 
-              {current_player && apiUserData?.bitrix_id == String(current_player.id) &&
-                (current_player.position === 4 ? (
-                  <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
-                ) : current_player.position > 4 ? (
-                  <div className={s.more_players}>
-                    <span className={s.dots}>...</span>
+              {current_player &&
+                apiUserData?.bitrix_id === String(current_player.id) &&
+                current_player.position > 3 && ( 
+                  current_player.position === 4 ? (
                     <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
-                  </div>
-                ) : null
+                  ) : (
+                    <div className={s.more_players}>
+                      <span className={s.dots}>...</span>
+                      <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
+                    </div>
+                  )
                 )}
             </>
           ) : (
