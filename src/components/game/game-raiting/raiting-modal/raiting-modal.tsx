@@ -1,4 +1,5 @@
 import { Close } from '@/components/shared/icons/close'
+import { useAuthStore } from '@/store/auth-store'
 import { useGameStore } from '@/store/game-store'
 import clsx from 'clsx'
 import React from 'react'
@@ -13,6 +14,7 @@ export interface Player {
 export const RaitingModal = () => {
 
   const { showRaiting, setShowRaiting, isLoadingRaiting, players, currentResult, count_players, current_player } = useGameStore()
+  const { apiUserData } = useAuthStore()
 
 
   // const players: Player[] = [
@@ -107,7 +109,7 @@ export const RaitingModal = () => {
                 <PlayerItem isCurrent={current_player ?  (player.id === current_player.id) : false} key={player.id} player={player} />
               ))}
 
-              {current_player &&
+              {current_player && apiUserData?.bitrix_id == String(current_player.id) &&
                 (current_player.position === 4 ? (
                   <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
                 ) : current_player.position > 4 ? (
