@@ -12,7 +12,7 @@ export interface Player {
 
 export const RaitingModal = () => {
 
-  const { showRaiting, setShowRaiting, isLoadingRaiting, players, currentResult, count_players } = useGameStore()
+  const { showRaiting, setShowRaiting, isLoadingRaiting, players, currentResult, count_players, current_player } = useGameStore()
 
 
   // const players: Player[] = [
@@ -40,12 +40,14 @@ export const RaitingModal = () => {
     }
   }
 
-  const PlayerItem = ({ player }: { player: Player }) => {
+  const PlayerItem = ({ player, isCurrent }: { player: Player, isCurrent?: boolean }) => {
     return (
-      <div className={s.player} style={{
-        borderLeft: `4px solid ${getPositionColor(player.position)}`
-      }}>
-
+      <div 
+        className={clsx(s.player, isCurrent && s.current_player)} 
+        style={{ 
+          borderLeft: `4px solid ${getPositionColor(player.position)}` 
+        }}
+      >
         <div className={s.player_info}>
           <span className={s.player_position}>#{player.position}</span>
           <span className={s.player_medal}>{getMedal(player.position)}</span>
@@ -77,7 +79,7 @@ export const RaitingModal = () => {
       </div>
     )
   }
-  
+
   return (
     <div className={clsx(s.modal, showRaiting && s.show)}>
       <button onClick={() => setShowRaiting(false)} className={s.close_button}>
@@ -99,10 +101,27 @@ export const RaitingModal = () => {
             [...Array(3)].map((_, index) => (
               <SkeletonPlayer key={index} />
             ))
+          ) : players && players.length > 0 ? (
+            <>
+              {players.map(player => (
+                <PlayerItem isCurrent={player.id === current_player.id} key={player.id} player={player} />
+              ))}
+
+              {current_player &&
+                (current_player.position === 4 ? (
+                  <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
+                ) : current_player.position > 4 ? (
+                  <div className={s.more_players}>
+                    <span className={s.dots}>...</span>
+                    <PlayerItem isCurrent={true} key={current_player.id} player={current_player} />
+                  </div>
+                ) : null
+                )}
+            </>
           ) : (
-            players !== null && players?.length > 0 ? players.map(player => (
-              <PlayerItem key={player.id} player={player} />
-            )) : <div className={s.empty_state}><p>Будьте первым, кто установит рекорд!</p></div>
+            <div className={s.empty_state}>
+              <p>Будьте первым, кто установит рекорд!</p>
+            </div>
           )}
         </div>
 
@@ -110,6 +129,7 @@ export const RaitingModal = () => {
           <SkeletonFooter />
         ) : (
           players !== null && players?.length > 0 ? <div className={s.modal_footer}>
+            <div className={s.total_players}>Ваше место в рейтинге</div>
             <div className={s.total_players}>Всего игроков: {count_players}</div>
             <div className={s.highest_score}>
               Максимум: {Math.max(...players.map(p => p.score))} очков

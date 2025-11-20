@@ -21,6 +21,7 @@ interface GameStatsState {
   players: Player[] | null
   apiError: string | null
   currentResult: number | null
+  current_player: Player| null;
   count_players: number | null
   // Setters
   setLoadingRaiting: (loading: boolean) => void
@@ -41,6 +42,7 @@ export const useGameStore = create<GameStatsState>()(
       players: null,
       apiError: null,
       currentResult: null,
+      current_player: null,
       count_players: null,
       // setters
       setLoadingRaiting: (isLoadingRaiting) => set({ isLoadingRaiting }),
@@ -71,6 +73,7 @@ export const useGameStore = create<GameStatsState>()(
             set({
               players: result.DATA.top_players.length > 0 ? result.DATA.top_players : null,
               count_players: result.DATA.count_players,
+              current_player: result.DATA.current_player || null,
               apiError: null
             })
           } else {

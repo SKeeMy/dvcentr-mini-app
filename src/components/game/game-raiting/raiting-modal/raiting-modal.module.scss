@@ -330,3 +330,30 @@
     margin: 0;
   }
 }
+.more_players {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  margin-top: 10px;
+  padding-top: 15px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  }
+}
+
+.dots {
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 5px;
+}
