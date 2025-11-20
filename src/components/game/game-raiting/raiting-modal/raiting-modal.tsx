@@ -129,11 +129,10 @@ export const RaitingModal = () => {
           <SkeletonFooter />
         ) : (
           players !== null && players?.length > 0 ? <div className={s.modal_footer}>
-            <div className={s.total_players}>Ваше место в рейтинге</div>
-            <div className={s.total_players}>Всего игроков: {count_players}</div>
-            <div className={s.highest_score}>
+            {count_players && <div className={s.total_players}>Всего игроков: {count_players}</div>}
+            {players && <div className={s.highest_score}>
               Максимум: {Math.max(...players.map(p => p.score))} очков
-            </div>
+            </div>}
           </div> : <></>
         )}
       </div>
