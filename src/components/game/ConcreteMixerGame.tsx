@@ -147,12 +147,13 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         spawnRate: 120,
         obstacleChance: 0.5,
         airObstacleChance: 0.1,
-        coinChance: 0.4,
+        coinChance: 0.3,
         speedMultiplier: 1.0,
         doubleObstacleChance: 0.0,
         maxObjects: 3
       }
-    } else if (time < 120) {
+    } 
+    else if (time < 120) {
       return {
         level: 2,
         spawnRate: 90,
@@ -181,18 +182,19 @@ export const ConcreteMixerGame = ({ setStatsShow }: { setStatsShow: (value: bool
         obstacleChance: 0.3,
         airObstacleChance: 0.5,
         coinChance: 0.2,
-        speedMultiplier: 1.7,
+        speedMultiplier: 1.8,
         doubleObstacleChance: 0.6,
         maxObjects: 6
       }
-    } else {
+    } 
+    else {
       return {
         level: 4,
         spawnRate: 50,
         obstacleChance: 0.3,
         airObstacleChance: 0.5,
         coinChance: 0.2,
-        speedMultiplier: 1.7,
+        speedMultiplier: 1.8,
         doubleObstacleChance: 0.6,
         maxObjects: 6
       }
