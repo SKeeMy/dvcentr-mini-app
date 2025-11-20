@@ -104,7 +104,7 @@ export const RaitingModal = () => {
           ) : players && players.length > 0 ? (
             <>
               {players.map(player => (
-                <PlayerItem isCurrent={player.id === current_player.id} key={player.id} player={player} />
+                <PlayerItem isCurrent={current_player ?  (player.id === current_player.id) : false} key={player.id} player={player} />
               ))}
 
               {current_player &&
