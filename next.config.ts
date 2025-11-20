@@ -3,8 +3,8 @@ import { env } from "process";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   async rewrites() {
-    const serverUrl = 'https://dev.ecsdv.ru'
-    // const serverUrl = 'https://dvcentr.ru'
+    // const serverUrl = 'https://dev.ecsdv.ru'
+    const serverUrl = 'https://dvcentr.ru'
     return [
       {
         source: '/api/tg-react-app',
